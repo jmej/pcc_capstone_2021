@@ -1,20 +1,6 @@
-// audio features: frequency, amplitude, 
-// visual features: color, speed, shape, size, opacity, "weirdness"
-// mapping: amplitude to size, frequency to speed and color, weirdness to frequency density
-// frequency density: the number of bands in fft that are above a certain threshold;
-
-//have layers: background created by flocking algorithm, foreground bigger, more dominant shapes
-
-//possible conditionals:
-//if peak frequency is above a certain level
-//if frequency density is above or below a certain level
-//if amplitude is above or below a certain level
-
-
 
 import processing.sound.*;
 
-//PShape orchid;
 PShape shape;
 
 SoundFile testaudio;
@@ -55,9 +41,7 @@ void setup() {
     float yVal = height/73 * floor(i/678);
     linePoints[i] = new PVector((i%678)*(width/(numOfVertices/73)) - width/2, yVal - height/2, 0); 
   }
-  
-  //simplify later, don't need to store vertices before using them to initialize particles
-  //but it might be a good idea to have them stored? depending on where it goes
+
   objVertices = new PVector[numOfVertices];
   
   for (int i = 0; i < shape.getChildCount(); i++) {
@@ -101,10 +85,6 @@ void draw() {
   
   int freqDensity = 0;
   max = 0;
-  int inLineParticles = 0;
-  float lows = 0;
-  float mids = 0;
-  float highs = 0;
   
   //frequency stuff
   
@@ -122,15 +102,6 @@ void draw() {
        freqDensity++;
      }
    }
- for (int i = 0; i < 85; i++) {
-   lows += fft.spectrum[i];
- }
- for (int i = 85; i < 170; i++) {
-   mids += fft.spectrum[i];
- }
- for (int i = 170; i < 256; i++) {
-   highs += fft.spectrum[i];
- }
    
    
   
