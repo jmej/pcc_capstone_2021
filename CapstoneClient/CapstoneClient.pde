@@ -21,7 +21,6 @@ SoundFile testaudio;
 FFT fft;
 Amplitude rms;
 
-
 int curMod = 0;
 int curFrame = 0;
 PGraphics canvas;
@@ -42,12 +41,10 @@ String videoFilePath;
 void setup() {
   rectMode(CENTER);
   size(1280, 720, P2D);
-
   colorMode(RGB, 255);
   
   settings = new Settings(this);
   
-
   LOOP = (boolean)settings.get("videoLoop");
   EXTRACT_AUDIO = (boolean)settings.get("extractAudio");
   PIX_DIM = (int)settings.get("defaultDim"); 
@@ -57,9 +54,7 @@ void setup() {
   
   oscP5 = new OscP5(this,INCOMING_PORT);
   myRemoteLocation = new NetAddress("127.0.0.1",REMOTE_PORT);
-
   
-  client = new SyphonClient(this);
   canvas = createGraphics(1920, 1080, P2D);
     
   mods[0] = new BlendNode();
@@ -68,46 +63,40 @@ void setup() {
   mods[2] = new AtoVNode();
   
   
-            movie = new Movie(this, videoFilePath);
+  movie = new Movie(this, videoFilePath);
   //movie.loop();
   movie.play();
   movie.jump(curFrame);
   movie.pause();
-  
-  
+    
   boolean asked = false;
   while (!AUDIODONE) {
     if (!asked) {
       println("also here");
-    selectInput("select movie to extract audio from: (the video in the data/ folder)", "fileSelected");
-   asked = true;
+      selectInput("select movie to extract audio from: (the video in the data/ folder)", "fileSelected");
+      asked = true;
     }
     
-    if (millis() %100 == 0) {
-      
-    println("HERE");
+    if (millis() %100 == 0) {    
+     // println("HERE"); 
     }
- 
-    }
+  }
 
-    println("PATH: "  + audioFilePath);
+  println("PATH: "  + audioFilePath);
     
-    while (audioFilePath == "") {
-      println("WAITING");
-    }
+  while (audioFilePath == "") {
+    println("WAITING");
+  }
      
-      audioOut = saveAudio(audioFilePath);
-        videoExport = new VideoExport(this);
+  audioOut = saveAudio(audioFilePath);
+  videoExport = new VideoExport(this);
   videoExport.setFrameRate(movie.frameRate);
-    videoExport.setAudioFileName(audioOut);
+  videoExport.setAudioFileName(audioOut);
       
-    testaudio = new SoundFile(this, audioOut);
+  testaudio = new SoundFile(this, audioOut);
 
-    
-    
-    
-      fft = new FFT(this, 256);
-        rms = new Amplitude(this);
+  fft = new FFT(this, 256);
+  rms = new Amplitude(this);
   // For nodes that have a specfic color to track...
   color trackColor = color(random(100), random(100), random(100));
   
@@ -117,23 +106,9 @@ void setup() {
     mods[i].setColor(trackColor);
     mods[i].setDim(PIX_DIM);
   }
-
-
-  
-
-
 }
 
-void draw() {
- // if (EXTRACT_AUDIO) {
-  //  if (audioFilePath != "" && !saved) { //<>//
-  //    saveAudio(audioFilePath);
-  //    videoExport.setAudioFileName(audioFilePath);
-      
-  //    testaudio = new SoundFile(this, audioFilePath);
-  //  } else if (!saved) return;
-  //}
-  
+void draw() {   //<>//
   canvas.beginDraw();
   canvas.image(movie, 0, 0);
   canvas.endDraw();
