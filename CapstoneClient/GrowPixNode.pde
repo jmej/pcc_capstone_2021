@@ -1,6 +1,6 @@
 public class GrowPixNode  implements ModNode {
-  
-  private int dim = 3;
+  private Settings set;  
+  private int dim = 5;
   private int totalbright = 0;
   private int totalpix = 0;
   private int curFrame = 0;
@@ -94,6 +94,7 @@ public class GrowPixNode  implements ModNode {
     return this.active;
   }
   
-  public void init() {
+  public void init(Settings set) {
+    this.set = set;
   }
 }

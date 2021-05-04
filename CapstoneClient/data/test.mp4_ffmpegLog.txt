@@ -10,20 +10,4 @@ ffmpeg version 4.3.2 Copyright (c) 2000-2021 the FFmpeg developers
   libswscale      5.  7.100 /  5.  7.100
   libswresample   3.  7.100 /  3.  7.100
   libpostproc    55.  7.100 / 55.  7.100
-Input #0, mov,mp4,m4a,3gp,3g2,mj2, from '/Users/tobygn/Documents/Processing/Creative Coding Capstone/pcc_Capstone_2021/toby/CapstoneClient/data/test.mp4':
-  Metadata:
-    major_brand     : mp42
-    minor_version   : 0
-    compatible_brands: mp42mp41
-    creation_time   : 2021-03-16T05:14:41.000000Z
-  Duration: 00:00:21.57, start: 0.000000, bitrate: 19006 kb/s
-    Stream #0:0(eng): Video: h264 (Main) (avc1 / 0x31637661), yuv420p(tv, bt709), 1920x1080 [SAR 1:1 DAR 16:9], 18706 kb/s, 29.97 fps, 29.97 tbr, 30k tbn, 60k tbc (default)
-    Metadata:
-      creation_time   : 2021-03-16T05:14:41.000000Z
-      handler_name    : ?Mainconcept Video Media Handler
-      encoder         : AVC Coding
-    Stream #0:1(eng): Audio: aac (LC) (mp4a / 0x6134706D), 48000 Hz, stereo, fltp, 317 kb/s (default)
-    Metadata:
-      creation_time   : 2021-03-16T05:14:42.000000Z
-      handler_name    : #Mainconcept MP4 Sound Media Handler
-File '/Users/tobygn/Documents/Processing/Creative Coding Capstone/pcc_Capstone_2021/toby/CapstoneClient/data/test.mp4_audio.mp3' already exists. Overwrite? [y/N] Not overwriting - exiting
+: No such file or directory

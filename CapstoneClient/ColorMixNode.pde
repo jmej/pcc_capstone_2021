@@ -1,4 +1,5 @@
 public class ColorMixNode implements ModNode {
+  private Settings set;
   private int dim = 2;
   private int curFrame = 0;
   private float totalBright = 0;
@@ -66,7 +67,8 @@ public class ColorMixNode implements ModNode {
     return canvas;
   }
   
-  public void init() {
+  public void init(Settings set) {
+    this.set = set;
   }
   
   public void setColor(color c) {

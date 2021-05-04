@@ -17,7 +17,7 @@ class Settings {
       if (settingsFile.isFile()) {
         this.settings = p.loadJSONObject(settingsPath);
       } else {
-        println("FUCCKCKCKCKC");
+        println("COULDN'T FIND SETTINGS FILE");
       }
     } catch (Exception e) {
       println(e.getMessage());

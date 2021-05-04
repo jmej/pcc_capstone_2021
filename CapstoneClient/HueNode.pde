@@ -1,5 +1,6 @@
 public class HueNode implements ModNode {
-  private int dim = 2;
+  private Settings set;
+  private int dim = 3;
   private int curFrame = 0;
   private color trackColor = 0;
   private int minHue = 0;
@@ -17,7 +18,7 @@ public class HueNode implements ModNode {
     canvas.beginDraw();           
     canvas.noStroke();
 
-     if (this.curFrame % 10 == 0) {
+     if (this.curFrame % 20 == 0) {
        int save = minHue;
        minHue = maxHue;
        maxHue = save;  
@@ -60,7 +61,8 @@ public class HueNode implements ModNode {
     return canvas;
   }
   
-  public void init() {
+  public void init(Settings set) {
+    this.set = set;
   }
   
   public void setColor(color c) {

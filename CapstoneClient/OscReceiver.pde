@@ -29,13 +29,6 @@ class OscReceiver {
       println("STRING: " + stringVal);
       
       int ct = 0;
-        while(!client.newFrame()) {
-        delay(100);
-         ct++;
-        if (ct > 10) return ret;
-        }
-
-        ret = client.getImage(ret);
     } 
   } catch (Exception e) {
     println(e.getMessage());

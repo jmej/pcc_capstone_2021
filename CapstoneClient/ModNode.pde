@@ -5,9 +5,7 @@ interface ModNode {
   public PImage mod(PImage in);
   
   // To be called during the main setup()
-  public void init();
-  
-  public int getAvgBright();
+  public void init(Settings s);
   
   public boolean active();
   public void setColor(color c);

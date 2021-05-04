@@ -1,6 +1,5 @@
 import processing.video.*;
 import processing.sound.*;
-import codeanticode.syphon.*;
 import com.hamoid.*;
 import oscP5.*;
 import netP5.*;
@@ -10,8 +9,6 @@ import java.util.*;
 import java.util.Arrays;
 
 VideoExport videoExport;
-SyphonClient client;
-ModNode[] mods = new ModNode[3];
 OscP5 oscP5;
 NetAddress myRemoteLocation;
 Movie movie;
@@ -20,8 +17,8 @@ OscReceiver osc = new OscReceiver();
 SoundFile testaudio;
 FFT fft;
 Amplitude rms;
+ModNode[] mods;
 
-int curMod = 0;
 int curFrame = 0;
 PGraphics canvas;
 boolean saved = false;
@@ -30,12 +27,15 @@ String audioFilePath = "";
 String audioOut = "";
 String settingsPath;
 
+// Settings from settings.json and related
 boolean LOOP;
 boolean EXTRACT_AUDIO;
 boolean AUDIODONE = false;
+boolean PROMPT_AUDIO;
 int PIX_DIM; 
 int REMOTE_PORT;
 int INCOMING_PORT;
+
 String videoFilePath;
 
 void setup() {
@@ -43,56 +43,77 @@ void setup() {
   size(1280, 720, P2D);
   colorMode(RGB, 255);
   
-  settings = new Settings(this);
-  
+  settings = new Settings(this);   
+    
   LOOP = (boolean)settings.get("videoLoop");
   EXTRACT_AUDIO = (boolean)settings.get("extractAudio");
   PIX_DIM = (int)settings.get("defaultDim"); 
   REMOTE_PORT = (int)settings.get("remoteOSCPort");
   INCOMING_PORT = (int)settings.get("incomingOSCPort");
+  PROMPT_AUDIO = (boolean)settings.get("promptAudio");
   videoFilePath = (String)settings.get("pathToVid");
+  String classNames = (String)settings.get("nodeNames");
+  String[] classList = classNames.split(",");
+  
+  if (classList.length == 0) {
+    println("No nodes loaded. Check settings.json");
+    return;
+  }
+  
+  mods = new ModNode[classList.length];
+
+  // Choose the nodes you want to load by changing setting.json
+  for (int i = 0; i < classList.length; i++) {
+    switch(classList[i]) {
+      case "BlendNode":
+        mods[i] = new BlendNode();
+        break;
+      case "HueNode":
+        mods[i] = new HueNode();
+        break;
+      case "GrowPixNode" : 
+        mods[i] = new GrowPixNode();
+        break;
+      case "AtoVNode":
+        mods[i] = new AtoVNode();
+        break;
+      case "FlipBlendNode":
+        mods[i] = new FlipBlendNode();
+        break;   
+    }
+  }
   
   oscP5 = new OscP5(this,INCOMING_PORT);
   myRemoteLocation = new NetAddress("127.0.0.1",REMOTE_PORT);
   
-  canvas = createGraphics(1920, 1080, P2D);
-    
-  mods[0] = new BlendNode();
-  mods[1] = new HueNode();
-  //mods[2] = new GrowPixNode(); 
-  mods[2] = new AtoVNode();
-  
-  
+  canvas = createGraphics(1920, 1080, P2D); 
   movie = new Movie(this, videoFilePath);
-  //movie.loop();
   movie.play();
   movie.jump(curFrame);
   movie.pause();
+  
+  if (PROMPT_AUDIO) {
+    boolean asked = false;
     
-  boolean asked = false;
-  while (!AUDIODONE) {
-    if (!asked) {
-      println("also here");
-      selectInput("select movie to extract audio from: (the video in the data/ folder)", "fileSelected");
-      asked = true;
+    while (!AUDIODONE) {
+      if (!asked) {
+        selectInput("select movie to extract audio from: (the video in the data/ folder)", "fileSelected");
+        asked = true;
+      }
     }
-    
-    if (millis() %100 == 0) {    
-     // println("HERE"); 
-    }
+      
+    while (audioFilePath == "") {
+      println("WAITING");
+    } 
+  } else {
+    audioFilePath = videoFilePath;
   }
-
-  println("PATH: "  + audioFilePath);
-    
-  while (audioFilePath == "") {
-    println("WAITING");
-  }
-     
+  
   audioOut = saveAudio(audioFilePath);
+  println("AUDIO OUT" + audioOut);
   videoExport = new VideoExport(this);
   videoExport.setFrameRate(movie.frameRate);
-  videoExport.setAudioFileName(audioOut);
-      
+  videoExport.setAudioFileName(audioOut);   
   testaudio = new SoundFile(this, audioOut);
 
   fft = new FFT(this, 256);
@@ -102,7 +123,7 @@ void setup() {
   
   // Loop through the nodes and init, set default vars
   for (int i = 0; i < mods.length; i++) {
-    mods[i].init();
+    mods[i].init(settings);
     mods[i].setColor(trackColor);
     mods[i].setDim(PIX_DIM);
   }
@@ -127,13 +148,13 @@ void draw() {   //<>//
   
   if (curFrame == 0) { 
     videoExport.startMovie();
-    println("STARTED!");
+    println("VIDEO EXPORT STARTED!");
   } 
      
   image(f, 0, 0, f.width, f.height);
   videoExport.saveFrame();
   curFrame++;
-  setFrame(curFrame); //<>//
+  setFrame(curFrame);
 }
 
 void oscEvent(OscMessage m) {
@@ -146,9 +167,7 @@ void oscEvent(OscMessage m) {
 
 void keyPressed() {
   if (key == 'q') {
-    //println("TOTAL CLIENT FRAMES);
     videoExport.endMovie();
-  
     exit();
   }
 }

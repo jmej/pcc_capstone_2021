@@ -1,4 +1,5 @@
 public class CircleizeNode implements ModNode {
+  private Settings set;
   private int dim = 4;
   private int curFrame = 0;
   private color trackColor = 0;
@@ -61,7 +62,8 @@ public class CircleizeNode implements ModNode {
     return canvas;
   }
   
-  public void init() {
+  public void init(Settings set) {
+    this.set = set;
   }
   
   public void setColor(color c) {

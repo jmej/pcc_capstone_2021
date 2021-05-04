@@ -1,15 +1,17 @@
 
 class BlendNode implements ModNode {
+  private Settings set;
   private int totalbright = 0;
   private int totalpix = 0;
   private int switchCt = 10;
-  private color trackColor;
-  private int dim = 0;
-  private int blend1 = DODGE;
-  private int blend2 = DARKEST;
-  private boolean active = true;
-  int curFrame = 0;
-  PImage prevFrame = null;
+  private int blendCount = 0;
+  private final int MAXBLENDS = 4;
+  private int[] blends;
+  private int[] availBlends = {ADD, DARKEST, DODGE, SCREEN};  
+  private boolean active = true; 
+  private int curFrame = 0;
+  private PImage prevFrame = null;
+  private int method;
   
   public PImage mod(PImage frame) {
     PGraphics canvas = createGraphics(frame.width, frame.height);
@@ -20,16 +22,22 @@ class BlendNode implements ModNode {
       canvas.image(frame, 0, 0, frame.width, frame.height);
     } else {
       canvas.image(prevFrame, 0, 0, frame.width, frame.height);
-      int method  = 0;
-      if (this.curFrame % (this.switchCt*2)-1 < this.switchCt) {
-        method = this.blend1;
-      } else {
-        method = this.blend2;
+      
+       if (millis() % 2000 < 200) {
+         int prevMeth = method;
+         while(prevMeth == method) {
+           method = (int)random(this.blendCount);
+         }
+         println("NEW BLEND METHOD: " + method); 
+         method = this.blends[method];
+
       }
+
       canvas.blend(frame, 0, 0, frame.width, frame.height, 0, 0, frame.width, frame.height, method);
     }
+    
     canvas.endDraw();
-    prevFrame = this.curFrame % this.switchCt*2 == 0 ? frame.copy() : canvas.copy(); 
+    prevFrame = this.curFrame % this.switchCt == 0 ? frame.copy() : canvas.copy(); 
    
     this.curFrame++;
    
@@ -40,11 +48,17 @@ class BlendNode implements ModNode {
     this.switchCt = ct;
   }
   
-  public void init() {
+  public void init(Settings set) {
+    this.set = set;
+    this.blendCount = (int)this.set.get("blendCount");
+    if (blendCount <= 0) blendCount = 1;
+    
+    this.blends = new int[this.blendCount];
+    this.blends = subset(this.availBlends, 0, this.blendCount);
   }
   
   public void setColor(color c) {
-    this.trackColor = c;
+   // this.trackColor = c;
   }
   
   public int getAvgBright() {
@@ -52,7 +66,7 @@ class BlendNode implements ModNode {
   }
   
   public void setDim(int d) {
-    this.dim = d;
+//    this.dim = d;
   }
   
   public boolean active() {
@@ -60,7 +74,7 @@ class BlendNode implements ModNode {
   }
   
   public void setBlends(int mode1, int mode2) {
-    this.blend1 = mode1;
-    this.blend2 = mode2;
+ //   this.blend1 = mode1;
+   // this.blend2 = mode2;
   }
 }
