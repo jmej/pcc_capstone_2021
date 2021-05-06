@@ -22,22 +22,31 @@ public class HueNode implements ModNode {
        int save = minHue;
        minHue = maxHue;
        maxHue = save;  
+    } else if (curFrame % 30 == 0) {
+       minHue = (int)random(50);
+       maxHue = (int)random(50)+50;
     }
 
     for (int x = 0; x < frame.width; x += dim ) {
       for (int y = 0; y < frame.height; y += dim ) {
-        int hue = (int)map(x, 0, frame.width, minHue, maxHue);
+        int hue = 0;
+        if (curFrame % 20 < 10) {
+          hue = (int)map(x, 0, frame.width, minHue, maxHue);
+        } else {
+          hue = (int)map(y, 0, frame.height, minHue, maxHue);
+        }
+        
         int loc = x + y*frame.width;
         color currentColor = frame.pixels[loc];
   
-        if (trackColor != 0) { 
+        if (this.trackColor != 0) { 
           float d = dist(
             hue(currentColor), 
             saturation(currentColor), 
             brightness(currentColor), 
-            hue(trackColor), 
-            saturation(trackColor), 
-            brightness(trackColor)
+            hue(this.trackColor), 
+            saturation(this.trackColor), 
+            brightness(this.trackColor)
           );
           
           if (d < 20) {
@@ -67,11 +76,6 @@ public class HueNode implements ModNode {
   
   public void setColor(color c) {
     this.trackColor = c;
-  }
-  
-  public int getAvgBright() {
-    int ret = 0;
-    return (int)ret;
   }
   
   public boolean active() {

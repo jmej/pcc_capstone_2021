@@ -23,18 +23,18 @@ public class CircleizeNode implements ModNode {
         int loc = x + y*frame.width;
         color currentColor = frame.pixels[loc];
   
-        if (trackColor != 0) { 
+        if (this.trackColor != 0) { 
           float d = dist(
             hue(currentColor), 
             saturation(currentColor), 
             brightness(currentColor), 
-            hue(trackColor), 
-            saturation(trackColor), 
-            brightness(trackColor)
+            hue(this.trackColor), 
+            saturation(this.trackColor), 
+            brightness(this.trackColor)
           );
           
           if (d < 20) {
-            canvas.fill(trackColor);
+            canvas.fill(this.trackColor);
             canvas.square(x, y, dim);
             continue;
           }
@@ -76,10 +76,5 @@ public class CircleizeNode implements ModNode {
   
   public boolean active() {
     return this.active;
-  }
-  
-  public int getAvgBright() {
-    int ret = 0;
-    return (int)ret;
   }
 }

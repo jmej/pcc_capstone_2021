@@ -3,15 +3,16 @@ class BlendNode implements ModNode {
   private Settings set;
   private int totalbright = 0;
   private int totalpix = 0;
-  private int switchCt = 10;
+  private int switchCt = 8;
   private int blendCount = 0;
-  private final int MAXBLENDS = 4;
+  private final int MAXBLENDS = 6;
   private int[] blends;
-  private int[] availBlends = {ADD, DARKEST, DODGE, SCREEN};  
+  private int[] availBlends = {DODGE, SCREEN, MULTIPLY, OVERLAY, ADD, SUBTRACT };  
   private boolean active = true; 
   private int curFrame = 0;
   private PImage prevFrame = null;
   private int method;
+  private int methIdx = 0;
   
   public PImage mod(PImage frame) {
     PGraphics canvas = createGraphics(frame.width, frame.height);
@@ -22,15 +23,15 @@ class BlendNode implements ModNode {
       canvas.image(frame, 0, 0, frame.width, frame.height);
     } else {
       canvas.image(prevFrame, 0, 0, frame.width, frame.height);
-      
-       if (millis() % 2000 < 200) {
-         int prevMeth = method;
-         while(prevMeth == method) {
-           method = (int)random(this.blendCount);
+           
+      if (this.curFrame % 4 == 0) {
+         method = this.blends[methIdx];
+         
+         methIdx++;
+         if (methIdx >= this.blends.length) {
+           methIdx = 0;
          }
-         println("NEW BLEND METHOD: " + method); 
-         method = this.blends[method];
-
+         println("METHOD: " + method);
       }
 
       canvas.blend(frame, 0, 0, frame.width, frame.height, 0, 0, frame.width, frame.height, method);
@@ -59,10 +60,6 @@ class BlendNode implements ModNode {
   
   public void setColor(color c) {
    // this.trackColor = c;
-  }
-  
-  public int getAvgBright() {
-    return this.totalbright > 0 ?  int(this.totalbright / this.totalpix) : 0;
   }
   
   public void setDim(int d) {

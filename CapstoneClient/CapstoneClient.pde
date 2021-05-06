@@ -13,14 +13,16 @@ OscP5 oscP5;
 NetAddress myRemoteLocation;
 Movie movie;
 Settings settings;
-OscReceiver osc = new OscReceiver();
+OscClient oscCli = new OscClient();
 SoundFile testaudio;
+FrameData frameData;
 FFT fft;
 Amplitude rms;
 ModNode[] mods;
 
 int curFrame = 0;
 PGraphics canvas;
+PImage infoFrame = null;
 boolean saved = false;
 String path = "";
 String audioFilePath = "";
@@ -31,27 +33,22 @@ String settingsPath;
 boolean LOOP;
 boolean EXTRACT_AUDIO;
 boolean AUDIODONE = false;
-boolean PROMPT_AUDIO;
 int PIX_DIM; 
-int REMOTE_PORT;
-int INCOMING_PORT;
+String VIDEO_IN_PATH;
 
-String videoFilePath;
 
 void setup() {
-  rectMode(CENTER);
   size(1280, 720, P2D);
+  noStroke();
+  rectMode(CENTER);
   colorMode(RGB, 255);
   
-  settings = new Settings(this);   
-    
+  settings = new Settings(this);    
   LOOP = (boolean)settings.get("videoLoop");
   EXTRACT_AUDIO = (boolean)settings.get("extractAudio");
   PIX_DIM = (int)settings.get("defaultDim"); 
-  REMOTE_PORT = (int)settings.get("remoteOSCPort");
-  INCOMING_PORT = (int)settings.get("incomingOSCPort");
-  PROMPT_AUDIO = (boolean)settings.get("promptAudio");
-  videoFilePath = (String)settings.get("pathToVid");
+  VIDEO_IN_PATH = (String)settings.get("videoInputPath");  
+  int fftBands = (int)settings.get("fftBands");
   String classNames = (String)settings.get("nodeNames");
   String[] classList = classNames.split(",");
   
@@ -75,7 +72,7 @@ void setup() {
         mods[i] = new GrowPixNode();
         break;
       case "AtoVNode":
-        mods[i] = new AtoVNode();
+        mods[i] = new AtoVNode(fftBands);
         break;
       case "FlipBlendNode":
         mods[i] = new FlipBlendNode();
@@ -83,16 +80,18 @@ void setup() {
     }
   }
   
-  oscP5 = new OscP5(this,INCOMING_PORT);
-  myRemoteLocation = new NetAddress("127.0.0.1",REMOTE_PORT);
+  frameData = new FrameData(PIX_DIM);
+  oscP5 = new OscP5(this, (int)settings.get("incomingOSCPort"));
+  myRemoteLocation = new NetAddress("127.0.0.1",(int)settings.get("remoteOSCPort"));
   
   canvas = createGraphics(1920, 1080, P2D); 
-  movie = new Movie(this, videoFilePath);
+  movie = new Movie(this, VIDEO_IN_PATH);
   movie.play();
   movie.jump(curFrame);
   movie.pause();
+  println("FRAME RATE " + movie.frameRate);
   
-  if (PROMPT_AUDIO) {
+  if ((boolean)settings.get("promptVideoPath")) {
     boolean asked = false;
     
     while (!AUDIODONE) {
@@ -106,26 +105,34 @@ void setup() {
       println("WAITING");
     } 
   } else {
-    audioFilePath = videoFilePath;
+    audioFilePath = VIDEO_IN_PATH;
   }
   
   audioOut = saveAudio(audioFilePath);
-  println("AUDIO OUT" + audioOut);
+  println("AUDIO SEPARATED FROM VIDEO" + audioOut);
   videoExport = new VideoExport(this);
   videoExport.setFrameRate(movie.frameRate);
-  videoExport.setAudioFileName(audioOut);   
-  testaudio = new SoundFile(this, audioOut);
-
-  fft = new FFT(this, 256);
-  rms = new Amplitude(this);
-  // For nodes that have a specfic color to track...
-  color trackColor = color(random(100), random(100), random(100));
+  videoExport.setLoadPixels(false);
+  videoExport.setQuality((int)settings.get("videoQuality"), (int)settings.get("audioQuality"));
+  videoExport.setDebugging((boolean)settings.get("videoExportDebug"));
+  //videoExport.setAudioFileName(audioOut);     // Moved to movieEnd()
   
-  // Loop through the nodes and init, set default vars
-  for (int i = 0; i < mods.length; i++) {
-    mods[i].init(settings);
-    mods[i].setColor(trackColor);
-    mods[i].setDim(PIX_DIM);
+  testaudio = new SoundFile(this, audioOut);
+  fft = new FFT(this, fftBands);
+  rms = new Amplitude(this);
+  
+  // For nodes that have a specfic color to track...
+  color TRACK_COLOR = color(random(100), random(100), random(100));
+  
+  try {
+    // Loop through the nodes and init, set default vars
+    for (int i = 0; i < mods.length; i++) {
+      mods[i].init(settings);
+      mods[i].setColor(TRACK_COLOR);
+      mods[i].setDim(PIX_DIM);
+    }
+  } catch (NullPointerException e) {
+    println("Node init error. Check node names in settings.json: " + e.getMessage());
   }
 }
 
@@ -145,20 +152,28 @@ void draw() {   //<>//
       f = mods[i].mod(f);
     }
   }
-  
+
   if (curFrame == 0) { 
     videoExport.startMovie();
     println("VIDEO EXPORT STARTED!");
   } 
-     
+   
   image(f, 0, 0, f.width, f.height);
+  updatePixels();
+  loadPixels();
+  thread("getFrameInfo");
+  
   videoExport.saveFrame();
   curFrame++;
   setFrame(curFrame);
 }
 
+void getFrameInfo() {
+    frameData.analyze();
+}
+
 void oscEvent(OscMessage m) {
-  PImage frame = osc.event(m);
+  PImage frame = oscCli.event(m);
   
   if (frame != null) {
     println("GOT A FRAME!");
@@ -167,9 +182,21 @@ void oscEvent(OscMessage m) {
 
 void keyPressed() {
   if (key == 'q') {
-    videoExport.endMovie();
-    exit();
+    endMovie();
   }
+}
+
+// Called after all frames are processed
+void endMovie() {
+  videoExport.setAudioFileName(audioOut);   
+  videoExport.endMovie();
+  FrameInfo fi  = frameData.data.get(10);
+  String infoPath = frameData.writeToJson();
+  oscCli.sendJsonPath(infoPath);
+  
+  println("frame data: " + fi.hue + ", " + fi.saturation + ", " + fi.brightness);
+  println(curFrame + " frames processed, movie length: " + movie.time() + " seconds");
+  exit();
 }
 
 /***
@@ -197,9 +224,7 @@ void setFrame(int n) {
     if (LOOP) {
       where = 0;
     } else {
-      println("TOTAL FRAMES: " + curFrame);
-      videoExport.endMovie();
-      exit();
+      endMovie();
     }
   }
   

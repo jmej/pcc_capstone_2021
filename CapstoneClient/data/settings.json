@@ -2,13 +2,18 @@
   "ffmpegPath": "/usr/local/bin/ffmpeg",
   "genAudio": true,
   "videoLoop": false,
-  "promptAudio": false,
+  "promptVideoPath": false,
   "extractAudio": true,
-  "pathToVid": "test.mp4",
-  "defaultDim": 2,
+  "videoInputPath": "test.mp4",
+  "defaultDim": 3,
   "remoteOSCPort": 12000,
   "incomingOSCPort": 12001,
-  "nodeNames": "BlendNode,HueNode,FlipBlendNode,AtoVNode",
+  "nodeNames": "BlendNode,HueNode,GrowPixNode,AtoVNode",
   "objPath": "seastar.obj",
-  "blendCount": 4
+  "blendCount": 4,
+  "fftBands": 4,
+  "outputLength": 20,
+  "audioQuality": 128,
+  "videoQuality": 50,
+  "videoExportDebug": true
 }

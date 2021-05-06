@@ -33,7 +33,7 @@ public class GrowPixNode  implements ModNode {
             hue(currentColor), 
             saturation(currentColor), 
             brightness(currentColor), 
-            hue(trackColor), 
+            hue(this.trackColor), 
             saturation(trackColor), 
             brightness(trackColor)
           );
@@ -80,10 +80,6 @@ public class GrowPixNode  implements ModNode {
   
   public void setColor(color c) {
     this.trackColor = c;
-  }
-  
-  public int getAvgBright() {
-    return int(this.totalbright / this.totalpix);
   }
   
   public void setDim(int d) {
