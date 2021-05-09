@@ -8,12 +8,12 @@
   "defaultDim": 4,
   "remoteOSCPort": 12000,
   "incomingOSCPort": 12001,
-  "nodeNames": "GrowPixNode,BlendNode,HarmDistNode",
+  "nodeNames": "HueNode,BlendNode,HarmDistNode,GrowPixNode,AtoVNode",
   "objPath": "seastar.obj",
-  "blendCount": 4,
-  "fftBands": 4,
+  "blendCount": 6,
+  "fftBands": 128,
   "outputLength": 20,
   "audioQuality": 128,
-  "videoQuality": 50,
+  "videoQuality": 33,
   "videoExportDebug": true
 }

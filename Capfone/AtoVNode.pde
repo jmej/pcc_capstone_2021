@@ -1,11 +1,12 @@
 class AtoVNode implements ModNode {
-  private int count = 0;
+  private int curFrame = 0;
   private PShape shape;
   public int bands = 3;
   private float smoothingFactor = 1;
   private float[] sum;
   private float ampSum;
   private float scale = 4;
+  private float rms_scaled = 0;
   
   private PVector[] objVertices;
   private PVector[] linePoints;
@@ -55,10 +56,12 @@ class AtoVNode implements ModNode {
       particles[i] = new ObjParticle(objVertices[i].x, objVertices[i].y, objVertices[i].z);
     }
 
-    testaudio.loop();
-  //  testaudio.amp(1);
-    fft.input(testaudio);
-    rms.input(testaudio);
+    
+    soundSource.play(1, 0, 1.0, 0, curFrame);
+    soundSource.amp(1);
+    fft.input(soundSource);
+    rms.input(soundSource);
+    soundSource.pause();
     
     rectMode(CENTER);
   }
@@ -73,10 +76,11 @@ class AtoVNode implements ModNode {
     int freqDensity = 0;
     max = 0;
     
+    soundSource.play(1, 0.0, 1.0, 0, movie.time());
+    soundSource.amp(1);
     //frequency stuff
-    
     fft.analyze();
-    
+
     for (int i = 0; i < this.bands; i++) {
       sum[i] += (fft.spectrum[i] - sum[i]) * smoothingFactor;
     }
@@ -94,20 +98,23 @@ class AtoVNode implements ModNode {
 
     // amplitude stuff
     ampSum += (rms.analyze() - ampSum) * smoothingFactor;
-    float rms_scaled = ampSum * 13;
+    rms_scaled = ampSum * 13;
+    
     println("RMS SCALED" + rms_scaled);
     
     canvas.pushMatrix();
     canvas.translate(width/2, height/2);
     canvas.scale(this.scale);
     for (int i = 0; i < particles.length; i++) {
-      particles[i].display(rms_scaled, canvas, f, this.count);
+      particles[i].display(rms_scaled, canvas, f, this.curFrame);
     }
     
     canvas.popMatrix();
     canvas.endDraw();
     
-    this.count++;
+    soundSource.pause();
+    this.curFrame++;
+    
     return canvas;    
   }
   

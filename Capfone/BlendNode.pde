@@ -5,7 +5,7 @@ class BlendNode implements ModNode {
   private int blendCount = 0;
   private final int MAXBLENDS = 6;
   private int[] blends;
-  private int[] availBlends = {DODGE, SCREEN, LIGHTEST, ADD, MULTIPLY, SUBTRACT };  
+  private int[] availBlends = {BLEND, DODGE, SCREEN, LIGHTEST, ADD, EXCLUSION};  
   private boolean active = true; 
   private int curFrame = 0;
   private PImage prevFrame = null;

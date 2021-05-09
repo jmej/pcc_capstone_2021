@@ -12,13 +12,13 @@ VideoExport videoExport;
 OscP5 oscP5;
 NetAddress myRemoteLocation;
 Movie movie;
-SoundFile testaudio;
+SoundFile soundSource;
 FFT fft;
 Amplitude rms;
 
 FrameData frameData;
 Settings settings;
-OscClient oscCli = new OscClient();
+OscClient oscCli;
 ModNode[] mods;
 
 int curFrame = 0;
@@ -85,6 +85,7 @@ void setup() {
     }
   }
   
+  oscCli = new OscClient();
   frameData = new FrameData(PIX_DIM);
   oscP5 = new OscP5(this, (int)settings.get("incomingOSCPort"));
   myRemoteLocation = new NetAddress("127.0.0.1",(int)settings.get("remoteOSCPort"));
@@ -92,6 +93,7 @@ void setup() {
   canvas = createGraphics(1920, 1080, P2D); 
   movie = new Movie(this, VIDEO_IN_PATH);
   movie.play();
+  movie.volume(0);
   movie.jump(curFrame);
   movie.pause();
   println("FRAME RATE " + movie.frameRate);
@@ -123,7 +125,7 @@ void setup() {
   videoExport.setDebugging((boolean)settings.get("videoExportDebug"));
   //videoExport.setAudioFileName(audioOut);     // Moved to movieEnd()
   
-  testaudio = new SoundFile(this, audioOut);
+  soundSource = new SoundFile(this, audioOut);
   fft = new FFT(this, fftBands);
   rms = new Amplitude(this);
   
@@ -142,7 +144,7 @@ void setup() {
   }
 }
 
-void draw() {   //<>//
+void draw() {   //<>// //<>//
   canvas.beginDraw();
   canvas.image(movie, 0, 0);
   canvas.endDraw();
@@ -201,11 +203,10 @@ void keyPressed() {
 void endMovie() {
   videoExport.setAudioFileName(audioOut);   
   videoExport.endMovie();
-  FrameInfo fi  = frameData.data.get(10);
+
   String infoPath = frameData.writeToJson();
   oscCli.sendJsonPath(infoPath);
   
-  println("frame data: " + fi.hue + ", " + fi.saturation + ", " + fi.brightness);
   println(curFrame + " frames processed, movie length: " + movie.time() + " seconds");
   exit();
 }
