@@ -1,12 +1,16 @@
 var dropzone;
 function setup() {
-  createCanvas(200, 200);
+  createCanvas(800, 800);
   background(0);
 
   dropzone = select('#dropzone');
   dropzone.dragOver(highlight);
   dropzone.dragLeave(unhighlight);
   dropzone.drop(gotFile, unhighlight);
+}
+
+function draw(){
+  ellipse(mouseX, mouseY, 20, 20);
 }
 
 function gotFile(file) {
