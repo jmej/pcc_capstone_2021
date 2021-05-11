@@ -26,21 +26,16 @@ public class ReadMarkovNode  implements ModNode {
       for (int y = 0; y< frame.height; y+= this.dim) {
         try {
           int loc = x + y*frame.width;
-          
-  
-          String index = "" + idx;
-          
+          String index = "" + idx;  
           JSONArray c = main.getJSONArray(index);
-  
           int hue = c.getInt(0);
           int sat = c.getInt(1);
           int bri = c.getInt(2);
-          
           color col = color(hue, sat, bri); 
+          
           canvas.fill(col);
           canvas.square(x, y, this.dim);
           idx++;
-        
         } catch (NullPointerException e) {
           println("NULL POINTER: id: "+ id + ", idx: " + idx + " --"  + e.getMessage());
 

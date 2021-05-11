@@ -181,6 +181,7 @@ void draw() {   //<>// //<>// //<>//
   image(f, 0, 0, f.width, f.height);
   loadPixels();
   
+  // Report data every second
   int curMovieTime = (int)movie.time();
   if (curMovieTime > lastMovieUpdate) { 
     thread("getFrameInfo");
