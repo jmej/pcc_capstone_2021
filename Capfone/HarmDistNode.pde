@@ -47,4 +47,6 @@ public class HarmDistNode implements ModNode {
   public void setDim(int d) {
     this.dim = d;
   }
+  
+  public void clicked() {}
 }

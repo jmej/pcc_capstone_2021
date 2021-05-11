@@ -7,7 +7,7 @@ class AtoVNode implements ModNode {
   private float ampSum;
   private float scale = 4;
   private float rms_scaled = 0;
-  
+  private color trackColor;
   private PVector[] objVertices;
   private PVector[] linePoints;
   private int numOfVertices = 0;
@@ -23,8 +23,9 @@ class AtoVNode implements ModNode {
   }
 
   void init(Settings set) {
-    shape = loadShape((String)set.get("objPath"));
-  
+    this.shape = loadShape((String)set.get("objPath"));
+    this.bands = (int)set.get("fftBands");
+    
     int indexOffset = 0;
     
     for (int i = 0; i < shape.getChildCount(); i++) {
@@ -55,15 +56,12 @@ class AtoVNode implements ModNode {
     for (int i = 0; i < objVertices.length; i++) {
       particles[i] = new ObjParticle(objVertices[i].x, objVertices[i].y, objVertices[i].z);
     }
-
     
     soundSource.play(1, 0, 1.0, 0, curFrame);
     soundSource.amp(1);
     fft.input(soundSource);
     rms.input(soundSource);
     soundSource.pause();
-    
-    rectMode(CENTER);
   }
   
   PImage mod(PImage f) {
@@ -76,9 +74,9 @@ class AtoVNode implements ModNode {
     int freqDensity = 0;
     max = 0;
     
+    // Playback the soundfile from where we are in the movie
     soundSource.play(1, 0.0, 1.0, 0, movie.time());
     soundSource.amp(1);
-    //frequency stuff
     fft.analyze();
 
     for (int i = 0; i < this.bands; i++) {
@@ -93,20 +91,16 @@ class AtoVNode implements ModNode {
          freqDensity++;
        }
      }
-     
-     println("max freq: " + sum[maxFreqIndex] + ", idx: " + maxFreqIndex);
 
     // amplitude stuff
     ampSum += (rms.analyze() - ampSum) * smoothingFactor;
     rms_scaled = ampSum * 13;
     
-    println("RMS SCALED" + rms_scaled);
-    
     canvas.pushMatrix();
     canvas.translate(width/2, height/2);
     canvas.scale(this.scale);
     for (int i = 0; i < particles.length; i++) {
-      particles[i].display(rms_scaled, canvas, f, this.curFrame);
+      particles[i].display(rms_scaled, canvas, f, this.curFrame, this.trackColor);
     }
     
     canvas.popMatrix();
@@ -118,19 +112,21 @@ class AtoVNode implements ModNode {
     return canvas;    
   }
   
-  int getAvgBright() {
-    return 0;
-  }
-  
   public void setDim(int d) {
     
   }
   
   public void setColor(color c) {
+    this.trackColor = c;
   }
   
   public boolean active() {
     return true;
+  }
+  
+  public void clicked() {
+    int loc = mouseX + mouseY*width;
+    this.trackColor = pixels[loc];
   }
 }
 
@@ -143,24 +139,29 @@ class ObjParticle {
     currentPosition = new PVector(x, y);
   }
   
-  void display(float size, PGraphics c, PImage orig, int count) {
-    int r = (int)random(2);
-    int x = (int)map(currentPosition.x+r, 0, c.width, 0, orig.width);
-    int y = (int)map(currentPosition.y+r, 0, c.height, 0, orig.height);    
-    int loc = abs(x + y*orig.width);
+  void display(float size, PGraphics c, PImage orig, int count, color trackColor) {
+    int x = (int)map(currentPosition.x, 0, c.width, 0, orig.width);
+    int y = (int)map(currentPosition.y, 0, c.height, 0, orig.height);    
+    int loc = x + y*orig.width;
     float div = map(count % 100, 0, 100, 50, 1);
+    color col;
     
     if (loc >= orig.pixels.length) {
-      loc = orig.pixels.length -1;
-    } 
-    color col = orig.pixels[loc];
+      col = trackColor;
+    } else if (loc <= 0) {
+      col = trackColor;
+    } else {
+      col = orig.pixels[loc];
+    }
     
     c.pushMatrix();
     c.noStroke();
     c.fill(col);
     c.translate(currentPosition.x, currentPosition.y);
     c.rotate((2 * PI) / div);
-    c.ellipse(currentPosition.x, currentPosition.y, size, size);
+    c.ellipse(currentPosition.x, currentPosition.y, size+1, size+1);
     c.popMatrix();
   }
+  
+  
 }

@@ -33,7 +33,7 @@ public class CircleizeNode implements ModNode {
             brightness(this.trackColor)
           );
           
-          if (d < 20) {
+          if (d < 40) {
             canvas.fill(this.trackColor);
             canvas.square(x, y, dim);
             continue;
@@ -76,5 +76,10 @@ public class CircleizeNode implements ModNode {
   
   public boolean active() {
     return this.active;
+  }
+  
+  public void clicked() {
+    int loc = mouseX + mouseY*width;
+    this.trackColor = pixels[loc];
   }
 }

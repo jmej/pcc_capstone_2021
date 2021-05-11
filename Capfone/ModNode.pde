@@ -10,4 +10,5 @@ interface ModNode {
   public boolean active();
   public void setColor(color c);
   public void setDim(int d);
+  public void clicked();
 }

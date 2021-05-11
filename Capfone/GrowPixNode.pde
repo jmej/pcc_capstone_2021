@@ -12,8 +12,8 @@ public class GrowPixNode  implements ModNode {
     
     int cm = g.colorMode;
     colorMode(HSB, 100);
-    int noiseSeed = millis() % 10;
-    float noiseScale = map (noiseSeed, 0, 10, 0.01, .2); 
+    int noiseSeed = millis() % 100;
+    float noiseScale = map (noiseSeed, 0, 100, 0.01, .11); 
     PGraphics canvas = createGraphics(frame.width, frame.height);
     
     this.totalbright = 0;
@@ -38,7 +38,7 @@ public class GrowPixNode  implements ModNode {
             brightness(trackColor)
           );
           
-          if (d < 20) {
+          if (d < 30) {
             canvas.fill(this.trackColor);
             canvas.square(x, y, dim);
             continue;
@@ -93,4 +93,10 @@ public class GrowPixNode  implements ModNode {
   public void init(Settings set) {
     this.set = set;
   }
+  
+  public void clicked() {
+    int loc = mouseX + mouseY*width;
+    this.trackColor = pixels[loc];
+  }
+
 }

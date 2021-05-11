@@ -1,2 +1,5 @@
 .DS_Store
-CapstoneClient/.DS_Store
+.gitignore
+Capfone/.DS_Store
+Capfone/ffmpeg.txt
+Capfone/ffmpeg-audio.txt

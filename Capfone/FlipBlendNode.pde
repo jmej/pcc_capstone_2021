@@ -2,8 +2,8 @@
 class FlipBlendNode implements ModNode {
   private Settings set;
   private int switchCt = 10;
-  private int blend1 = LIGHTEST;
-  private int blend2 = DARKEST;
+  private int blend1 = BLEND;
+  private int blend2 = DODGE;
   private boolean active = true;
   int curFrame = 0;
   
@@ -32,6 +32,8 @@ class FlipBlendNode implements ModNode {
    
     return canvas;
   }
+  
+  public void clicked() {}
   
   public void setSwitchCount(int ct) {
     this.switchCt = ct;

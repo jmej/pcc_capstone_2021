@@ -36,11 +36,11 @@ boolean LOOP;
 boolean EXTRACT_AUDIO;
 boolean AUDIODONE = false;
 int PIX_DIM; 
+int START_FRAME;
 String VIDEO_IN_PATH;
 
-
 void setup() {
-  size(1280, 720, P2D);
+  size(1280, 720, P2D); // 1280 , 720
   noStroke();
   rectMode(CENTER);
   colorMode(RGB, 255);
@@ -49,10 +49,12 @@ void setup() {
   LOOP = (boolean)settings.get("videoLoop");
   EXTRACT_AUDIO = (boolean)settings.get("extractAudio");
   PIX_DIM = (int)settings.get("defaultDim"); 
-  VIDEO_IN_PATH = (String)settings.get("videoInputPath");  
+  VIDEO_IN_PATH = (String)settings.get("videoInputPath");
+  START_FRAME = (int)settings.get("startFrame");
   int fftBands = (int)settings.get("fftBands");
   String classNames = (String)settings.get("nodeNames");
   String[] classList = classNames.split(",");
+  curFrame = START_FRAME;
   
   if (classList.length == 0) {
     println("No nodes loaded. Check settings.json");
@@ -82,6 +84,16 @@ void setup() {
       case "HarmDistNode":
         mods[i] = new HarmDistNode();
         break;   
+      case "Pix2JSONNode":
+        mods[i] = new Pix2JSONNode();
+        break;  
+      case "ReadMarkovNode":
+        mods[i] = new ReadMarkovNode();
+        break;    
+      case "CircleizeNode":
+        mods[i] = new CircleizeNode();
+        break;    
+      
     }
   }
   
@@ -144,7 +156,7 @@ void setup() {
   }
 }
 
-void draw() {   //<>// //<>//
+void draw() {   //<>// //<>// //<>//
   canvas.beginDraw();
   canvas.image(movie, 0, 0);
   canvas.endDraw();
@@ -161,7 +173,7 @@ void draw() {   //<>// //<>//
     }
   }
 
-  if (curFrame == 0) { 
+  if (curFrame == START_FRAME) { 
     videoExport.startMovie();
     println("VIDEO EXPORT STARTED!");
   } 
@@ -187,10 +199,6 @@ void getFrameInfo() {
 
 void oscEvent(OscMessage m) {
   PImage frame = oscCli.event(m);
-  
-  if (frame != null) {
-    println("GOT A FRAME!");
-  }
 }
 
 void keyPressed() {
@@ -199,14 +207,19 @@ void keyPressed() {
   }
 }
 
+void mouseClicked() {
+  for (int i = 0; i < mods.length; i++) {
+    mods[i].clicked();
+  }
+}
+
 // Called after all frames are processed
 void endMovie() {
-  videoExport.setAudioFileName(audioOut);   
-  videoExport.endMovie();
-
   String infoPath = frameData.writeToJson();
   oscCli.sendJsonPath(infoPath);
-  
+  videoExport.setAudioFileName(audioOut);   
+  videoExport.endMovie();
+ 
   println(curFrame + " frames processed, movie length: " + movie.time() + " seconds");
   exit();
 }

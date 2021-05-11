@@ -55,7 +55,7 @@ class BlendNode implements ModNode {
   }
   
   public void setColor(color c) {
-   // this.trackColor = c;
+ //   this.trackColor = c;
   }
   
   public void setDim(int d) {
@@ -65,4 +65,5 @@ class BlendNode implements ModNode {
   public boolean active() {
     return this.active;
   }
+  public void clicked() {}
 }
