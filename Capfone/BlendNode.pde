@@ -1,11 +1,10 @@
 
 class BlendNode implements ModNode {
   private Settings set;
-  private int switchCt = 15;
+  private int frameModCt = 15;
   private int blendCount = 0;
-  private final int MAXBLENDS = 6;
   private int[] blends;
-  private int[] availBlends = {BLEND, DODGE, SCREEN, LIGHTEST, ADD, EXCLUSION};  
+  private int[] availBlends = {BLEND, EXCLUSION, DODGE, LIGHTEST, ADD, EXCLUSION};  
   private boolean active = true; 
   private int curFrame = 0;
   private PImage prevFrame = null;
@@ -17,12 +16,13 @@ class BlendNode implements ModNode {
     
     canvas.beginDraw();
     canvas.noStroke(); 
+    
     if (prevFrame == null) {
       canvas.image(frame, 0, 0, frame.width, frame.height);
     } else {
       canvas.image(prevFrame, 0, 0, frame.width, frame.height);
-           
-      if (this.curFrame % 8 == 0) {
+                      
+      if (this.curFrame % (int)(this.frameModCt/2) == 0) {
          method = this.blends[methIdx];
          
          methIdx++;
@@ -33,16 +33,24 @@ class BlendNode implements ModNode {
 
       canvas.blend(frame, 0, 0, frame.width, frame.height, 0, 0, frame.width, frame.height, method);
     }  
+    
     canvas.endDraw();
     
-    prevFrame = this.curFrame % this.switchCt == 0 ? frame.copy() : canvas.copy(); 
+    if (this.curFrame % (int)(this.frameModCt/2) == 0) {
+      println("COPYING FRESH FRAME - " + methIdx);
+       prevFrame = frame.copy();
+    } else {
+      println("CONTINUING BLEND - " + methIdx);
+      prevFrame =  canvas.copy();
+    }
+    
     this.curFrame++;
    
     return canvas;
   }
   
   public void setSwitchCount(int ct) {
-    this.switchCt = ct;
+    this.frameModCt = ct;
   }
   
   public void init(Settings set) {
@@ -52,6 +60,8 @@ class BlendNode implements ModNode {
     
     this.blends = new int[this.blendCount];
     this.blends = subset(this.availBlends, 0, this.blendCount);
+    
+    this.frameModCt = (int)((int)this.set.get("frameModCount")) / 3;
   }
   
   public void setColor(color c) {

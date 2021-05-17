@@ -8,7 +8,8 @@
   "defaultDim": 4,
   "remoteOSCPort": 12000,
   "incomingOSCPort": 12001,
-  "nodeNames": "HueNode,BlendNode,HarmDistNode,AtoVNode",
+  "markovOSCPort": 12002,
+  "nodeNames": "BlendNode,ExplodeColorNode",
   "objPath": "OBJs/orchid.obj",
   "blendCount": 6,
   "fftBands": 4,
@@ -16,5 +17,7 @@
   "audioQuality": 128,
   "videoQuality": 33,
   "videoExportDebug": false,
-  "startFrame": 50
+  "startFrame": 40,
+  "frameModCount": 60,
+  "markovGen": false
 }

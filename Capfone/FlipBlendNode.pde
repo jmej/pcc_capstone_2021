@@ -1,28 +1,21 @@
 
 class FlipBlendNode implements ModNode {
   private Settings set;
-  private int switchCt = 10;
+  private int frameModCt = 30;
   private int blend1 = BLEND;
-  private int blend2 = DODGE;
+  private int blend2 = SCREEN;
   private boolean active = true;
   int curFrame = 0;
   
   public PImage mod(PImage frame) {
+    int method;
     PGraphics canvas = createGraphics(frame.width, frame.height);
+    
     canvas.beginDraw();
     canvas.noStroke(); 
-    
-    int method  = 0;
-    if (this.curFrame % (this.switchCt*2)-1 < this.switchCt) {
-      canvas.translate((int)frame.width, 0);
-      method = this.blend1;
-      canvas.scale(-1,1); // You had it right!
-    } else {
-      canvas.translate(frame.width, frame.height);
-      method = this.blend2;
-      canvas.scale(-1,-1); // You had it right!
-    }
-    
+    canvas.translate((int)frame.width, 0);
+    method = this.curFrame % this.frameModCt >= (this.frameModCt /2) ? this.blend1 : this.blend2;
+    canvas.scale(-1,1);
     canvas.image(frame, 0, 0);
     canvas.translate(0, 0);
     canvas.blend(frame, 0, 0, frame.width, frame.height, 0, 0, frame.width, frame.height, method);
@@ -36,11 +29,12 @@ class FlipBlendNode implements ModNode {
   public void clicked() {}
   
   public void setSwitchCount(int ct) {
-    this.switchCt = ct;
+    this.frameModCt = ct;
   }
   
   public void init(Settings set) {
     this.set = set;
+    this.frameModCt = (int)this.set.get("frameModCount");
   }
   
   public void setColor(color c) {

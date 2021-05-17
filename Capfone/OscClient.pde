@@ -32,9 +32,8 @@ class OscClient {
       
       if(theOscMessage.checkTypetag("s")) {
         stringVal = theOscMessage.get(0).stringValue();
-        println("STRING: " + stringVal);
-        
         int ct = 0;
+        
       } 
     } catch (Exception e) {
       println(e.getMessage());

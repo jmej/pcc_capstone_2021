@@ -1,10 +1,12 @@
 public class HarmDistNode implements ModNode {
   private Settings set;
   private int dim = 10;
-  private float magnitude = 10 ;
+  private float magnitude = 10;
   private float rampSpeed = 20;
   private float frequency = 10;
   private int frames;
+  private int curFrame = 0;
+  private int frameModCt = 2;
   
   public void init(Settings set) {
     this.set = set;
@@ -19,8 +21,10 @@ public class HarmDistNode implements ModNode {
     frames+= rampSpeed; 
     frames = frames % 360;
     
-    frequency = map(mouseX, 0, width, 1, 100);
-    magnitude = map(mouseY, 0, height, 1, 50);
+    if (this.curFrame % this.frameModCt == 0) {
+      frequency = map(RMS_SCALED, 0.0, 1.0, 1, 100); //map(mouseX, 0, width, 1, 100);
+      magnitude = map(fft.spectrum[0], 0.0, 0.5, 2, 50);
+    }
     
     for (int x = 0; x < f.width; x += this.dim){
       for(int y = 0; y < f.height; y += this.dim){
@@ -34,6 +38,9 @@ public class HarmDistNode implements ModNode {
     }
     
     canvas.endDraw();
+    soundSource.pause();
+    this.curFrame++;
+    
     return canvas;
   }
   

@@ -16,11 +16,13 @@ SoundFile soundSource;
 FFT fft;
 Amplitude rms;
 
-FrameData frameData;
-Settings settings;
-OscClient oscCli;
-ModNode[] mods;
-
+// Internal classes
+Pix2JSON p2j;         // Calculates pixel data to be fed to a markov chain
+FrameData frameData;  // Generates json file for max nodes
+Settings settings;    // Contains global settings from data/settings.json
+OscClient oscCli;     // General purpose OSC stuff
+ModNode[] mods;       // All of our processing nodes for this run
+  
 int curFrame = 0;
 int lastMovieUpdate = 0;
 PGraphics canvas;
@@ -35,12 +37,16 @@ String settingsPath;
 boolean LOOP;
 boolean EXTRACT_AUDIO;
 boolean AUDIODONE = false;
+boolean MARKOV_GEN;
 int PIX_DIM; 
 int START_FRAME;
 String VIDEO_IN_PATH;
+int FRAME_MOD_COUNT;
+float RMS_SCALED;
+
 
 void setup() {
-  size(1280, 720, P2D); // 1280 , 720
+  size(1280, 720, P2D); // 1024, 576,
   noStroke();
   rectMode(CENTER);
   colorMode(RGB, 255);
@@ -51,11 +57,13 @@ void setup() {
   PIX_DIM = (int)settings.get("defaultDim"); 
   VIDEO_IN_PATH = (String)settings.get("videoInputPath");
   START_FRAME = (int)settings.get("startFrame");
+  FRAME_MOD_COUNT = (int)settings.get("frameModCount");
+  MARKOV_GEN = (boolean)settings.get("markovGen");
   int fftBands = (int)settings.get("fftBands");
   String classNames = (String)settings.get("nodeNames");
   String[] classList = classNames.split(",");
   curFrame = START_FRAME;
-  
+
   if (classList.length == 0) {
     println("No nodes loaded. Check settings.json");
     return;
@@ -84,21 +92,30 @@ void setup() {
       case "HarmDistNode":
         mods[i] = new HarmDistNode();
         break;   
-      case "Pix2JSONNode":
-        mods[i] = new Pix2JSONNode();
-        break;  
       case "ReadMarkovNode":
         mods[i] = new ReadMarkovNode();
         break;    
       case "CircleizeNode":
         mods[i] = new CircleizeNode();
-        break;    
-      
+        break;  
+      case "PixSizeNode": 
+        mods[i] = new PixSizeNode();
+        break;
+      case "ExplodeColorNode":
+        mods[i] = new ExplodeColorNode();
+        break;
+      case "ConvolverNode":
+        mods[i] = new ConvolverNode();
+        break;
+        
     }
   }
   
+  p2j = new Pix2JSON(MARKOV_GEN, PIX_DIM);
+  p2j.init(settings);
   oscCli = new OscClient();
   frameData = new FrameData(PIX_DIM);
+  
   oscP5 = new OscP5(this, (int)settings.get("incomingOSCPort"));
   myRemoteLocation = new NetAddress("127.0.0.1",(int)settings.get("remoteOSCPort"));
   
@@ -108,7 +125,6 @@ void setup() {
   movie.volume(0);
   movie.jump(curFrame);
   movie.pause();
-  println("FRAME RATE " + movie.frameRate);
   
   if ((boolean)settings.get("promptVideoPath")) {
     boolean asked = false;
@@ -129,17 +145,20 @@ void setup() {
   
   audioOut = saveAudio(audioFilePath);
   println("AUDIO SEPARATED FROM VIDEO" + audioOut);
+  
+  // Video export settings
   videoExport = new VideoExport(this);
   videoExport.setFrameRate(movie.frameRate);
-  println("FRAME RATE: " + movie.frameRate);
   videoExport.setLoadPixels(false);
   videoExport.setQuality((int)settings.get("videoQuality"), (int)settings.get("audioQuality"));
   videoExport.setDebugging((boolean)settings.get("videoExportDebug"));
-  //videoExport.setAudioFileName(audioOut);     // Moved to movieEnd()
   
+  // Sound / fft stuff
   soundSource = new SoundFile(this, audioOut);
   fft = new FFT(this, fftBands);
   rms = new Amplitude(this);
+  fft.input(soundSource);
+  rms.input(soundSource);
   
   // For nodes that have a specfic color to track...
   color TRACK_COLOR = color(random(100), random(100), random(100));
@@ -165,6 +184,12 @@ void draw() {   //<>// //<>// //<>//
    
   // Resize the image to our dims
   f.copy(canvas, 0, 0, canvas.width, canvas.height, 0, 0, f.width, f.height);
+  
+  // Calculate fft, amplitude stuff for this frame
+  soundSource.play(1, 0.0, 1.0, 0, movie.time());
+  soundSource.amp(1);
+  fft.analyze();
+  RMS_SCALED = rms.analyze() * 13;
  
   // Continually pass the modded version to each Node
   for (int i = 0; i < mods.length; i++) {
@@ -182,21 +207,36 @@ void draw() {   //<>// //<>// //<>//
   loadPixels();
   
   // Report data every second
-  int curMovieTime = (int)movie.time();
-  if (curMovieTime > lastMovieUpdate) { 
-    thread("getFrameInfo");
-    lastMovieUpdate = curMovieTime;
-    println("Movie frame data updated: " + lastMovieUpdate);
+  if (curFrame != START_FRAME) {
+    int curMovieTime = (int)movie.time();
+    if (curMovieTime > lastMovieUpdate) { 
+      thread("getFrameInfo");
+      lastMovieUpdate = curMovieTime;
+      println("Movie frame data updated: " + lastMovieUpdate);
+    }
+    
+    if (p2j.active()) {
+      thread("pix2JsonAnalyze");
+    }
   }
   
+  soundSource.pause();
   videoExport.saveFrame();
   curFrame++;
   setFrame(curFrame);
 }
 
+/* Thread functions */
+
+void pix2JsonAnalyze() {
+  p2j.analyze();
+}
+
 void getFrameInfo() {
   frameData.analyze();
 }
+
+/* END Thread Functions */
 
 void oscEvent(OscMessage m) {
   PImage frame = oscCli.event(m);

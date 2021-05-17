@@ -6,6 +6,7 @@ public class HueNode implements ModNode {
   private int minHue = 0;
   private int maxHue = 100;
   private boolean active = true;
+  private int frameModCt = 60;
   
   public PImage mod(PImage frame) {
     int cm = g.colorMode;
@@ -18,13 +19,10 @@ public class HueNode implements ModNode {
     canvas.beginDraw();           
     canvas.noStroke();
 
-     if (this.curFrame % 20 == 0) {
+     if (this.curFrame % this.frameModCt == 0) {
        int save = minHue;
        minHue = maxHue;
        maxHue = save;  
-    } else if (curFrame % 30 == 0) {
-       minHue = (int)random(50);
-       maxHue = (int)random(50)+50;
     }
 
     for (int x = 0; x < frame.width; x += dim ) {
@@ -72,6 +70,7 @@ public class HueNode implements ModNode {
   
   public void init(Settings set) {
     this.set = set;
+    this.frameModCt = (int) this.set.get("frameModCount");
   }
   
   public void setColor(color c) {

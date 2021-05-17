@@ -1,8 +1,7 @@
 public class GrowPixNode  implements ModNode {
   private Settings set;  
   private int dim = 5;
-  private int totalbright = 0;
-  private int totalpix = 0;
+  private int frameModCt = 60;
   private int curFrame = 0;
   private color trackColor;
   private boolean active = true;
@@ -15,16 +14,13 @@ public class GrowPixNode  implements ModNode {
     int noiseSeed = millis() % 100;
     float noiseScale = map (noiseSeed, 0, 100, 0.01, .11); 
     PGraphics canvas = createGraphics(frame.width, frame.height);
-    
-    this.totalbright = 0;
-    this.totalpix = 0; 
    
     canvas.beginDraw();
     canvas.noStroke();
     for (int x = 0; x < frame.width; x += dim ) {
       for (int y = 0; y < frame.height; y += dim ) {
-        int frameAmt = this.curFrame % 40;
-        int amt = (int)map(frameAmt, 0, 40, 1, 100);
+        int frameAmt = this.curFrame % this.frameModCt;
+        int amt = (int)map(frameAmt, 0, this.frameModCt, 1, 100);
         int loc = x + y*frame.width;
         color currentColor = frame.pixels[loc];
         
@@ -45,11 +41,9 @@ public class GrowPixNode  implements ModNode {
           }
         }
         
-        this.totalbright += brightness(currentColor);
-        this.totalpix++;
         canvas.pushMatrix();
         canvas.translate(int(x+(dim/2)), int(y+(dim/2)));
-              
+        
         float noiseVal1 = noise((hue(frame.pixels[loc])+x)*noiseScale, (hue(frame.pixels[loc])+y)*noiseScale);
         float noiseVal2 = noise((saturation(frame.pixels[loc])+x)*noiseScale, (saturation(frame.pixels[loc])+y)*noiseScale);
         float noiseVal3 = noise((brightness(frame.pixels[loc])+x)*noiseScale, (brightness(frame.pixels[loc])+y)*noiseScale);
@@ -92,6 +86,7 @@ public class GrowPixNode  implements ModNode {
   
   public void init(Settings set) {
     this.set = set;
+    this.frameModCt = (int) this.set.get("frameModCount");
   }
   
   public void clicked() {

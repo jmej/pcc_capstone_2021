@@ -24,7 +24,7 @@ class FrameData {
       frameJson.setJSONArray(""+ i, info);
     }
      
-    String jsonPath = dataPath("telephone-" + day()+"-"+month()+"-"+year()+"-"+hour()+"-"+minute()+"-"+second()+".json");
+    String jsonPath = sketchPath("data/frameData/telephone-" + day()+"-"+month()+"-"+year()+"-"+hour()+"-"+minute()+"-"+second()+".json");
     saveJSONObject(frameJson, jsonPath);
 
     return jsonPath;
@@ -38,8 +38,8 @@ class FrameData {
       int totalBright = 0;
       int totalSat = 0;
       int cm = g.colorMode;
+      
       colorMode(HSB, 100);
-  
       for (int x = 0; x < width; x += this.dim) {
         for (int y = 0; y < height; y += this.dim) {
           int loc = x + y*width;
@@ -56,7 +56,7 @@ class FrameData {
       int sa = int(totalSat / pixCt);
       
       println("Frame Info: " + ha + ", " + sa + ", " + ba);
-      fi = new FrameInfo(ha, sa, ba, 0, 0, 0, 0);
+      fi = new FrameInfo(ha, sa, ba, fft.spectrum[0], fft.spectrum[1], fft.spectrum[2], fft.spectrum[3]);
     
       this.data.add(fi);
       

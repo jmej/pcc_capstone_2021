@@ -1,31 +1,69 @@
 
 public class ReadMarkovNode  implements ModNode {
   private Settings set;  
-  private int dim = 5;
-  private int totalbright = 0;
-  private int totalpix = 0;
+  private int dim = 4;
   private int curFrame = 0;
   private color trackColor;
   private boolean active = true;
-  private String route = "/capfonePix";
-  private IntList colors;
-  private int id = 5;
+  private int id = 50;
+  private int fileIdx = 0;
+  private final int MAX_ATTEMPTS = 10;
+  private File[] files;
     
   public PImage mod(PImage frame) {
     if (frame.pixels.length == 0) frame.loadPixels();
-
-    JSONObject main = loadJSONObject("out" + id + ".json");    
+    
+    JSONObject main = null;
+    File jsonFile = null;
+    int attempts = 0;
+    
+    try {
+      File file = new File(sketchPath("data/fromMarkov"));
+      if (file.listFiles().length == 0) {
+        println("No Markov data available!");
+        return frame;
+      }
+      
+      this.files = file.listFiles();
+      
+      while(jsonFile == null && attempts < this.MAX_ATTEMPTS) {
+        jsonFile = this.getNextFile(file);
+        fileIdx++;
+        if (fileIdx > files.length) {
+          fileIdx = 0;
+        }
+        
+        attempts++;
+      }
+      
+      if (jsonFile == null) {
+        println("No file json file found, idx: "+ fileIdx);
+        return frame;   
+      } 
+      
+      println("JSON file: " + jsonFile.getAbsolutePath());
+  
+      main = loadJSONObject(jsonFile.getAbsolutePath()); 
+      
+    } catch (NullPointerException e) {
+      println("NULL POINTER: " + e.getMessage());
+    }
+    
+    if (jsonFile == null || main == null) {
+      return frame;
+    }
+    
     PGraphics canvas = createGraphics(frame.width, frame.height);
 
     canvas.beginDraw();
     canvas.noStroke();
     colorMode(HSB, 100);
+   
     int idx = 0;
 
-    for (int x = 0; x < frame.width; x+=this.dim) {
-      for (int y = 0; y< frame.height; y+= this.dim) {
+    for (int x = 0; x < width; x+= this.dim) {
+      for (int y = 0; y< height; y+= this.dim) {
         try {
-          int loc = x + y*frame.width;
           String index = "" + idx;  
           JSONArray c = main.getJSONArray(index);
           int hue = c.getInt(0);
@@ -37,17 +75,51 @@ public class ReadMarkovNode  implements ModNode {
           canvas.square(x, y, this.dim);
           idx++;
         } catch (NullPointerException e) {
-          println("NULL POINTER: id: "+ id + ", idx: " + idx + " --"  + e.getMessage());
-
+          println("NULL POINTER: id: "+ jsonFile.getName() + ", idx: " + idx + " --"  + e.getMessage());
+          canvas.endDraw();
+          fileIdx++;
+          if (files != null && fileIdx > files.length) fileIdx = 0;
+         
+          return canvas;
         }
       }
     }
 
-    id++;
-    if (id >6) id = 5;
+    fileIdx++;
+    if (files != null && fileIdx > files.length) {
+      fileIdx = 0;
+    }
     
     canvas.endDraw();
     return canvas;
+  }
+  
+  private File getNextFile(File file) {
+    File jsonFile = null;
+    
+    if (file.isDirectory()) {
+       this.files = file.listFiles();
+       
+       if (this.files.length > 0 && this.fileIdx < this.files.length) {
+         jsonFile = this.files[fileIdx]; 
+         
+         if (jsonFile.isDirectory()) {
+           return null;
+         } 
+         
+         if (jsonFile.getName().equals(".DS_Store")) {
+           println("Deleted .DS_store");
+           jsonFile.delete();
+           return null;
+         }
+         
+         if (jsonFile.getName().indexOf(".json") == -1) {
+           return null;
+         }
+       }
+    }
+    
+    return jsonFile;
   }
   
   public void setColor(color c) {

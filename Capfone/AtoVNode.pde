@@ -56,12 +56,6 @@ class AtoVNode implements ModNode {
     for (int i = 0; i < objVertices.length; i++) {
       particles[i] = new ObjParticle(objVertices[i].x, objVertices[i].y, objVertices[i].z);
     }
-    
-    soundSource.play(1, 0, 1.0, 0, curFrame);
-    soundSource.amp(1);
-    fft.input(soundSource);
-    rms.input(soundSource);
-    soundSource.pause();
   }
   
   PImage mod(PImage f) {
@@ -75,26 +69,29 @@ class AtoVNode implements ModNode {
     max = 0;
     
     // Playback the soundfile from where we are in the movie
+    /*  
+    // Moved to draw() and is now global
+    // Keeping this here for reference
+    soundSource.pause();
     soundSource.play(1, 0.0, 1.0, 0, movie.time());
     soundSource.amp(1);
     fft.analyze();
 
     for (int i = 0; i < this.bands; i++) {
       sum[i] += (fft.spectrum[i] - sum[i]) * smoothingFactor;
+      println("fft.spectrum " + i + " "  + fft.spectrum[i]);
     }
     for (int i = 0; i < sum.length; i++) {
        if (sum[i] > max) {
          max = sum[i];
          this.maxFreqIndex = i;
        }
-       if (sum[i] > 0.005) {
-         freqDensity++;
-       }
      }
+    */
 
     // amplitude stuff
-    ampSum += (rms.analyze() - ampSum) * smoothingFactor;
-    rms_scaled = ampSum * 13;
+    //ampSum += (rms.analyze() - ampSum) * smoothingFactor;
+    rms_scaled = RMS_SCALED;
     
     canvas.pushMatrix();
     canvas.translate(width/2, height/2);
@@ -106,7 +103,6 @@ class AtoVNode implements ModNode {
     canvas.popMatrix();
     canvas.endDraw();
     
-    soundSource.pause();
     this.curFrame++;
     
     return canvas;    
