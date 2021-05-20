@@ -3,7 +3,7 @@
 #define LED_PIN 18
 #define LED_COUNT 240
 
-#define BRIGHTNESS 50
+#define BRIGHTNESS 100
 
 Adafruit_NeoPixel strip(LED_COUNT, LED_PIN, NEO_GRBW + NEO_KHZ800);
 
@@ -22,62 +22,120 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-    incompleteAmbience(75, 20);
+    incompleteAmbience(75, 3);
     pulseWhite(5);
   
 }
 
-void incompleteAmbience(int stripDelay, int stripLength) {
-    if(stripLength >= strip.numPixels()) stripLength = strip.numPixels() -1;
-    
-    uint32_t lastTime = 0;
+void incompleteAmbience(int stripDelay, int num) {  // num will be numOfSensors, 1 thru 3 
 
     int loopNum = 0;
+    
+    int stripLength = 0;
+    
 
-    int tails[] = {0, 20, 40, 60, 80, 100, 120, 140, 160, 180, 200, 220};
-    int heads[] = {19, 39, 59, 79, 99, 119, 139, 159, 179, 199, 219, 239};
+    switch (num) {
+      case 1:
+      stripLength = 40;
+      break;
+      case 2:
+      stripLength = 30;
+      break;
+      case 3:
+      stripLength = 24;
+      break;  
+    }
+
+    int tails[strip.numPixels()/stripLength];
+    int heads[strip.numPixels()/stripLength];
+
+    for (int i = 0; i < strip.numPixels()/stripLength; i++) {
+      tails[i] = i * stripLength;
+      heads[i] = stripLength - 1 + i * stripLength;  
+    }
 
     for(;;) {
       for (int i = 0; i < strip.numPixels(); i++) {
-        for (int j = 0; j < 12; j++) {
+        for (int j = 0; j < strip.numPixels()/stripLength; j++) {
           if (((i >= tails[j]) && (i <= heads[j])) || ((tails[j] > heads[j]) && ((i >= tails[j]) || (i <= heads[j])))) {
-            if (j == 0 || j == 3 || j == 6 || j == 9) {
-              strip.setPixelColor(i, strip.Color(201, 87, 194));  
-            }
-            else if (j == 1 || j == 4 || j == 7 || j == 10) {
-              strip.setPixelColor(i, strip.Color(85, 206, 191));  
-            }
-            else if (j == 2 || j == 5 || j == 8 || j == 11) {
-              strip.setPixelColor(i, strip.Color(245, 180, 50));  
-            }  
-          }  
-        }  
-      }
-
-      strip.show();
-      
-      for (int i = 0; i < 12; i++) {
-        tails[i]++;
-        heads[i]++;
-        if (heads[i] >= strip.numPixels()) {
-          heads[i] = 0;
-          if (i == 0) {
-            loopNum++;
+            switch (num) {
+              case 1:
+              switch(j % 3) {
+                case 0:
+                strip.setPixelColor(i, strip.Color(201, 87, 194));
+                break;
+                case 1:
+                strip.setPixelColor(i, strip.Color(85, 206, 191));
+                break;
+                case 2:
+                strip.setPixelColor(i, strip.Color(245, 180, 50));
+                break;  
+              }
+              break;
+              case 2:
+              switch(j % 4) {
+                case 0:
+                strip.setPixelColor(i, strip.Color(201, 87, 194));
+                break;
+                case 1:
+                strip.setPixelColor(i, strip.Color(85, 206, 191));
+                break;
+                case 2:
+                strip.setPixelColor(i, strip.Color(245, 180, 50));
+                break;
+                case 3:
+                strip.setPixelColor(i, strip.Color(255, 255, 0));
+                break;  
+              }
+              break;
+              case 3:
+              switch(j % 5) {
+                case 0:
+                strip.setPixelColor(i, strip.Color(201, 87, 194));
+                break;
+                case 1:
+                strip.setPixelColor(i, strip.Color(85, 206, 191));
+                break;
+                case 2:
+                strip.setPixelColor(i, strip.Color(245, 180, 50));
+                break;
+                case 3:
+                strip.setPixelColor(i, strip.Color(255, 255, 0));
+                break;
+                case 4:
+                strip.setPixelColor(i, strip.Color(97, 165, 38));
+                break;
+              }
+              break;      
+            }   
           }  
         }
-        if (tails[i] >= strip.numPixels()) {
-          tails[i] = 0;  
+      }
+
+    strip.show();
+      
+    for (int i = 0; i < strip.numPixels()/stripLength; i++) {
+      tails[i]++;
+      heads[i]++;
+      if (heads[i] >= strip.numPixels()) {
+        heads[i] = 0;
+        if (i == 0) {
+          loopNum++;
         }  
       }
-
-      delay(stripDelay);
-      //if (loopNum == 2) return;
-      if (millis() > randBehaviorTime) {
-        randBehaviorTime = millis() + random(10000, 20000);
-        return;
-      }
-
+      if (tails[i] >= strip.numPixels()) {
+        tails[i] = 0;  
+      }  
     }
+
+    delay(stripDelay);
+    
+    if (millis() > randBehaviorTime) {
+      randBehaviorTime = millis() + random(10000, 20000);
+      return;
+    }
+
+  }
 
 }
 
