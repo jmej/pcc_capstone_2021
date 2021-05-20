@@ -10,7 +10,7 @@
 		}
 ,
 		"classnamespace" : "box",
-		"rect" : [ 148.0, 293.0, 778.0, 587.0 ],
+		"rect" : [ 129.0, 241.0, 778.0, 587.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -39,6 +39,17 @@
 		"subpatcher_template" : "",
 		"assistshowspatchername" : 0,
 		"boxes" : [ 			{
+				"box" : 				{
+					"id" : "obj-1",
+					"maxclass" : "newobj",
+					"numinlets" : 0,
+					"numoutlets" : 0,
+					"patching_rect" : [ 533.0, 241.0, 99.0, 22.0 ],
+					"text" : "convolutionpatch"
+				}
+
+			}
+, 			{
 				"box" : 				{
 					"id" : "obj-7",
 					"maxclass" : "newobj",
@@ -74,6 +85,19 @@
 			}
  ],
 		"lines" : [  ],
+		"parameters" : 		{
+			"obj-1::obj-3" : [ "live.gain~[2]", "live.gain~", 0 ],
+			"obj-1::obj-41" : [ "live.gain~[1]", "live.gain~[1]", 0 ],
+			"obj-1::obj-42" : [ "live.gain~[3]", "live.gain~[1]", 0 ],
+			"obj-1::obj-43" : [ "live.gain~[4]", "live.gain~[1]", 0 ],
+			"obj-1::obj-44" : [ "live.gain~[5]", "live.gain~[1]", 0 ],
+			"parameterbanks" : 			{
+
+			}
+,
+			"inherited_shortname" : 1
+		}
+,
 		"dependency_cache" : [ 			{
 				"name" : "Granulator Build_Pare Down_v9.maxpat",
 				"bootpath" : "~/pcc_capstone_2021/Granulator",
@@ -100,6 +124,26 @@
 				"bootpath" : "~/pcc_capstone_2021/Granulator",
 				"patcherrelativepath" : ".",
 				"type" : "JSON",
+				"implicit" : 1
+			}
+, 			{
+				"name" : "convolutionpatch.maxpat",
+				"bootpath" : "~/pcc_capstone_2021/Granulator",
+				"patcherrelativepath" : ".",
+				"type" : "JSON",
+				"implicit" : 1
+			}
+, 			{
+				"name" : "cw_fft.maxpat",
+				"bootpath" : "~/Library/Application Support/Cycling '74/Max 8/Examples/fft-fun/lib",
+				"patcherrelativepath" : "../../Library/Application Support/Cycling '74/Max 8/Examples/fft-fun/lib",
+				"type" : "JSON",
+				"implicit" : 1
+			}
+, 			{
+				"name" : "helpdetails.js",
+				"bootpath" : "C74:/help/resources",
+				"type" : "TEXT",
 				"implicit" : 1
 			}
  ],
