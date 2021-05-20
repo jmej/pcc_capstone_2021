@@ -1,14 +1,14 @@
+import java.util.Comparator;
 
 public class ReadMarkovNode  implements ModNode {
   private Settings set;  
   private int dim = 4;
   private int curFrame = 0;
-  private color trackColor;
   private boolean active = true;
-  private int id = 50;
   private int fileIdx = 0;
   private final int MAX_ATTEMPTS = 10;
   private File[] files;
+  private String fromMarkovPath;
     
   public PImage mod(PImage frame) {
     if (frame.pixels.length == 0) frame.loadPixels();
@@ -18,7 +18,7 @@ public class ReadMarkovNode  implements ModNode {
     int attempts = 0;
     
     try {
-      File file = new File(sketchPath("data/fromMarkov"));
+      File file = new File(sketchPath(this.fromMarkovPath));
       if (file.listFiles().length == 0) {
         println("No Markov data available!");
         return frame;
@@ -54,7 +54,6 @@ public class ReadMarkovNode  implements ModNode {
     }
     
     PGraphics canvas = createGraphics(frame.width, frame.height);
-
     canvas.beginDraw();
     canvas.noStroke();
     colorMode(HSB, 100);
@@ -99,6 +98,8 @@ public class ReadMarkovNode  implements ModNode {
     
     if (file.isDirectory()) {
        this.files = file.listFiles();
+       Comparator<File> byModificationDate = new ModificationDateCompare();
+       java.util.Arrays.sort(this.files, byModificationDate);
        
        if (this.files.length > 0 && this.fileIdx < this.files.length) {
          jsonFile = this.files[fileIdx]; 
@@ -123,7 +124,6 @@ public class ReadMarkovNode  implements ModNode {
   }
   
   public void setColor(color c) {
-    this.trackColor = c;
   }
   
   public void setDim(int d) {
@@ -136,7 +136,15 @@ public class ReadMarkovNode  implements ModNode {
   
   public void init(Settings set) {
     this.set = set;
+    this.fromMarkovPath = (String)this.set.get("fromMarkovPath");
   }
   
   public void clicked() {}
+}
+
+
+class ModificationDateCompare implements Comparator<File> {
+    public int compare(File f1, File f2) {
+      return Long.valueOf(f1.lastModified()).compareTo(f2.lastModified());    
+    }
 }

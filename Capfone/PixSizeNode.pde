@@ -8,16 +8,22 @@ public class PixSizeNode implements ModNode {
   private int shift = 0;
   private int frameModCt = 90;
   private int dir = 1;    // 1 = up, 0 = down
+  private boolean audioMod = true;
   
   public PImage mod(PImage frame) {
     if (frame.pixels.length == 0) frame.loadPixels();
    
     PGraphics canvas = createGraphics(frame.width, frame.height);
     int thisDim;
-    if (dir == 1) {
-      thisDim = (int)map(this.curFrame % this.frameModCt, 0, this.frameModCt, this.dim, this.hiDim);
+    
+    if (this.audioMod) {
+      thisDim = (int)map(fftData[0] * 2, 0, 1, this.dim, this.hiDim);
     } else {
-      thisDim = (int)map(this.curFrame % this.frameModCt, 0, this.frameModCt, this.hiDim,this.dim);
+      if (dir == 1) {
+        thisDim = (int)map(this.curFrame % this.frameModCt, 0, this.frameModCt, this.dim, this.hiDim);
+      } else {
+        thisDim = (int)map(this.curFrame % this.frameModCt, 0, this.frameModCt, this.hiDim, this.dim);
+      }
     }
     
     if (this.curFrame > 0 && this.curFrame % this.frameModCt == 0) {
@@ -46,6 +52,7 @@ public class PixSizeNode implements ModNode {
   public void init(Settings set) {
     this.set = set;
     this.frameModCt = (int) this.set.get("frameModCount");
+    this.audioMod = (boolean) this.set.get("audioMod");
   }
   
   public void setColor(color c) {

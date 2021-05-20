@@ -7,6 +7,7 @@ public class HueNode implements ModNode {
   private int maxHue = 100;
   private boolean active = true;
   private int frameModCt = 60;
+  private boolean audioMod = true;
   
   public PImage mod(PImage frame) {
     int cm = g.colorMode;
@@ -28,10 +29,10 @@ public class HueNode implements ModNode {
     for (int x = 0; x < frame.width; x += dim ) {
       for (int y = 0; y < frame.height; y += dim ) {
         int hue = 0;
-        if (curFrame % 20 < 10) {
-          hue = (int)map(x, 0, frame.width, minHue, maxHue);
+        if (this.audioMod) {
+          hue = (int)map(fftData[0]*2, 0, 1, minHue, maxHue);
         } else {
-          hue = (int)map(y, 0, frame.height, minHue, maxHue);
+          hue = (int)map(x, 0, frame.width, minHue, maxHue);
         }
         
         int loc = x + y*frame.width;
@@ -71,6 +72,7 @@ public class HueNode implements ModNode {
   public void init(Settings set) {
     this.set = set;
     this.frameModCt = (int) this.set.get("frameModCount");
+    this.audioMod = (boolean) this.set.get("audioMod");
   }
   
   public void setColor(color c) {

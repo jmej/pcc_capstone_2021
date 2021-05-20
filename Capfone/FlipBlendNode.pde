@@ -5,7 +5,7 @@ class FlipBlendNode implements ModNode {
   private int blend1 = BLEND;
   private int blend2 = SCREEN;
   private boolean active = true;
-  int curFrame = 0;
+  private int curFrame = 0;
   
   public PImage mod(PImage frame) {
     int method;
@@ -13,12 +13,14 @@ class FlipBlendNode implements ModNode {
     
     canvas.beginDraw();
     canvas.noStroke(); 
+    
     canvas.translate((int)frame.width, 0);
-    method = this.curFrame % this.frameModCt >= (this.frameModCt /2) ? this.blend1 : this.blend2;
+    method = this.curFrame % this.frameModCt >= (this.frameModCt / 2) ? this.blend1 : this.blend2;
     canvas.scale(-1,1);
     canvas.image(frame, 0, 0);
     canvas.translate(0, 0);
     canvas.blend(frame, 0, 0, frame.width, frame.height, 0, 0, frame.width, frame.height, method);
+    
     canvas.endDraw();
    
     this.curFrame++;

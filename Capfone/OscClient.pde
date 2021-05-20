@@ -5,8 +5,14 @@ class OscClient {
   }
   
   public void sendJsonPath(String jsonPath) {
-    OscMessage myMessage = new OscMessage("/capfone");
+    OscMessage myMessage = new OscMessage("/metapath");
     myMessage.add(jsonPath); 
+    oscP5.send(myMessage, myRemoteLocation); 
+  }
+  
+  public void sendAudioPath(String audioPath) {
+    OscMessage myMessage = new OscMessage("/audiopath");
+    myMessage.add(audioPath); 
     oscP5.send(myMessage, myRemoteLocation); 
   }
   

@@ -43,6 +43,7 @@ int START_FRAME;
 String VIDEO_IN_PATH;
 int FRAME_MOD_COUNT;
 float RMS_SCALED;
+float[] fftData;
 
 
 void setup() {
@@ -63,6 +64,7 @@ void setup() {
   String classNames = (String)settings.get("nodeNames");
   String[] classList = classNames.split(",");
   curFrame = START_FRAME;
+  fftData = new float[fftBands];
 
   if (classList.length == 0) {
     println("No nodes loaded. Check settings.json");
@@ -111,10 +113,11 @@ void setup() {
     }
   }
   
-  p2j = new Pix2JSON(MARKOV_GEN, PIX_DIM);
+  p2j = new Pix2JSON();
   p2j.init(settings);
   oscCli = new OscClient();
-  frameData = new FrameData(PIX_DIM);
+  frameData = new FrameData();
+  frameData.init(settings);
   
   oscP5 = new OscP5(this, (int)settings.get("incomingOSCPort"));
   myRemoteLocation = new NetAddress("127.0.0.1",(int)settings.get("remoteOSCPort"));
@@ -170,7 +173,7 @@ void setup() {
       mods[i].setDim(PIX_DIM);
       mods[i].setColor(TRACK_COLOR);
     }
-  } catch (NullPointerException e) {
+  } catch (NullPointerException e) { //<>// //<>//
     println("Node init error. Check node names in settings.json: " + e.getMessage());
   }
 }
@@ -189,6 +192,8 @@ void draw() {   //<>// //<>// //<>//
   soundSource.play(1, 0.0, 1.0, 0, movie.time());
   soundSource.amp(1);
   fft.analyze();
+  arrayCopy(fft.spectrum, fftData);
+  
   RMS_SCALED = rms.analyze() * 13;
  
   // Continually pass the modded version to each Node
@@ -197,6 +202,7 @@ void draw() {   //<>// //<>// //<>//
       f = mods[i].mod(f);
     }
   }
+  soundSource.pause();
 
   if (curFrame == START_FRAME) { 
     videoExport.startMovie();
@@ -220,7 +226,7 @@ void draw() {   //<>// //<>// //<>//
     }
   }
   
-  soundSource.pause();
+
   videoExport.saveFrame();
   curFrame++;
   setFrame(curFrame);
@@ -258,8 +264,10 @@ void mouseClicked() {
 void endMovie() {
   String infoPath = frameData.writeToJson();
   oscCli.sendJsonPath(infoPath);
+  oscCli.sendAudioPath(audioOut);
   videoExport.setAudioFileName(audioOut);   
   videoExport.endMovie();
+  p2j.sendEndMsg();
  
   println(curFrame + " frames processed, movie length: " + movie.time() + " seconds");
   exit();

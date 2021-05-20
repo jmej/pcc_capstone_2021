@@ -11,12 +11,11 @@ public class Pix2JSON {
   private int curFrame = 0;
   private boolean active = true;
   private String route = "/tomarkov";
+  private String toMarkovPath;
   private int port = 12002;
   private NetAddress remoteLocation;
   
-  Pix2JSON(boolean on, int dim) {
-    this.active = on;
-    this.dim = dim;
+  Pix2JSON() {
   }
     
   public void analyze() {
@@ -42,20 +41,26 @@ public class Pix2JSON {
       } 
     }
     
-    String outPath = "data/toMarkov/frame-" + this.curFrame + "-" + i + ".json";
+    String outPath = sketchPath(this.toMarkovPath + "/frame-" + this.curFrame + "-" + i + ".json");
     saveJSONObject(out, outPath);
-    
-    String fullPath = sketchPath() + "/" + outPath;
-    
-    msg = new OscMessage(fullPath);
-//    msg.add(fullPath);
+    msg = new OscMessage(outPath);
     oscP5.send(msg, this.remoteLocation);
+    
+    if (this.curFrame == 0) {
+      msg = new OscMessage("/begin");
+      oscP5.send(msg, this.remoteLocation);
+    }
       
     this.curFrame++;
      
     if (cm != HSB) {
       colorMode(cm, 255);
     }
+  }
+  
+  public void sendEndMsg() {
+    OscMessage msg = new OscMessage("/end/" + this.curFrame);
+    oscP5.send(msg, this.remoteLocation);
   }
   
   public void setColor(color c) {
@@ -74,6 +79,9 @@ public class Pix2JSON {
     this.set = set;
     this.port = (int)this.set.get("markovOSCPort");
     this.remoteLocation = new NetAddress("127.0.0.1", this.port);
+    this.active = (boolean)this.set.get("markovGen");
+    this.dim = (int)this.set.get("defaultDim");
+    this.toMarkovPath = (String)this.set.get("toMarkovPath");
   }
   
   public void clicked() {}

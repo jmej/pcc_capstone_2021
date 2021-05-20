@@ -5,7 +5,6 @@ public class ExplodeColorNode implements ModNode {
   private int curFrame = 0;
   private color trackColor = 0;
   private boolean active = true;
-  private int shift = 0;
   private int colorThresh = 30;
   private int frameModCt = 60;
   private int dir = 1;

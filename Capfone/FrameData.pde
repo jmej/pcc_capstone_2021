@@ -1,12 +1,18 @@
 class FrameData {
   public ArrayList<FrameInfo> data;
   private int dim;
+  private Settings set;
+  private String path;
   
-  FrameData(int d) {
-    this.dim = d; 
+  FrameData() {
     data = new ArrayList<FrameInfo>();
   }
   
+  public void init(Settings set) {
+    this.set = set;
+    this.dim = (int)this.set.get("defaultDim");
+    this.path = (String)this.set.get("frameDataPath");
+  }
   public String writeToJson() {
     JSONObject frameJson = new JSONObject();
     
@@ -24,7 +30,7 @@ class FrameData {
       frameJson.setJSONArray(""+ i, info);
     }
      
-    String jsonPath = sketchPath("data/frameData/telephone-" + day()+"-"+month()+"-"+year()+"-"+hour()+"-"+minute()+"-"+second()+".json");
+    String jsonPath = sketchPath(this.path + "/telephone-" + day()+"-"+month()+"-"+year()+"-"+hour()+"-"+minute()+"-"+second()+".json");
     saveJSONObject(frameJson, jsonPath);
 
     return jsonPath;
