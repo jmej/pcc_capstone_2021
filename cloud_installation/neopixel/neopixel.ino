@@ -8,6 +8,7 @@
 Adafruit_NeoPixel strip(LED_COUNT, LED_PIN, NEO_GRBW + NEO_KHZ800);
 
 int randBehaviorTime = random(10000, 20000);
+int switchDirTime = random(60000, 80000);
 
 void setup() {
   // put your setup code here, to run once:
@@ -41,9 +42,9 @@ void waiting() {
 
 void incomplete(int stripDelay, int num) {  // num will be numOfSensors, 1 thru 3 
 
-    int loopNum = 0;
-    
     int stripLength = 0;
+
+    int d = 1;
     
 
     switch (num) {
@@ -67,6 +68,9 @@ void incomplete(int stripDelay, int num) {  // num will be numOfSensors, 1 thru 
     }
 
     for(;;) {
+      if (num == 4) {
+        break;  
+      }
       for (int i = 0; i < strip.numPixels(); i++) {
         for (int j = 0; j < strip.numPixels()/stripLength; j++) {
           if (((i >= tails[j]) && (i <= heads[j])) || ((tails[j] > heads[j]) && ((i >= tails[j]) || (i <= heads[j])))) {
@@ -125,18 +129,26 @@ void incomplete(int stripDelay, int num) {  // num will be numOfSensors, 1 thru 
       }
 
     strip.show();
+
+    if (millis() > switchDirTime) {
+      switchDirTime = millis() + random(60000, 80000);
+      d = -d;
+    }
       
     for (int i = 0; i < strip.numPixels()/stripLength; i++) {
-      tails[i]++;
-      heads[i]++;
+      tails[i]+=d;
+      heads[i]+=d;
       if (heads[i] >= strip.numPixels()) {
         heads[i] = 0;
-        if (i == 0) {
-          loopNum++;
-        }  
       }
       if (tails[i] >= strip.numPixels()) {
         tails[i] = 0;  
+      }
+      if(heads[i] < 0) {
+        heads[i] = strip.numPixels()-1;  
+      }
+      if (tails[i] < 0) {
+        tails[i] = strip.numPixels()-1;  
       }  
     }
 
@@ -151,6 +163,11 @@ void incomplete(int stripDelay, int num) {  // num will be numOfSensors, 1 thru 
 
 }
 
+void incompleteInterrupt() {
+  
+  
+}
+
 void complete() {
     for(;;) {
       // if (person leaves) break;
@@ -159,6 +176,23 @@ void complete() {
       
     }
 }
+
+void completeInterrupt() {
+  
+  
+}
+
+
+
+void colorWipe(uint32_t color, int wait) {
+  for(int i = 0; i < strip.numPixels(); i++) {
+    strip.setPixelColor(i, color);
+    strip.show();
+    delay(wait);  
+  }  
+}
+
+
 
 void whiteOverRainbow(int whiteSpeed, int whiteLength) {
 
