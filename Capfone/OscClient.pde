@@ -1,4 +1,5 @@
 class OscClient {
+  private String finalAudioPath = "";
   
   public OscClient() {
     
@@ -16,6 +17,10 @@ class OscClient {
     oscP5.send(myMessage, myRemoteLocation); 
   }
   
+  public String getFinalAudio() {
+    return finalAudioPath;
+  }
+  
   public PImage event(OscMessage theOscMessage) {
     PImage ret = null;
    
@@ -25,22 +30,16 @@ class OscClient {
     println(" typetag: "+theOscMessage.typetag());  
   
     try {
-      float floatVal = 0;
       String stringVal = "";
       
-      if(theOscMessage.checkAddrPattern("/capstoneCli")!=true) {
+      if(theOscMessage.checkAddrPattern("/maxaudio")!=true) {
         return ret;
       }
       
-      if(theOscMessage.checkTypetag("f")) {
-        floatVal = theOscMessage.get(0).floatValue(); 
-      }
+      stringVal = theOscMessage.get(0).stringValue();
+      this.finalAudioPath = stringVal;
       
-      if(theOscMessage.checkTypetag("s")) {
-        stringVal = theOscMessage.get(0).stringValue();
-        int ct = 0;
-        
-      } 
+      println("MAX AUDIO: " + stringVal);
     } catch (Exception e) {
       println(e.getMessage());
     }

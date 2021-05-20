@@ -9,7 +9,7 @@
   "remoteOSCPort": 12000,
   "incomingOSCPort": 12001,
   "markovOSCPort": 12002,
-  "nodeNames": "ReadMarkovNode",
+  "nodeNames": "ExplodeColorNode,BlendNode,HarmDistNode",
   "objPath": "OBJs/orchid.obj",
   "blendCount": 6,
   "fftBands": 4,
@@ -23,6 +23,5 @@
   "audioMod": true,
   "frameDataPath": "data/frameData",
   "toMarkovPath": "data/toMarkov",
-  "fromMarkovPath": "data/fromMarkov";
-
+  "fromMarkovPath": "data/fromMarkov"
 }

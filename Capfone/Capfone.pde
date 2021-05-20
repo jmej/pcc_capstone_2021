@@ -265,11 +265,21 @@ void endMovie() {
   String infoPath = frameData.writeToJson();
   oscCli.sendJsonPath(infoPath);
   oscCli.sendAudioPath(audioOut);
-  videoExport.setAudioFileName(audioOut);   
-  videoExport.endMovie();
+
   p2j.sendEndMsg();
  
   println(curFrame + " frames processed, movie length: " + movie.time() + " seconds");
+  
+  String finalAudio = "";
+  while(finalAudio.equals("")) {
+    finalAudio = oscCli.getFinalAudio();
+    delay(1000);
+    println("no audio...delaying 1s");
+  }
+  
+  videoExport.setAudioFileName(finalAudio);   
+  videoExport.endMovie();
+  
   exit();
 }
 
