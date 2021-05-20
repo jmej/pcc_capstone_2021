@@ -18,16 +18,13 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  incomplete(75, 20);
+  incompleteAmbience(75, 20);
   
 }
 
-void incomplete(int stripSpeed, int stripLength) {
+void incompleteAmbience(int stripDelay, int stripLength) {
     if(stripLength >= strip.numPixels()) stripLength = strip.numPixels() -1;
-    int loopNum = 0;
-    int loops = 3;
     
-    uint32_t firstPixelHue = 0;
     uint32_t lastTime = 0;
 
     int tails[] = {0, 20, 40, 60, 80, 100, 120, 140, 160, 180, 200, 220};
@@ -38,13 +35,13 @@ void incomplete(int stripSpeed, int stripLength) {
         for (int j = 0; j < 12; j++) {
           if (((i >= tails[j]) && (i <= heads[j])) || ((tails[j] > heads[j]) && ((i >= tails[j]) || (i <= heads[j])))) {
             if (j == 0 || j == 3 || j == 6 || j == 9) {
-              strip.setPixelColor(i, strip.Color(255, 0, 0));  
+              strip.setPixelColor(i, strip.Color(201, 87, 194));  
             }
             else if (j == 1 || j == 4 || j == 7 || j == 10) {
-              strip.setPixelColor(i, strip.Color(0, 255, 0));  
+              strip.setPixelColor(i, strip.Color(85, 206, 191));  
             }
             else if (j == 2 || j == 5 || j == 8 || j == 11) {
-              strip.setPixelColor(i, strip.Color(0, 0, 255));  
+              strip.setPixelColor(i, strip.Color(245, 180, 50));  
             }  
           }  
         }  
@@ -63,7 +60,7 @@ void incomplete(int stripSpeed, int stripLength) {
         }  
       }
 
-      delay(75);
+      delay(stripDelay);
       
     }   
       
