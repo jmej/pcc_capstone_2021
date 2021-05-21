@@ -9,7 +9,7 @@
   "remoteOSCPort": 12000,
   "incomingOSCPort": 12001,
   "markovOSCPort": 12002,
-  "nodeNames": "ReadMarkovNode",
+  "nodeNames": "FlipBlendNode",
   "objPath": "OBJs/orchid.obj",
   "blendCount": 6,
   "fftBands": 4,
