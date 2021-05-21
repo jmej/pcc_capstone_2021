@@ -28,20 +28,4 @@ Input #0, mov,mp4,m4a,3gp,3g2,mj2, from '/Users/tobygn/Documents/Processing/Caps
       creation_time   : 2021-03-16T05:14:42.000000Z
       handler_name    : #Mainconcept MP4 Sound Media Handler
       vendor_id       : [0][0][0][0]
-Stream mapping:
-  Stream #0:1 -> #0:0 (aac (native) -> mp3 (libmp3lame))
-Press [q] to stop, [?] for help
-Output #0, mp3, to '/Users/tobygn/Documents/Processing/Capstone/pcc_Capstone_2021/Capfone/data/test.mp4_audio.mp3':
-  Metadata:
-    major_brand     : mp42
-    minor_version   : 0
-    compatible_brands: mp42mp41
-    TSSE            : Lavf58.76.100
-  Stream #0:0(eng): Audio: mp3, 48000 Hz, stereo, fltp (default)
-    Metadata:
-      creation_time   : 2021-03-16T05:14:42.000000Z
-      handler_name    : #Mainconcept MP4 Sound Media Handler
-      vendor_id       : [0][0][0][0]
-      encoder         : Lavc58.134.100 libmp3lame
-size=       0kB time=00:00:00.00 bitrate=N/A speed=   0x    size=     152kB time=00:00:09.64 bitrate= 128.9kbits/s speed=19.3x    size=     337kB time=00:00:21.50 bitrate= 128.4kbits/s speed=24.4x    
-video:0kB audio:337kB subtitle:0kB other streams:0kB global headers:0kB muxing overhead: 0.095699%
+File '/Users/tobygn/Documents/Processing/Capstone/pcc_Capstone_2021/Capfone/data/test.mp4_audio.mp3' already exists. Overwrite? [y/N] Not overwriting - exiting
