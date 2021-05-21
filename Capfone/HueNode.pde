@@ -10,15 +10,14 @@ public class HueNode implements ModNode {
   private boolean audioMod = true;
   
   public PImage mod(PImage frame) {
-    int cm = g.colorMode;
-    
-    colorMode(HSB, 100);
     if (frame.pixels.length == 0) frame.loadPixels();
     
+    int cm = g.colorMode;
     PGraphics canvas = createGraphics(frame.width, frame.height);
     
     canvas.beginDraw();           
     canvas.noStroke();
+    canvas.colorMode(HSB, 100);
 
      if (this.curFrame % this.frameModCt == 0) {
        int save = minHue;

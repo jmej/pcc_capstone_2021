@@ -13,6 +13,7 @@ class FrameData {
     this.dim = (int)this.set.get("defaultDim");
     this.path = (String)this.set.get("frameDataPath");
   }
+  
   public String writeToJson() {
     JSONObject frameJson = new JSONObject();
     

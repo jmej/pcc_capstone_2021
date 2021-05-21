@@ -27,6 +27,7 @@ public class ExplodeColorNode implements ModNode {
     float noiseScale = (int)map(this.curFrame % this.frameModCt, 0, this.frameModCt, .01, .1);
     canvas.beginDraw();           
     canvas.noStroke();
+    canvas.colorMode(HSB, 100);
     
     for (int x = 0; x < frame.width; x += this.dim ) {
       for (int y = 0; y < frame.height; y += this.dim ) {

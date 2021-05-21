@@ -10,13 +10,14 @@ public class GrowPixNode  implements ModNode {
     if (frame.pixels.length == 0) frame.loadPixels();
     
     int cm = g.colorMode;
-    colorMode(HSB, 100);
     int noiseSeed = millis() % 100;
     float noiseScale = map (noiseSeed, 0, 100, 0.01, .11); 
     PGraphics canvas = createGraphics(frame.width, frame.height);
    
+    canvas.colorMode(HSB, 100); 
     canvas.beginDraw();
     canvas.noStroke();
+    
     for (int x = 0; x < frame.width; x += dim ) {
       for (int y = 0; y < frame.height; y += dim ) {
         int frameAmt = this.curFrame % this.frameModCt;
@@ -63,12 +64,20 @@ public class GrowPixNode  implements ModNode {
       } 
     }
     
-    this.curFrame++;
     canvas.endDraw();
      
+    if (this.curFrame % this.frameModCt == 0 && pixels != null && pixels.length > 0) {
+      int x = (int)random(width);
+      int y = (int)random(height);
+      this.trackColor  = pixels[x + y*frame.width];
+    }
+    
     if (cm != HSB) {
       colorMode(cm, 255);
     }
+    
+    this.curFrame++;
+        
     return canvas;
   }
   

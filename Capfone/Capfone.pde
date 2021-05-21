@@ -65,6 +65,7 @@ void setup() {
   String[] classList = classNames.split(",");
   curFrame = START_FRAME;
   fftData = new float[fftBands];
+  path = sketchPath("data/" + VIDEO_IN_PATH);
 
   if (classList.length == 0) {
     println("No nodes loaded. Check settings.json");
@@ -156,16 +157,9 @@ void setup() {
   videoExport.setQuality((int)settings.get("videoQuality"), (int)settings.get("audioQuality"));
   videoExport.setDebugging((boolean)settings.get("videoExportDebug"));
   
-  // Sound / fft stuff
-  soundSource = new SoundFile(this, audioOut);
-  fft = new FFT(this, fftBands);
-  rms = new Amplitude(this);
-  fft.input(soundSource);
-  rms.input(soundSource);
-  
   // For nodes that have a specfic color to track...
   color TRACK_COLOR = color(random(100), random(100), random(100));
-  
+   
   try {
     // Loop through the nodes and init, set default vars
     for (int i = 0; i < mods.length; i++) {
@@ -176,9 +170,16 @@ void setup() {
   } catch (NullPointerException e) { //<>// //<>//
     println("Node init error. Check node names in settings.json: " + e.getMessage());
   }
+  
+  // Sound / fft stuff
+  soundSource = new SoundFile(this, audioOut);
+  fft = new FFT(this, fftBands);
+  rms = new Amplitude(this);
+  fft.input(soundSource);
+  rms.input(soundSource);
 }
 
-void draw() {   //<>// //<>// //<>//
+void draw() {  //<>//
   canvas.beginDraw();
   canvas.image(movie, 0, 0);
   canvas.endDraw();
@@ -226,7 +227,6 @@ void draw() {   //<>// //<>// //<>//
     }
   }
   
-
   videoExport.saveFrame();
   curFrame++;
   setFrame(curFrame);
@@ -264,6 +264,7 @@ void mouseClicked() {
 void endMovie() {
   String infoPath = frameData.writeToJson();
   oscCli.sendJsonPath(infoPath);
+  delay(100);
   oscCli.sendAudioPath(audioOut);
 
   p2j.sendEndMsg();
@@ -355,6 +356,7 @@ String saveAudio(String fileName) {
     println(ffmpegOutputLog);
   }
   
+  delay(1000);
   return audioOut;
 }
 

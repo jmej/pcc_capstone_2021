@@ -17,6 +17,8 @@ public class ConvolverNode implements ModNode {
     
     canvas.beginDraw();           
     canvas.noStroke();
+    canvas.colorMode(HSB, 100);
+    
     File file = new File(sketchPath("data/images"));
     
     try {

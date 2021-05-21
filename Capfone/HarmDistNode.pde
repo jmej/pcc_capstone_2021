@@ -22,7 +22,7 @@ public class HarmDistNode implements ModNode {
     frames = frames % 360;
     
     if (this.curFrame % this.frameModCt == 0) {
-      frequency = map(RMS_SCALED, 0.0, 1.0, 1, 100); //map(mouseX, 0, width, 1, 100);
+      frequency = map(RMS_SCALED, 0.0, 1.0, 1, 100); 
       magnitude = map(fftData[0], 0.0, 0.5, 2, 50);
     }
     

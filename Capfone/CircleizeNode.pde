@@ -9,16 +9,15 @@ public class CircleizeNode implements ModNode {
   private int brightThresh = 40;
   
   public PImage mod(PImage frame) {
-    int cm = g.colorMode;
-    
-    colorMode(HSB, 100);
     if (frame.pixels.length == 0) frame.loadPixels();
     
+    int cm = g.colorMode;
     int pdim = dim + 2;
     PGraphics canvas = createGraphics(frame.width, frame.height);
     
     canvas.beginDraw();           
     canvas.noStroke();
+    canvas.colorMode(HSB, 100);
     
     shift = (int)map(this.curFrame % this.frameModCt, 0, this.frameModCt, 0, 50);
 
