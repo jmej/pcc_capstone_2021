@@ -110,10 +110,13 @@ void setup() {
       case "ConvolverNode":
         mods[i] = new ConvolverNode();
         break;
-        
+      case "MolnarNode":
+        mods[i] = new MolnarNode();
+        break;
     }
   }
   
+  // Data generation / communication clients
   p2j = new Pix2JSON();
   p2j.init(settings);
   oscCli = new OscClient();
@@ -123,7 +126,10 @@ void setup() {
   oscP5 = new OscP5(this, (int)settings.get("incomingOSCPort"));
   myRemoteLocation = new NetAddress("127.0.0.1",(int)settings.get("remoteOSCPort"));
   
+  // This is the object we will write to with each frame of the movie
   canvas = createGraphics(1920, 1080, P2D); 
+  
+  // Set up movie playback
   movie = new Movie(this, VIDEO_IN_PATH);
   movie.play();
   movie.volume(0);
@@ -147,6 +153,7 @@ void setup() {
     audioFilePath = VIDEO_IN_PATH;
   }
   
+  // Save audio from Video separately
   audioOut = saveAudio(audioFilePath);
   println("AUDIO SEPARATED FROM VIDEO" + audioOut);
   
@@ -160,7 +167,7 @@ void setup() {
   // For nodes that have a specfic color to track...
   color TRACK_COLOR = color(random(100), random(100), random(100));
    
-  try {
+  try { //<>//
     // Loop through the nodes and init, set default vars
     for (int i = 0; i < mods.length; i++) {
       mods[i].init(settings);
@@ -172,7 +179,7 @@ void setup() {
   }
   
   // Sound / fft stuff
-  soundSource = new SoundFile(this, audioOut);
+  soundSource = new SoundFile(this, audioOut); //<>//
   fft = new FFT(this, fftBands);
   rms = new Amplitude(this);
   fft.input(soundSource);
