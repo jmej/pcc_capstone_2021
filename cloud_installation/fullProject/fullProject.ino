@@ -6,9 +6,12 @@
 #define LED_PIN 18
 #define LED_COUNT 240
 
+#define BRIGHTNESS 100
+
 Adafruit_NeoPixel strip(LED_COUNT, LED_PIN, NEO_GRBW + NEO_KHZ800);
 
-int bVal = 200;
+int randBehaviorTime = random(10000, 20000);
+int switchDirTime = random(60000, 80000);
 
 int sensor1Pin = 15;
 int sensor2Pin = 14;
@@ -18,6 +21,9 @@ int sensorMax = 45000;
 int sensorMin = 1500;
 int s1scaled, s2scaled, s3scaled, s4scaled; 
 long mm1, mm2, mm3, mm4;
+
+int previous = 0;
+bool numChanged = false;
 
 
 void setup() {
@@ -72,6 +78,10 @@ void loop() {
     }
   }
 
+  if (usedSensors != previous) {
+    numChanged = true;  
+  }
+
   waiting(usedSensors);
 
   
@@ -103,7 +113,7 @@ void loop() {
 void waiting(int num) {
   
   for(;;) {
-    if (num != 0) break;
+    if (num != 0) return;
     whiteOverRainbow(75,5);
     pulseWhite(5);
     rainbowFade2White(3, 3, 1);

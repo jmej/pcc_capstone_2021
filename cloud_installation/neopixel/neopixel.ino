@@ -7,8 +7,21 @@
 
 Adafruit_NeoPixel strip(LED_COUNT, LED_PIN, NEO_GRBW + NEO_KHZ800);
 
-int randBehaviorTime = random(10000, 20000);
-int switchDirTime = random(60000, 80000);
+uint32_t incompColor1 = strip.Color(201, 87, 194);
+uint32_t incompColor2 = strip.Color(85, 206, 191);
+uint32_t incompColor3 = strip.Color(245, 180, 50);
+uint32_t incompColor4 = strip.Color(120, 255, 30);
+uint32_t incompColor5 = strip.Color(227, 79, 30);
+
+int randBehaviorTime = random(20000, 30000);
+int d = 1;
+int avgChange = -100;
+int dummyAvg = 44999;
+//int switchDirTime = random(60000, 80000);
+
+int numOfSensors = 1;
+
+int growth = 0;
 
 void setup() {
   // put your setup code here, to run once:
@@ -22,12 +35,31 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-    incomplete(75, 1);
-    pulseWhite(5);
   
+//  int mappedAvgBrightness = map(dummyAvg, 1500, 45000, 255, 0);
+//  Serial.println(dummyAvg);
+  
+  //incompleteBase(numOfSensors);
+    //incompleteInterrupt(5);
+//  pulseWhite(5);
+
+  //incomplete(numOfSensors);
+
+  meteorRain(255,255,255,10, 64, true, 5);
+    
+//  int mappedAvgSpeed = map(dummyAvg, 1500, 45000, 25, 150);
+
+//    incomplete(mappedAvgSpeed, numOfSensors);
+//    pulseWhite(5);
+
+      //completeBase();
+//  for (int i = 0; i < strip.numPixels(); i++) {
+//    strip.setPixelColor(i, strip.Color(255, 0, 0));  
+//  }
+        
 }
 
-void waiting() {
+void waiting(int num) {
   
   for(;;) {
     // if (sensor detects person) break;
@@ -40,13 +72,13 @@ void waiting() {
 
 
 
-void incomplete(int stripDelay, int num) {  // num will be numOfSensors, 1 thru 3 
+void incompleteBase(int num) {  // num will be numOfSensors, 1 thru 3 
 
     int stripLength = 0;
 
-    int d = 1;
+//    int mappedMinTime = map(dummyAvg, 1500, 45000, 4000, 35000);
+//    int mappedMaxTime = map(dummyAvg, 1500, 45000, 6000, 42000);
     
-
     switch (num) {
       case 1:
       stripLength = 40;
@@ -78,48 +110,48 @@ void incomplete(int stripDelay, int num) {  // num will be numOfSensors, 1 thru 
               case 1:
               switch(j % 3) {
                 case 0:
-                strip.setPixelColor(i, strip.Color(201, 87, 194));
+                strip.setPixelColor(i, incompColor1);
                 break;
                 case 1:
-                strip.setPixelColor(i, strip.Color(85, 206, 191));
+                strip.setPixelColor(i, incompColor2);
                 break;
                 case 2:
-                strip.setPixelColor(i, strip.Color(245, 180, 50));
+                strip.setPixelColor(i, incompColor3);
                 break;  
               }
               break;
               case 2:
               switch(j % 4) {
                 case 0:
-                strip.setPixelColor(i, strip.Color(201, 87, 194));
+                strip.setPixelColor(i, incompColor1);
                 break;
                 case 1:
-                strip.setPixelColor(i, strip.Color(85, 206, 191));
+                strip.setPixelColor(i, incompColor2);
                 break;
                 case 2:
-                strip.setPixelColor(i, strip.Color(245, 180, 50));
+                strip.setPixelColor(i, incompColor3);
                 break;
                 case 3:
-                strip.setPixelColor(i, strip.Color(255, 255, 0));
+                strip.setPixelColor(i, incompColor4);
                 break;  
               }
               break;
               case 3:
               switch(j % 5) {
                 case 0:
-                strip.setPixelColor(i, strip.Color(201, 87, 194));
+                strip.setPixelColor(i, incompColor1);
                 break;
                 case 1:
-                strip.setPixelColor(i, strip.Color(85, 206, 191));
+                strip.setPixelColor(i, incompColor2);
                 break;
                 case 2:
-                strip.setPixelColor(i, strip.Color(245, 180, 50));
+                strip.setPixelColor(i, incompColor3);
                 break;
                 case 3:
-                strip.setPixelColor(i, strip.Color(255, 255, 0));
+                strip.setPixelColor(i, incompColor4);
                 break;
                 case 4:
-                strip.setPixelColor(i, strip.Color(97, 165, 38));
+                strip.setPixelColor(i, incompColor5);
                 break;
               }
               break;      
@@ -130,10 +162,6 @@ void incomplete(int stripDelay, int num) {  // num will be numOfSensors, 1 thru 
 
     strip.show();
 
-    if (millis() > switchDirTime) {
-      switchDirTime = millis() + random(60000, 80000);
-      d = -d;
-    }
       
     for (int i = 0; i < strip.numPixels()/stripLength; i++) {
       tails[i]+=d;
@@ -152,34 +180,153 @@ void incomplete(int stripDelay, int num) {  // num will be numOfSensors, 1 thru 
       }  
     }
 
-    delay(stripDelay);
+    int mappedAvgSpeed = map(dummyAvg, 1500, 45000, 30, 150);
+    Serial.println(mappedAvgSpeed);
     
     if (millis() > randBehaviorTime) {
-      randBehaviorTime = millis() + random(10000, 20000);
+      randBehaviorTime = millis() + random(20000, 30000);
+      d = -d;
       return;
+    }
+
+    int mappedAvgBrightness = map(dummyAvg, 1500, 45000, 200, 0);
+    Serial.println(mappedAvgBrightness);
+
+    strip.setBrightness(mappedAvgBrightness);
+
+    delay(mappedAvgSpeed);
+
+    dummyAvg += avgChange;
+    if ((dummyAvg <= 1500) || (dummyAvg >= 45000)) {
+      avgChange = -avgChange; 
     }
 
   }
 
 }
 
-void incompleteInterrupt() {
-  
+void incompleteInterrupt(int wait) {
+
+
+  for(int j=0; j<256; j++) { // Ramp up from 0 to 255
+    // Fill entire strip with white at gamma-corrected brightness level 'j':
+    strip.fill(strip.Color(201, 87, 194, strip.gamma8(j)));
+    strip.show();
+    delay(wait);
+  }
+
+  for(int j=255; j>=0; j--) { // Ramp down from 255 to 0
+    strip.fill(strip.Color(201, 87, 194, strip.gamma8(j)));
+    strip.show();
+    delay(wait);
+  }
+
+  for(int j=0; j<256; j++) { // Ramp up from 0 to 255
+    // Fill entire strip with white at gamma-corrected brightness level 'j':
+    strip.fill(strip.Color(85, 206, 191, strip.gamma8(j)));
+    strip.show();
+    delay(wait);
+  }
+
+  for(int j=255; j>=0; j--) { // Ramp down from 255 to 0
+    strip.fill(strip.Color(85, 206, 191, strip.gamma8(j)));
+    strip.show();
+    delay(wait);
+  }
+
+  for(int j=0; j<256; j++) { // Ramp up from 0 to 255
+    // Fill entire strip with white at gamma-corrected brightness level 'j':
+    strip.fill(strip.Color(245, 180, 50, strip.gamma8(j)));
+    strip.show();
+    delay(wait);
+  }
+
+  for(int j=255; j>=0; j--) { // Ramp down from 255 to 0
+    strip.fill(strip.Color(245, 180, 50, strip.gamma8(j)));
+    strip.show();
+    delay(wait);
+  }
+
+//  if (num >= 2) {
+//    for(int j = 0; j < 256; j++) {
+//      strip.fill(strip.Color(120, 255, 30, strip.gamma8(j)));
+//      strip.show();
+//      delay(wait);  
+//    }
+//
+//    for(int j = 255; j >= 0; j++) {
+//      strip.fill(strip.Color(120, 255, 30, strip.gamma8(j)));
+//      strip.show();
+//      delay(wait);  
+//    }
+//  }
+//
+//  if (num == 3) {
+//    for(int j = 0; j < 256; j++) {
+//      strip.fill(strip.Color(227, 79, 30, strip.gamma8(j)));
+//      strip.show();
+//      delay(wait); 
+//    }
+//    for(int j = 255; j >= 0; j--) {
+//      strip.fill(strip.Color(227, 79, 30, strip.gamma8(j)));
+//      strip.show();
+//      delay(wait);  
+//    }   
+//  }
   
 }
 
-void complete() {
-    for(;;) {
-      // if (person leaves) break;
-
-    
-      
-    }
+void incomplete(int num) {
+  for(;;) {
+    if (!(1 <= num && 3 >= num)) return;
+    incompleteBase(num);
+    //incompleteInterrupt(num);
+    pulseWhite(5);  
+  }  
 }
 
 void completeInterrupt() {
   
   
+}
+
+void completeBase() {
+
+
+  // for now, generate random location and random max length
+  // need variables for center location, max length, current length
+  // need to store color of appearing strip and colors on either side
+
+  uint32_t blue = strip.Color(0, 0, 255);
+  int center = 20;
+  int maxLength = 19;
+  
+  for (int i = 0; i < strip.numPixels(); i++) {
+
+    if(i <= center + growth && i >= center-growth) {
+      strip.setPixelColor(i, blue);  
+    }
+    else {
+      strip.setPixelColor(i, strip.Color(255, 0, 0));
+    }  
+  }
+  strip.show();
+
+  if (growth < maxLength) {
+    growth++;  
+  }
+
+  delay(200);
+
+   
+}
+
+void complete(int num) {
+  for(;;) {
+    if(num != 4) return;
+    completeBase();
+    completeInterrupt();  
+  }
 }
 
 
@@ -301,4 +448,52 @@ void rainbowFade2White(int wait, int rainbowLoops, int whiteLoops) {
   }
 
   delay(500); // Pause 1/2 second
+}
+
+
+void meteorRain(int red, int green, int blue, byte meteorSize, byte meteorTrailDecay, boolean meteorRandomDecay, int SpeedDelay) {  
+  for (int i = 0; i < strip.numPixels(); i++) {
+    strip.setPixelColor(0, 0, 0, 0);
+  }
+ 
+  for(int i = 0; i < 2 * strip.numPixels(); i++) {
+   
+   
+    // fade brightness all LEDs one step
+    for(int j=0; j<strip.numPixels(); j++) {
+      if( (!meteorRandomDecay) || (random(100)>99) ) {
+        fadeToBlack(j, meteorTrailDecay );        
+      }
+    }
+   
+    // draw meteor
+    for(int j = 0; j < meteorSize; j++) {
+      if( ( i-j <strip.numPixels()) && (i-j>=0) ) {
+        strip.setPixelColor(i-j, red, green, blue);
+      }
+    strip.show();
+    }
+   
+    
+    //delay(SpeedDelay);
+  }
+}
+
+void fadeToBlack(int ledNo, byte fadeValue) {
+    uint32_t oldColor;
+    uint8_t r, g, b;
+    int value;
+   
+    oldColor = strip.getPixelColor(ledNo);
+    r = (oldColor & 0x00ff0000UL) >> 16;
+    g = (oldColor & 0x0000ff00UL) >> 8;
+    b = (oldColor & 0x000000ffUL);
+
+    r=(r<=10)? 0 : (int) r-(r*fadeValue/256);
+    g=(g<=10)? 0 : (int) g-(g*fadeValue/256);
+    b=(b<=10)? 0 : (int) b-(b*fadeValue/256);
+   
+    strip.setPixelColor(ledNo, r,g,b);
+    strip.show();
+
 }
