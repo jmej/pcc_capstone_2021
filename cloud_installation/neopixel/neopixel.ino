@@ -14,6 +14,9 @@ uint32_t incompColor4 = strip.Color(120, 255, 30);
 uint32_t incompColor5 = strip.Color(227, 79, 30);
 
 int randBehaviorTime = random(20000, 30000);
+int randTrigTime = random(10000, 20000);
+bool trig = false;
+bool interrupt = false;
 int d = 1;
 int avgChange = -100;
 int dummyAvg = 44999;
@@ -43,9 +46,9 @@ void loop() {
     //incompleteInterrupt(5);
 //  pulseWhite(5);
 
-  //incomplete(numOfSensors);
+  incomplete(numOfSensors);
 
-  meteorRain(255,255,255,10, 64, true, 5);
+  //meteorRain(255,255,255,10, 64, true, 5);
     
 //  int mappedAvgSpeed = map(dummyAvg, 1500, 45000, 25, 150);
 
@@ -181,16 +184,21 @@ void incompleteBase(int num) {  // num will be numOfSensors, 1 thru 3
     }
 
     int mappedAvgSpeed = map(dummyAvg, 1500, 45000, 30, 150);
-    Serial.println(mappedAvgSpeed);
     
     if (millis() > randBehaviorTime) {
       randBehaviorTime = millis() + random(20000, 30000);
+      interrupt = true;
       d = -d;
       return;
     }
 
+    if (millis() > randTrigTime) {
+      randTrigTime = millis() + random(10000, 20000);
+      trig = true;
+      return;  
+    }
+
     int mappedAvgBrightness = map(dummyAvg, 1500, 45000, 200, 0);
-    Serial.println(mappedAvgBrightness);
 
     strip.setBrightness(mappedAvgBrightness);
 
@@ -279,9 +287,21 @@ void incompleteInterrupt(int wait) {
 void incomplete(int num) {
   for(;;) {
     if (!(1 <= num && 3 >= num)) return;
+    if (millis() >= randTrigTime) {
+      Serial.println("should trigger");
+      trig = true;
+      randTrigTime = millis() + randTrigTime;   
+    }
     incompleteBase(num);
+    if (trig == true) {
+      colorWipe(incompColor1, 5);
+      trig = false;  
+    }
     //incompleteInterrupt(num);
-    pulseWhite(5);  
+    if (interrupt == true) {
+      pulseWhite(5);
+      interrupt = false;  
+    }
   }  
 }
 
