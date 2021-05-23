@@ -171,9 +171,9 @@ void fadeToBlack(int ledNo, byte fadeValue) {
 
 }
 
-bool arrayContains(int arr[], int val) {
+bool arrayContains(int arr[], int arrayLength, int val) {
   bool isIn = false;
-  for (int i = 0; i < 10; i++) {
+  for (int i = 0; i < arrayLength; i++) {
     if (arr[i] == val) {
       isIn = true;  
     }

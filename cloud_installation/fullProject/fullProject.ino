@@ -48,6 +48,8 @@ uint32_t incompColor5 = strip.Color(227, 79, 30);
 uint32_t incompColors[] = {incompColor1, incompColor4, incompColor5};
 
 
+
+
 void setup() {
   // put your setup code here, to run once:
 //  strip.begin();
@@ -67,7 +69,6 @@ void setup() {
 void loop() {
 
   complete();
-
 }
 
 
@@ -78,7 +79,7 @@ void waiting() {
 
     trackSensors();
     
-    whiteOverRainbow(75,5);
+    //whiteOverRainbow(75,5);
     //pulseWhite(5);
     //rainbowFade2White(3, 3, 1);
     if (waitingToIncomplete) {
