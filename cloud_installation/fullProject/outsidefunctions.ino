@@ -6,7 +6,13 @@ void colorWipe(uint32_t color, int wait) {
   }  
 }
 
-
+void reverseColorWipe(uint32_t color, int wait) {
+  for (int i = strip.numPixels() -1; i >= 0; i--) {
+    strip.setPixelColor(i, color);
+    strip.show();
+    delay(wait);  
+  }  
+}
 
 void whiteOverRainbow(int whiteSpeed, int whiteLength) {
 

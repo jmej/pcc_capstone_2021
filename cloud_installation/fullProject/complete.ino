@@ -1,4 +1,5 @@
 void completeInterrupt() {
+
   
   
 }
@@ -10,28 +11,27 @@ void completeBase() {
   // need variables for center location, max length, current length
   // need to store color of appearing strip and colors on either side
 
-  uint32_t blue = strip.Color(0, 0, 255);
-  int center = 20;
-  int maxLength = 19;
-  
-  for (int i = 0; i < strip.numPixels(); i++) {
+  for(;;){
 
-    if(i <= center + growth && i >= center-growth) {
-      strip.setPixelColor(i, blue);  
+    int indices[50];
+
+    for (int i = 0; i < 50; i++) {
+      indices[i] = int(random(0, 256));  /// might get duplicates, need to figure that out
+    }
+
+  for (int i = 0; i < strip.numPixels(); i++) {
+    if (arrayContains(indices, i)) {
+      strip.setPixelColor(i, incompColor1);  
     }
     else {
-      strip.setPixelColor(i, strip.Color(255, 0, 0));
-    }  
+      strip.setPixelColor(i, strip.Color(0, 0, 0, 255));  
+    }
   }
   strip.show();
+  delay(100);
 
-  if (growth < maxLength) {
-    growth++;  
   }
 
-  delay(200);
-
-   
 }
 
 void complete(int num) {

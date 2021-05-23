@@ -1,19 +1,21 @@
 void incomplete(int num) {
   for(;;) {
-    if (
+    if (incompleteToComplete || incompleteToWaiting) return;
     incompleteBase(num);
-//    if (trig == true) {
-//      colorWipe(incompColor1, 5);
-//      trig = false;  
+//    if (growingIncomplete == true) {
+//      colorWipe(incompColors[num - 1], 5);
+//      growingIncomplete = false;  
 //    }
-    //incompleteInterrupt(num);
-    if (interrupt == true) {
+//    if (shrinkingIncomplete == true) {
+//      reverseColorWipe(incompColors[num - 1], 5);
+//      shrinkingIncomplete = false;  
+//    }
+    //if (interrupt == true) {
       //incompleteInterrupt();
-      pulseWhite(5);
-      interrupt = false;  
+//      pulseWhite(5);
+//      interrupt = false;  
     }
-  }  
-}
+  }
 
 
 
@@ -133,6 +135,8 @@ void incompleteBase(int num) {  // num will be numOfSensors, 1 thru 3
       d = -d;
       return;
     }
+
+    if (shrinkingIncomplete || growingIncomplete) return;
 
 //    if (millis() > randTrigTime) {
 //      randTrigTime = millis() + random(10000, 20000);
