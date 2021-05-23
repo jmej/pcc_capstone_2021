@@ -1,6 +1,6 @@
 void incomplete(int num) {
   for(;;) {
-    if (!(1 <= num && 3 >= num)) return;
+    if (
     incompleteBase(num);
 //    if (trig == true) {
 //      colorWipe(incompColor1, 5);
