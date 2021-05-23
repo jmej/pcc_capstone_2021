@@ -39,6 +39,8 @@ void completeBase() {
 
     int centerArrayLength = 10;
 
+    int growthVals[] = {0, 0, 0, 0};
+
     int color1Centers[centerArrayLength];
     int color2Centers[centerArrayLength];
     int color3Centers[centerArrayLength];
@@ -61,8 +63,6 @@ void completeBase() {
 
       bool doneGrowing[] = {false, false, false, false};
 
-      int growthVals[] = {0, 0, 0, 0};
-
       int color1MaxLength = map(sensor1Val, 1500, 45000, 16, 1);
       int color2MaxLength = map(sensor2Val, 1500, 45000, 16, 1);
       int color3MaxLength = map(sensor3Val, 1500, 45000, 16, 1);
@@ -70,10 +70,6 @@ void completeBase() {
 
       int maxLengths[] = {color1MaxLength, color2MaxLength, color3MaxLength, color4MaxLength};
 
-
-     
-
-      
   
       for (int i = 0; i < strip.numPixels(); i++) {
         for (int j = 0; j < centerArrayLength; j++) {
