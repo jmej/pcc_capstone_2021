@@ -46,7 +46,7 @@ void loop() {
     //incompleteInterrupt(5);
 //  pulseWhite(5);
 
-  //incomplete(numOfSensors);
+  incomplete(numOfSensors);
 
   //colorWipe(incompColor1, 5);
 
@@ -61,6 +61,10 @@ void loop() {
 //  for (int i = 0; i < strip.numPixels(); i++) {
 //    strip.setPixelColor(i, strip.Color(255, 0, 0));  
 //  }
+
+
+
+    
         
 }
 
