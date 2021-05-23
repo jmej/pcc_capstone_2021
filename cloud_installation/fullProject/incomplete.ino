@@ -9,11 +9,11 @@ void incomplete(int num) {
 //      reverseColorWipe(incompColors[num - 1], 5);   // not sure num -1 is correct here
 //      shrinkingIncomplete = false;  
 //    }
-    //if (interrupt == true) {
+    if (interrupt == true) {
       //incompleteInterrupt();
-//      pulseWhite(5);
-//      interrupt = false;  
-//    }
+      pulseWhite(5);
+      interrupt = false;  
+    }
     if (incompleteToComplete) {
       incompleteToComplete = false;
       complete();  
@@ -29,54 +29,7 @@ void incomplete(int num) {
 
 void incompleteBase(int num) {  // num will be numOfSensors, 1 thru 3
 
-    read_sensors();
-
-    int usedSensors = 0;
-    int sensorTotal = 0;
-//
-    sensor1Val = pulseIn(sensor1Pin, HIGH);
-    sensor2Val = pulseIn(sensor2Pin, HIGH);
-    sensor3Val = pulseIn(sensor3Pin, HIGH);
-    sensor4Val = pulseIn(sensor4Pin, HIGH);
-
-    int sensorVals[] = {sensor1Val, sensor2Val, sensor3Val, sensor4Val};
-
-    for (int i = 0; i < 4; i++) {
-      if (sensorVals[i] < sensorMax) {
-        usedSensors++;
-        sensorTotal+=sensorVals[i]; 
-      }
-    }
-
-    sensorAvg = sensorTotal / usedSensors;
-  
-
-    if (usedSensors != previous) {
-      if (usedSensors < 4 && usedSensors > previous) {
-        growingIncomplete = true;  
-      }
-      else if (usedSensors < 4 && usedSensors < previous) {
-        shrinkingIncomplete = true;  
-      }
-      else if (usedSensors == 4) {
-        incompleteToComplete = true;  
-      }
-      else if (usedSensors < 4 && previous == 4) {
-        completeToIncomplete = true;  
-      }
-      else if (1 <= usedSensors && usedSensors < 4 && previous == 0) {
-        waitingToIncomplete = true;  
-      }
-      else if (usedSensors == 0 && previous > 0 && previous < 4) {
-        incompleteToWaiting = true;
-      }
-      else if (usedSensors == 0 && previous == 4) {
-        completeToWaiting = true;  
-      }
-      else if (usedSensors == 4 && previous == 0) {
-        waitingToComplete = true;  
-      }   
-    }
+    //trackSensors();
 
     int stripLength = 0;
 

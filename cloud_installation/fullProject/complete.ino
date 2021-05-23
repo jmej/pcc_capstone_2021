@@ -11,56 +11,16 @@ void completeBase() {
   // need variables for center location, max length, current length
   // need to store color of appearing strip and colors on either side
 
+  //map sensor1Val to dominance of color1, sensor2Val -> color2, sensor3Val -> color3, sensor4Val -> color4
+
   for(;;){
 
-    read_sensors();
+    //trackSensors();
 
-    int usedSensors = 0;
-    int sensorTotal = 0;
-//
-    sensor1Val = pulseIn(sensor1Pin, HIGH);
-    sensor2Val = pulseIn(sensor2Pin, HIGH);
-    sensor3Val = pulseIn(sensor3Pin, HIGH);
-    sensor4Val = pulseIn(sensor4Pin, HIGH);
-
-    int sensorVals[] = {sensor1Val, sensor2Val, sensor3Val, sensor4Val};
-
-    for (int i = 0; i < 4; i++) {
-      if (sensorVals[i] < sensorMax) {
-        usedSensors++;
-        sensorTotal+=sensorVals[i]; 
-      }
-    }
-
-    sensorAvg = sensorTotal / usedSensors;
-  
-
-    if (usedSensors != previous) {
-      if (usedSensors < 4 && usedSensors > previous) {
-        growingIncomplete = true;  
-      }
-      else if (usedSensors < 4 && usedSensors < previous) {
-        shrinkingIncomplete = true;  
-      }
-      else if (usedSensors == 4) {
-        incompleteToComplete = true;  
-      }
-      else if (usedSensors < 4 && previous == 4) {
-        completeToIncomplete = true;  
-      }
-      else if (1 <= usedSensors && usedSensors < 4 && previous == 0) {
-        waitingToIncomplete = true;  
-      }
-      else if (usedSensors == 0 && previous > 0 && previous < 4) {
-        incompleteToWaiting = true;
-      }
-      else if (usedSensors == 0 && previous == 4) {
-        completeToWaiting = true;  
-      }
-      else if (usedSensors == 4 && previous == 0) {
-        waitingToComplete = true;  
-      }   
-    }
+    color1MaxLength = map(sensor1Val, 1500, 45000, 16, 1);
+    color2MaxLength = map(sensor2Val, 1500, 45000, 16, 1);
+    color3MaxLength = map(sensor3Val, 1500, 45000, 16, 1);
+    color4MaxLength = map(sensor4Val, 1500, 45000, 16, 1);
 
     if (completeToIncomplete || completeToWaiting) return;
 
@@ -97,18 +57,16 @@ void completeBase() {
   strip.show();
   delay(300);
 
-  previous = usedSensors;
-
   }
 
 }
 
-void complete(int num) {
+void complete() {
   for(;;) {
     completeBase();
     if (completeToIncomplete) {
       completeToIncomplete = false;
-      incomplete();  
+      incomplete(usedSensors);  
     }
     if (completeToWaiting) {
       completeToWaiting = false;

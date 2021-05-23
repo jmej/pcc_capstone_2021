@@ -21,7 +21,7 @@ int sensorMin = 1500;
 int sensor1Val, sensor2Val, sensor3Val, sensor4Val;
 int s1scaled, s2scaled, s3scaled, s4scaled; 
 long mm1, mm2, mm3, mm4;
-int sensorAvg = 0;
+int usedSensors = 0;
 
 bool trig = false;
 bool interrupt = false;
@@ -66,71 +66,24 @@ void setup() {
 
 void loop() {
 
-  waiting();
+  complete();
 
 }
+
+
   
-void waiting(int num) {
+void waiting() {
   
   for(;;) {
 
-    read_sensors();
-
-    int usedSensors = 0;
-    int sensorTotal = 0;
-//
-    sensor1Val = pulseIn(sensor1Pin, HIGH);
-    sensor2Val = pulseIn(sensor2Pin, HIGH);
-    sensor3Val = pulseIn(sensor3Pin, HIGH);
-    sensor4Val = pulseIn(sensor4Pin, HIGH);
-
-    int sensorVals[] = {sensor1Val, sensor2Val, sensor3Val, sensor4Val};
-
-    for (int i = 0; i < 4; i++) {
-      if (sensorVals[i] < sensorMax) {
-        usedSensors++;
-        sensorTotal+=sensorVals[i]; 
-      }
-    }
-
-    sensorAvg = sensorTotal / usedSensors;
-  
-
-    if (usedSensors != previous) {
-      if (usedSensors < 4 && usedSensors > previous) {
-        growingIncomplete = true;  
-      }
-      else if (usedSensors < 4 && usedSensors < previous) {
-        shrinkingIncomplete = true;  
-      }
-      else if (usedSensors == 4) {
-        incompleteToComplete = true;  
-      }
-      else if (usedSensors < 4 && previous == 4) {
-        completeToIncomplete = true;  
-      }
-      else if (1 <= usedSensors && usedSensors < 4 && previous == 0) {
-        waitingToIncomplete = true;  
-      }
-      else if (usedSensors == 0 && previous > 0 && previous < 4) {
-        incompleteToWaiting = true;
-      }
-      else if (usedSensors == 0 && previous == 4) {
-        completeToWaiting = true;  
-      }
-      else if (usedSensors == 4 && previous == 0) {
-        waitingToComplete = true;  
-      }   
-    }
-
-    previous = usedSensors;
+    trackSensors();
     
-    //whiteOverRainbow(75,5);
+    whiteOverRainbow(75,5);
     //pulseWhite(5);
     //rainbowFade2White(3, 3, 1);
     if (waitingToIncomplete) {
       waitingToIncomplete = false;
-      incomplete();  
+      incomplete(usedSensors);  
     }
     if (waitingToComplete) {
       waitingToComplete = false;
@@ -139,14 +92,14 @@ void waiting(int num) {
   }
 }
 
-void read_sensors() {
+void readSensors() {
   mm1 = pulseIn(sensor1Pin, HIGH);
   mm2 = pulseIn(sensor2Pin, HIGH);
   mm3 = pulseIn(sensor3Pin, HIGH);
   mm4 = pulseIn(sensor4Pin, HIGH);
 }
 
-void print_range() {
+void printRange() {
   Serial.print("S1: ");
   Serial.print(mm1);
   Serial.print(" || S2: ");
@@ -154,3 +107,64 @@ void print_range() {
   Serial.print(" || S3: ");
   Serial.println(mm3);
 }
+
+void trackSensors() {
+
+  usedSensors = 0;
+
+  sensor1Val = pulseIn(sensor1Pin, HIGH);
+  sensor2Val = pulseIn(sensor2Pin, HIGH);
+  sensor3Val = pulseIn(sensor3Pin, HIGH);
+  sensor4Val = pulseIn(sensor4Pin, HIGH);
+
+  int sensorVals[] = {sensor1Val, sensor2Val, sensor3Val, sensor4Val};
+
+  for (int i = 0; i < 4; i++) {
+    if (sensorVals[i] < sensorMax) {
+      usedSensors++; 
+    }
+  }
+
+  if (usedSensors != previous) {
+    if (usedSensors < 4 && usedSensors > previous) {
+      growingIncomplete = true;  
+    }
+    else if (usedSensors < 4 && usedSensors < previous) {
+      shrinkingIncomplete = true;  
+    }
+    else if (usedSensors == 4) {
+      incompleteToComplete = true;  
+    }
+    else if (usedSensors < 4 && previous == 4) {
+      completeToIncomplete = true;  
+    }
+    else if (1 <= usedSensors && usedSensors < 4 && previous == 0) {
+      waitingToIncomplete = true;  
+    }
+    else if (usedSensors == 0 && previous > 0 && previous < 4) {
+      incompleteToWaiting = true;
+    }
+    else if (usedSensors == 0 && previous == 4) {
+      completeToWaiting = true;  
+    }
+    else if (usedSensors == 4 && previous == 0) {
+      waitingToComplete = true;  
+    }   
+  }
+}
+
+//void sendSensorData() {
+//
+//  readSensors();
+//
+//  s1Scaled = map(mm1, sensorMin, sensorMax, 0, 100);
+//  s2Scaled = map(mm2, sensorMin, sensorMax, 0, 100);
+//  s3Scaled = map(mm3, sensorMin, sensorMax, 0, 100);
+//  s4Scaled = map(mm4, sensorMin, sensorMax, 0, 100);
+//
+//  usbMIDI.sendControlChange(1, s1Scaled, 1);
+//  usbMIDI.sendControlChange(2, s2Scaled, 1);
+//  usbMIDI.sendControlChange(3, s3Scaled, 1);
+//  usbMIDI.sendControlChange(4, s4Scaled, 1);
+//  
+//}
