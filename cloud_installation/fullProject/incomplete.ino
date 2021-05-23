@@ -1,25 +1,82 @@
 void incomplete(int num) {
   for(;;) {
-    if (incompleteToComplete || incompleteToWaiting) return;
     incompleteBase(num);
 //    if (growingIncomplete == true) {
-//      colorWipe(incompColors[num - 1], 5);
+//      colorWipe(incompColors[num - 2], 5);
 //      growingIncomplete = false;  
 //    }
 //    if (shrinkingIncomplete == true) {
-//      reverseColorWipe(incompColors[num - 1], 5);
+//      reverseColorWipe(incompColors[num - 1], 5);   // not sure num -1 is correct here
 //      shrinkingIncomplete = false;  
 //    }
     //if (interrupt == true) {
       //incompleteInterrupt();
 //      pulseWhite(5);
 //      interrupt = false;  
+//    }
+    if (incompleteToComplete) {
+      incompleteToComplete = false;
+      complete();  
+    }
+    if (incompleteToWaiting) {
+      incompleteToWaiting = false;
+      waiting();  
     }
   }
+}
 
 
 
-void incompleteBase(int num) {  // num will be numOfSensors, 1 thru 3 
+void incompleteBase(int num) {  // num will be numOfSensors, 1 thru 3
+
+    read_sensors();
+
+    int usedSensors = 0;
+    int sensorTotal = 0;
+//
+    sensor1Val = pulseIn(sensor1Pin, HIGH);
+    sensor2Val = pulseIn(sensor2Pin, HIGH);
+    sensor3Val = pulseIn(sensor3Pin, HIGH);
+    sensor4Val = pulseIn(sensor4Pin, HIGH);
+
+    int sensorVals[] = {sensor1Val, sensor2Val, sensor3Val, sensor4Val};
+
+    for (int i = 0; i < 4; i++) {
+      if (sensorVals[i] < sensorMax) {
+        usedSensors++;
+        sensorTotal+=sensorVals[i]; 
+      }
+    }
+
+    sensorAvg = sensorTotal / usedSensors;
+  
+
+    if (usedSensors != previous) {
+      if (usedSensors < 4 && usedSensors > previous) {
+        growingIncomplete = true;  
+      }
+      else if (usedSensors < 4 && usedSensors < previous) {
+        shrinkingIncomplete = true;  
+      }
+      else if (usedSensors == 4) {
+        incompleteToComplete = true;  
+      }
+      else if (usedSensors < 4 && previous == 4) {
+        completeToIncomplete = true;  
+      }
+      else if (1 <= usedSensors && usedSensors < 4 && previous == 0) {
+        waitingToIncomplete = true;  
+      }
+      else if (usedSensors == 0 && previous > 0 && previous < 4) {
+        incompleteToWaiting = true;
+      }
+      else if (usedSensors == 0 && previous == 4) {
+        completeToWaiting = true;  
+      }
+      else if (usedSensors == 4 && previous == 0) {
+        waitingToComplete = true;  
+      }   
+    }
 
     int stripLength = 0;
 
@@ -47,9 +104,7 @@ void incompleteBase(int num) {  // num will be numOfSensors, 1 thru 3
     }
 
     for(;;) {
-      if (num == 4) {
-        break;  
-      }
+      if (incompleteToComplete || incompleteToWaiting || shrinkingIncomplete || growingIncomplete) return;
       for (int i = 0; i < strip.numPixels(); i++) {
         for (int j = 0; j < strip.numPixels()/stripLength; j++) {
           if (((i >= tails[j]) && (i <= heads[j])) || ((tails[j] > heads[j]) && ((i >= tails[j]) || (i <= heads[j])))) {
@@ -135,8 +190,6 @@ void incompleteBase(int num) {  // num will be numOfSensors, 1 thru 3
       d = -d;
       return;
     }
-
-    if (shrinkingIncomplete || growingIncomplete) return;
 
 //    if (millis() > randTrigTime) {
 //      randTrigTime = millis() + random(10000, 20000);

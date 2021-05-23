@@ -170,3 +170,13 @@ void fadeToBlack(int ledNo, byte fadeValue) {
     strip.show();
 
 }
+
+bool arrayContains(int arr[], int val) {
+  bool isIn = false;
+  for (int i = 0; i < 10; i++) {
+    if (arr[i] == val) {
+      isIn = true;  
+    }
+  }
+  return isIn;
+}

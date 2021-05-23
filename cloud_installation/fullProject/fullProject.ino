@@ -47,8 +47,6 @@ uint32_t incompColor5 = strip.Color(227, 79, 30);
 
 uint32_t incompColors[] = {incompColor1, incompColor4, incompColor5};
 
-uint32_t compColors[4] = {incompColor1, incompColor2, incompColor3, incompColor4};
-
 
 void setup() {
   // put your setup code here, to run once:
@@ -67,7 +65,15 @@ void setup() {
 }
 
 void loop() {
+
+  waiting();
+
+}
   
+void waiting(int num) {
+  
+  for(;;) {
+
     read_sensors();
 
     int usedSensors = 0;
@@ -117,26 +123,19 @@ void loop() {
       }   
     }
 
-    //if (incompleteToWaiting || completeToWaiting) return;
-
-      completeBase();
-  
-//    incomplete(usedSensors);
-//  
-//    complete();
-
     previous = usedSensors;
-
-}
-  
-void waiting(int num) {
-  
-  for(;;) {
-    if (num != 0) return;
+    
     //whiteOverRainbow(75,5);
     //pulseWhite(5);
     //rainbowFade2White(3, 3, 1);
-    
+    if (waitingToIncomplete) {
+      waitingToIncomplete = false;
+      incomplete();  
+    }
+    if (waitingToComplete) {
+      waitingToComplete = false;
+      complete();  
+    }
   }
 }
 
@@ -154,14 +153,4 @@ void print_range() {
   Serial.print(mm2);
   Serial.print(" || S3: ");
   Serial.println(mm3);
-}
-
-bool arrayContains(int arr[], int val) {
-  bool isIn = false;
-  for (int i = 0; i < 50; i++) {
-    if (arr[i] == val) {
-      isIn = true;  
-    }
-  }
-  return isIn;
 }
