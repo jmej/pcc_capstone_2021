@@ -37,6 +37,7 @@ public class ConvolverNode implements ModNode {
            
            cImg = loadImage(imageFile.getAbsolutePath());
            cImg.copy(cImg, 0, 0, cImg.width, cImg.height, 0, 0, frame.width, frame.height);
+           
            if (cImg.pixels == null || cImg.pixels.length == 0) {
              cImg.loadPixels();
            }
@@ -63,9 +64,9 @@ public class ConvolverNode implements ModNode {
           color c;
           
           if (this.curFrame % frameModCt >= (frameModCt/2)) {
-            c = color(hue(convColor), saturation(currentColor), brightness(currentColor));
+            c = color(hue(currentColor), saturation(currentColor), brightness(currentColor));
           } else {
-            c = color(hue(currentColor), saturation(convColor), brightness(currentColor));
+            c = color(hue(currentColor), saturation(convColor), brightness(convColor));
           }
           canvas.fill(c);
           canvas.square(x, y, this.dim);

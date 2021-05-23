@@ -113,6 +113,9 @@ void setup() {
       case "MolnarNode":
         mods[i] = new MolnarNode();
         break;
+      case "XModNode":
+        mods[i] = new XModNode();
+        break;
     }
   }
   
@@ -126,15 +129,17 @@ void setup() {
   oscP5 = new OscP5(this, (int)settings.get("incomingOSCPort"));
   myRemoteLocation = new NetAddress("127.0.0.1",(int)settings.get("remoteOSCPort"));
   
-  // This is the object we will write to with each frame of the movie
-  canvas = createGraphics(1920, 1080, P2D); 
-  
   // Set up movie playback
   movie = new Movie(this, VIDEO_IN_PATH);
   movie.play();
   movie.volume(0);
   movie.jump(curFrame);
   movie.pause();
+  movie.loadPixels();
+
+  
+  // This is the object we will write to with each frame of the movie
+  canvas = createGraphics(movie.width, movie.height, P2D); 
   
   if ((boolean)settings.get("promptVideoPath")) {
     boolean asked = false;
@@ -186,9 +191,10 @@ void setup() {
   rms.input(soundSource);
 }
 
-void draw() {  //<>//
+void draw() { //<>//
   canvas.beginDraw();
   canvas.image(movie, 0, 0);
+
   canvas.endDraw();
 
   PImage f = createImage(width, height, ALPHA);
@@ -203,14 +209,15 @@ void draw() {  //<>//
   arrayCopy(fft.spectrum, fftData);
   
   RMS_SCALED = rms.analyze() * 13;
- 
+  delay(100);
+  soundSource.pause();
+  
   // Continually pass the modded version to each Node
   for (int i = 0; i < mods.length; i++) {
     if (mods[i].active()) {
       f = mods[i].mod(f);
     }
   }
-  soundSource.pause();
 
   if (curFrame == START_FRAME) { 
     videoExport.startMovie();
@@ -229,9 +236,6 @@ void draw() {  //<>//
       println("Movie frame data updated: " + lastMovieUpdate);
     }
     
-    if (p2j.active()) {
-      thread("pix2JsonAnalyze");
-    }
   }
   
   videoExport.saveFrame();
@@ -270,22 +274,27 @@ void mouseClicked() {
 // Called after all frames are processed
 void endMovie() {
   String infoPath = frameData.writeToJson();
+  String finalAudio = "";
+  int ct = 0;
+  
   oscCli.sendJsonPath(infoPath);
   delay(100);
   oscCli.sendAudioPath(audioOut);
-
-  p2j.sendEndMsg();
  
   println(curFrame + " frames processed, movie length: " + movie.time() + " seconds");
   
-  String finalAudio = "";
   while(finalAudio.equals("")) {
     finalAudio = oscCli.getFinalAudio();
-    delay(1000);
-    println("no audio...delaying 1s");
+    println("no audio...delaying 2s");
+    delay(2000);
+    
+    ct++;
+    if (ct > 30) break; 
   }
   
-  videoExport.setAudioFileName(finalAudio);   
+  if (!finalAudio.equals("")) {
+    videoExport.setAudioFileName(finalAudio);
+  }
   videoExport.endMovie();
   
   exit();
@@ -312,7 +321,7 @@ void setFrame(int n) {
   movie.play();
   println("We are " + where*movie.frameRate+ " out of " + len + " with a framerate of " + frameRate);
   
-  if (where*movie.frameRate >= len) {
+  if (ceil(where*movie.frameRate) >= len) {
     if (LOOP) {
       where = 0;
     } else {

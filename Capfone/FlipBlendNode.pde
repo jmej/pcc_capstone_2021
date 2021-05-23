@@ -3,7 +3,7 @@ class FlipBlendNode implements ModNode {
   private Settings set;
   private int frameModCt = 30;
   private int blend1 = BLEND;
-  private int blend2 = SCREEN;
+  private int blend2 = EXCLUSION;
   private boolean active = true;
   private int curFrame = 0;
   

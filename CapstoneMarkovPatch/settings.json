@@ -1,5 +1,7 @@
 {
   "fromMarkovDir": "/Users/tobygn/Documents/Processing/Capstone/pcc_Capstone_2021/Capfone/data/fromMarkov",
   "toMarkovDir": "/Users/tobygn/Documents/Processing/Capstone/pcc_Capstone_2021/Capfone/data/toMarkov",
-  "order": 80
+  "order": 75,
+  "inPort": 12004,
+  "outPort": 12001
 }

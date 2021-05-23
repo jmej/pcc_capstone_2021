@@ -6,27 +6,10 @@ class MolnarNode implements ModNode {
   private color trackColor = 0;
   private boolean active = true;
   private int frameModCt = 90;
-  
-    
-  //int colArrayNum = 0;
   private float PHI = 1.618033988749894848204586834365638117720309179805762862135448;
   private float rotation = 0;
   private boolean pause = false;
-  
-  
-  
   private color[] colArray = new color[7];
-    
-   /* color(255, 255, 255), //white
-    color(200, 5, 20), //red
-    color(55, 188, 25), //green
-    color(15, 35, 250), //blue
-    color(125, 235, 250), //light blue
-    color(240, 245, 15), //yellow
-    color(160, 60, 235),  //purple
-    */
-
-  
   private int grid = 15;
   private int margin = 70;
   
@@ -46,13 +29,11 @@ class MolnarNode implements ModNode {
       colArray[i] = frame.pixels[loc];
     }
     
-    //background(15, 20, 30);
-    //frames++;
     if (!pause){
       rotation += 0.0004;
-        rotation = rotation%PI;
-        //rotation = rotation%PI*2;
-      }
+      rotation = rotation%PI;
+    }
+    
     canvas.translate(width/2, height/2);
     for(int i =1; i < 500; i ++) {
      //pushMatrix();
@@ -62,8 +43,6 @@ class MolnarNode implements ModNode {
      molnar(canvas, 50 * (i % 10), 50);
      
      canvas.fill(255);
-     //text(rotation, 50 * (i % 10), 50);
-     //popMatrix();
     }
     
     canvas.endDraw();
@@ -72,20 +51,16 @@ class MolnarNode implements ModNode {
     return canvas;
   }
   
-   void molnar(PGraphics canvas, float xLoc, float yLoc){
-     
-      //if(frames % 2 == 0){ 
-      //  colArrayNum = (int)random(7);
-      //}
+  void molnar(PGraphics canvas, float xLoc, float yLoc){
       int colArrayNum = (int)random(7);
-        canvas.stroke(colArray[colArrayNum]);
+      
+      canvas.stroke(colArray[colArrayNum]);
       canvas.strokeWeight(2);
       canvas.pushMatrix();
       canvas.translate(xLoc, yLoc);
+      
       for(int num = 0; num<8; num++){
-        
-        float d =grid;
-          
+        float d = grid;
         float x1 = -random(d);
         float y1 = -random(d);
         float x2 = random(d);
@@ -94,20 +69,13 @@ class MolnarNode implements ModNode {
         float y3 = random(d);
         float x4 = -random(d);
         float y4 = random(d);
-      
-      
-        //pushMatrix();
-        
-        
+     
         canvas.noFill();
-        canvas.quad(x1, y1, x2, y2, x3, y3, x4, y4);
-        
-        
+        canvas.quad(x1, y1, x2, y2, x3, y3, x4, y4);  
      } 
-      canvas.popMatrix();
-  
+     
+     canvas.popMatrix();
   }
-
 
   public void init(Settings set) {
     this.set = set;

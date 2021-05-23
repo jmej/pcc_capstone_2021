@@ -8,16 +8,19 @@ public class ExplodeColorNode implements ModNode {
   private int colorThresh = 30;
   private int frameModCt = 60;
   private int dir = 1;
+  private boolean audioMod = false;
   
   public PImage mod(PImage frame) {
     if (frame.pixels.length == 0) frame.loadPixels();
   
     int thisDim;
+    int auModAmt = this.audioMod ? (int)map(fftData[0], 0, .5, 0, 10) : 0;
     if (dir == 1) {
       thisDim = (int)map(this.curFrame % this.frameModCt, 0, this.frameModCt, this.dim, this.hiDim);
     } else {
       thisDim = (int)map(this.curFrame % this.frameModCt, 0, this.frameModCt,this.hiDim, this.dim);
     }
+    thisDim += auModAmt;
     
     if (this.curFrame > 0 && this.curFrame % this.frameModCt == 0) {
       dir = dir == 1 ? 0 : 1;
@@ -31,6 +34,9 @@ public class ExplodeColorNode implements ModNode {
     
     for (int x = 0; x < frame.width; x += this.dim ) {
       for (int y = 0; y < frame.height; y += this.dim ) {
+    //    x += this.curFrame;
+     //   x = (x % frame.width);
+        
         int loc = x + y*frame.width;
         color currentColor = frame.pixels[loc];
         
@@ -77,6 +83,7 @@ public class ExplodeColorNode implements ModNode {
   public void init(Settings set) {
     this.set = set;
     this.frameModCt = (int)this.set.get("frameModCount");
+    this.audioMod = (boolean)this.set.get("audioMod");
   }
   
   public void setColor(color c) {

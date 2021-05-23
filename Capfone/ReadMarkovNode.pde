@@ -9,40 +9,53 @@ public class ReadMarkovNode  implements ModNode {
   private final int MAX_ATTEMPTS = 10;
   private File[] files;
   private String fromMarkovPath;
+  private String toMarkovPath;
+  private int outport = 12003;
+  private NetAddress remoteLocation;
     
   public PImage mod(PImage frame) {
     if (frame.pixels.length == 0) frame.loadPixels();
     
     JSONObject main = null;
     File jsonFile = null;
-    int attempts = 0;
+    OscMessage msg = null;
+
+    JSONObject out = new JSONObject();
+    int i = 0;
+    for (int x = 0; x < width; x += this.dim ) {
+      for (int y = 0; y < height; y += this.dim ) {
+        int loc = x + y*width;
+        color c = frame.pixels[loc];  
+        JSONArray elem = new JSONArray();
+        elem.setInt(0, (int)hue(c));
+        elem.setInt(1, (int)saturation(c));
+        elem.setInt(2, (int)brightness(c));
+        out.setJSONArray("" + i, elem);
+        i++;  
+      } 
+    }
+    
+    String outPath = sketchPath(this.toMarkovPath + "/frame-" + this.curFrame + "-" + i + ".json");
+    saveJSONObject(out, outPath);
+    msg = new OscMessage(outPath);
+    oscP5.send(msg, this.remoteLocation);
+    
+    println("SENT JSON to markov: " + outPath);
     
     try {
-      File file = new File(sketchPath(this.fromMarkovPath));
-      if (file.listFiles().length == 0) {
-        println("No Markov data available!");
-        return frame;
-      }
-      
-      this.files = file.listFiles();
-      
-      while(jsonFile == null && attempts < this.MAX_ATTEMPTS) {
-        jsonFile = this.getNextFile(file);
-        fileIdx++;
-        if (fileIdx > files.length) {
-          fileIdx = 0;
+      boolean found = false;
+      String markovPath = "";
+      while(!found) {
+        markovPath = oscCli.getMarkovPath();
+        if (!markovPath.equals("")){
+          found = true;
         }
-        
-        attempts++;
+        println("No Markov file...waiting");
+        delay(2000);
       }
-      
-      if (jsonFile == null) {
-        println("No file json file found, idx: "+ fileIdx);
-        return frame;   
-      } 
+      jsonFile = new File(markovPath);
       
       println("JSON file: " + jsonFile.getAbsolutePath());
-  
       main = loadJSONObject(jsonFile.getAbsolutePath()); 
       
     } catch (NullPointerException e) {
@@ -50,16 +63,16 @@ public class ReadMarkovNode  implements ModNode {
     }
     
     if (jsonFile == null || main == null) {
+      oscCli.clearMarkov();
       return frame;
     }
     
+    int idx = 0;
     PGraphics canvas = createGraphics(frame.width, frame.height);
     canvas.beginDraw();
     canvas.noStroke();
-    colorMode(HSB, 100);
+    canvas.colorMode(HSB, 100);
    
-    int idx = 0;
-
     for (int x = 0; x < width; x+= this.dim) {
       for (int y = 0; y< height; y+= this.dim) {
         try {
@@ -75,7 +88,9 @@ public class ReadMarkovNode  implements ModNode {
           idx++;
         } catch (NullPointerException e) {
           println("NULL POINTER: id: "+ jsonFile.getName() + ", idx: " + idx + " --"  + e.getMessage());
+          oscCli.clearMarkov();
           canvas.endDraw();
+          
           fileIdx++;
           if (files != null && fileIdx > files.length) fileIdx = 0;
          
@@ -90,6 +105,9 @@ public class ReadMarkovNode  implements ModNode {
     }
     
     canvas.endDraw();
+    this.curFrame++;
+    oscCli.clearMarkov();
+    
     return canvas;
   }
   
@@ -137,6 +155,11 @@ public class ReadMarkovNode  implements ModNode {
   public void init(Settings set) {
     this.set = set;
     this.fromMarkovPath = (String)this.set.get("fromMarkovPath");
+    this.outport = (int)this.set.get("markovOSCPort");
+    this.remoteLocation = new NetAddress("127.0.0.1", outport);
+    this.dim = (int)this.set.get("defaultDim");
+    this.toMarkovPath = (String)this.set.get("toMarkovPath");
+    
   }
   
   public void clicked() {}

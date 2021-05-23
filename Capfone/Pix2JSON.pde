@@ -46,10 +46,10 @@ public class Pix2JSON {
     msg = new OscMessage(outPath);
     oscP5.send(msg, this.remoteLocation);
     
-    if (this.curFrame == 0) {
+   /* if (this.curFrame == 0) {
       msg = new OscMessage("/begin");
       oscP5.send(msg, this.remoteLocation);
-    }
+    }*/
       
     this.curFrame++;
      
@@ -59,8 +59,8 @@ public class Pix2JSON {
   }
   
   public void sendEndMsg() {
-    OscMessage msg = new OscMessage("/end/" + this.curFrame);
-    oscP5.send(msg, this.remoteLocation);
+  //  OscMessage msg = new OscMessage("/end/" + this.curFrame);
+  //  oscP5.send(msg, this.remoteLocation);
   }
   
   public void setColor(color c) {

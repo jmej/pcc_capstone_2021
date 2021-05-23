@@ -27,7 +27,7 @@ class FrameData {
       info.setFloat(3, fi.low);
       info.setFloat(4, fi.lowmid);
       info.setFloat(5, fi.highmid);
-      info.setFloat(5, fi.high);
+      info.setFloat(6, fi.high);
       frameJson.setJSONArray(""+ i, info);
     }
      
@@ -63,7 +63,7 @@ class FrameData {
       int sa = int(totalSat / pixCt);
       
       println("Frame Info: " + ha + ", " + sa + ", " + ba);
-      fi = new FrameInfo(ha, sa, ba, fft.spectrum[0], fft.spectrum[1], fft.spectrum[2], fft.spectrum[3]);
+      fi = new FrameInfo(ha, sa, ba, fftData[0], fftData[1], fftData[2], fftData[3]);
     
       this.data.add(fi);
       

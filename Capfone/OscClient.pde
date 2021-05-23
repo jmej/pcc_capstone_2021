@@ -1,5 +1,6 @@
 class OscClient {
   private String finalAudioPath = "";
+  private String markovPath = "";
   
   public OscClient() {
     
@@ -32,18 +33,33 @@ class OscClient {
     try {
       String stringVal = "";
       
-      if(theOscMessage.checkAddrPattern("/maxaudio")!=true) {
-        return ret;
+      if(theOscMessage.checkAddrPattern("/maxaudio")==true) {
+        stringVal = theOscMessage.get(0).stringValue();
+        this.finalAudioPath = stringVal;
+        println("MAX AUDIO: " + stringVal);
+      } else 
+      if (theOscMessage.checkAddrPattern("/markovout")==true) {
+        stringVal = theOscMessage.get(0).stringValue();
+        println("Got Markov JSON: " + stringVal); 
+        this.markovPath = stringVal;
+      } else {
+        stringVal = theOscMessage.get(0).stringValue();
+        println("Didn't match anything, assuming markov data... - > " + stringVal);
+        this.markovPath = stringVal;
       }
-      
-      stringVal = theOscMessage.get(0).stringValue();
-      this.finalAudioPath = stringVal;
-      
-      println("MAX AUDIO: " + stringVal);
+
     } catch (Exception e) {
       println(e.getMessage());
     }
   
     return ret;
   } 
+  
+  public void clearMarkov() {
+    this.markovPath = "";
+  }
+  
+  public String getMarkovPath() {
+    return this.markovPath;
+  }
 }
