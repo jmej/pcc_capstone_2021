@@ -3,12 +3,15 @@
 #include <WiFi.h>
 #include <WiFiUdp.h>
 
-#define LED_PIN 18
+#define LED_PIN1 18
+#define LED_PIN2 6
 #define LED_COUNT 240
 
 #define BRIGHTNESS 100
 
-Adafruit_NeoPixel strip(LED_COUNT, LED_PIN, NEO_GRBW + NEO_KHZ800);
+Adafruit_NeoPixel strip(LED_COUNT, LED_PIN1, NEO_GRBW + NEO_KHZ800);
+Adafruit_NeoPixel strip2(LED_COUNT, LED_PIN2, NEO_GRBW + NEO_KHZ800);
+
 
 int randBehaviorTime = random(10000, 20000);
 
@@ -63,12 +66,14 @@ void setup() {
 
   strip.begin();
   strip.show();
+  strip.setBrightness(BRIGHTNESS);
 
 }
 
 void loop() {
 
   complete();
+
 }
 
 
@@ -77,11 +82,11 @@ void waiting() {
   
   for(;;) {
 
-    trackSensors();
+    //trackSensors();
     
-    //whiteOverRainbow(75,5);
-    //pulseWhite(5);
-    //rainbowFade2White(3, 3, 1);
+    whiteOverRainbow(40,5);
+    pulseWhite(5);
+    rainbowFade2White(3, 3, 1);
     if (waitingToIncomplete) {
       waitingToIncomplete = false;
       incomplete(usedSensors);  
@@ -153,6 +158,35 @@ void trackSensors() {
     }   
   }
 }
+
+int avgSensorVal() {
+
+  int s1 = pulseIn(sensor1Pin, HIGH);
+  int s2 = pulseIn(sensor2Pin, HIGH);
+  int s3 = pulseIn(sensor3Pin, HIGH);
+  int s4 = pulseIn(sensor4Pin, HIGH);
+
+  return (s1 + s2 + s3 + s4) / 4;
+}
+
+//array orderedSensors() {
+//
+//  int s1 = pulseIn(sensor1Pin, HIGH);
+//  int s2 = pulseIn(sensor2Pin, HIGH);
+//  int s3 = pulseIn(sensor3Pin, HIGH);
+//  int s4 = pulseIn(sensor4Pin, HIGH);
+//
+//  int sensors[] = {s1, s2, s3, s4};
+//  int sortedSensors[4];
+//
+//  
+//
+//
+//  return sortedSensors;
+//  
+//  
+//  
+//}
 
 //void sendSensorData() {
 //

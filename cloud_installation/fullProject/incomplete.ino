@@ -1,14 +1,14 @@
 void incomplete(int num) {
   for(;;) {
     incompleteBase(num);
-//    if (growingIncomplete == true) {
-//      colorWipe(incompColors[num - 2], 5);
-//      growingIncomplete = false;  
-//    }
-//    if (shrinkingIncomplete == true) {
-//      reverseColorWipe(incompColors[num - 1], 5);   // not sure num -1 is correct here
-//      shrinkingIncomplete = false;  
-//    }
+    if (growingIncomplete == true) {
+      colorWipe(incompColors[num - 2], 5);
+      growingIncomplete = false;  
+    }
+    if (shrinkingIncomplete == true) {
+      reverseColorWipe(incompColors[num - 1], 5);   // not sure num -1 is correct here
+      shrinkingIncomplete = false;  
+    }
     if (interrupt == true) {
       //incompleteInterrupt();
       pulseWhite(5);
@@ -58,7 +58,7 @@ void incompleteBase(int num) {  // num will be numOfSensors, 1 thru 3
 
     for(;;) {
       if (incompleteToComplete || incompleteToWaiting || shrinkingIncomplete || growingIncomplete) return;
-      for (int i = 0; i < strip.numPixels(); i++) {
+      for (int i = 0; i < strip.numPixels() * 2; i++) {
         for (int j = 0; j < strip.numPixels()/stripLength; j++) {
           if (((i >= tails[j]) && (i <= heads[j])) || ((tails[j] > heads[j]) && ((i >= tails[j]) || (i <= heads[j])))) {
             switch (num) {
@@ -66,12 +66,15 @@ void incompleteBase(int num) {  // num will be numOfSensors, 1 thru 3
               switch(j % 3) {
                 case 0:
                 strip.setPixelColor(i, incompColor1);
+                strip2.setPixelColor(i, incompColor1);
                 break;
                 case 1:
                 strip.setPixelColor(i, incompColor2);
+                strip2.setPixelColor(i, incompColor2);
                 break;
                 case 2:
                 strip.setPixelColor(i, incompColor3);
+                strip2.setPixelColor(i, incompColor3);
                 break;  
               }
               break;
@@ -79,15 +82,19 @@ void incompleteBase(int num) {  // num will be numOfSensors, 1 thru 3
               switch(j % 4) {
                 case 0:
                 strip.setPixelColor(i, incompColor1);
+                strip2.setPixelColor(i, incompColor1);
                 break;
                 case 1:
                 strip.setPixelColor(i, incompColor2);
+                strip2.setPixelColor(i, incompColor2);
                 break;
                 case 2:
                 strip.setPixelColor(i, incompColor3);
+                strip2.setPixelColor(i, incompColor3);
                 break;
                 case 3:
                 strip.setPixelColor(i, incompColor4);
+                strip2.setPixelColor(i, incompColor4);
                 break;  
               }
               break;
@@ -95,18 +102,23 @@ void incompleteBase(int num) {  // num will be numOfSensors, 1 thru 3
               switch(j % 5) {
                 case 0:
                 strip.setPixelColor(i, incompColor1);
+                strip2.setPixelColor(i, incompColor1);
                 break;
                 case 1:
                 strip.setPixelColor(i, incompColor2);
+                strip2.setPixelColor(i, incompColor2);
                 break;
                 case 2:
                 strip.setPixelColor(i, incompColor3);
+                strip2.setPixelColor(i, incompColor3);
                 break;
                 case 3:
                 strip.setPixelColor(i, incompColor4);
+                strip2.setPixelColor(i, incompColor4);
                 break;
                 case 4:
                 strip.setPixelColor(i, incompColor5);
+                strip2.setPixelColor(i, incompColor5);
                 break;
               }
               break;      
@@ -116,6 +128,7 @@ void incompleteBase(int num) {  // num will be numOfSensors, 1 thru 3
       }
 
     strip.show();
+    strip2.show();
 
       
     for (int i = 0; i < strip.numPixels()/stripLength; i++) {
@@ -143,12 +156,6 @@ void incompleteBase(int num) {  // num will be numOfSensors, 1 thru 3
       d = -d;
       return;
     }
-
-//    if (millis() > randTrigTime) {
-//      randTrigTime = millis() + random(10000, 20000);
-//      trig = true;
-//      return;  
-//    }
 
     int mappedAvgBrightness = map(dummyAvg, 1500, 45000, 200, 0);
 

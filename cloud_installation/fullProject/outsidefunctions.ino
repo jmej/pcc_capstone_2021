@@ -1,15 +1,28 @@
 void colorWipe(uint32_t color, int wait) {
-  for(int i = 0; i < strip.numPixels(); i++) {
-    strip.setPixelColor(i, color);
-    strip.show();
-    delay(wait);  
+  for(int i = 0; i < strip.numPixels() * 2; i++) {
+    if (i < 240) {
+      strip.setPixelColor(i, color);
+      strip.show();
+    }
+    else {
+      strip2.setPixelColor(i - 240, color);
+      strip2.show();  
+    }
+    delay(wait);
+      
   }  
 }
 
 void reverseColorWipe(uint32_t color, int wait) {
-  for (int i = strip.numPixels() -1; i >= 0; i--) {
-    strip.setPixelColor(i, color);
-    strip.show();
+  for (int i = (strip.numPixels() * 2) -1; i >= 0; i--) {
+    if (i >= 240) {
+      strip2.setPixelColor(i - 240, color);
+      strip2.show();
+    }
+    else {
+      strip.setPixelColor(i, color);
+      strip.show();  
+    }
     delay(wait);  
   }  
 }
@@ -20,7 +33,7 @@ void whiteOverRainbow(int whiteSpeed, int whiteLength) {
 
   int      head          = whiteLength - 1;
   int      tail          = 0;
-  int      loops         = 3;
+  int      loops         = 1;
   int      loopNum       = 0;
   uint32_t lastTime      = millis();
   uint32_t firstPixelHue = 0;
