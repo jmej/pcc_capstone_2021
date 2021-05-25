@@ -3,3 +3,6 @@
 Capfone/.DS_Store
 Capfone/ffmpeg.txt
 Capfone/ffmpeg-audio.txt
+Capfone/data/toMarkov
+Capfone/data/fromMarkov
+Capfone/data/frameData

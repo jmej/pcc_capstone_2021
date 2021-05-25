@@ -6,7 +6,7 @@ public class ReadMarkovNode  implements ModNode {
   private int curFrame = 0;
   private boolean active = true;
   private int fileIdx = 0;
-  private final int MAX_ATTEMPTS = 10;
+  private final int MAX_ATTEMPTS = 20;
   private File[] files;
   private String fromMarkovPath;
   private String toMarkovPath;
@@ -45,6 +45,7 @@ public class ReadMarkovNode  implements ModNode {
     try {
       boolean found = false;
       String markovPath = "";
+      int attempts = 0;
       while(!found) {
         markovPath = oscCli.getMarkovPath();
         if (!markovPath.equals("")){
@@ -52,6 +53,13 @@ public class ReadMarkovNode  implements ModNode {
         }
         println("No Markov file...waiting");
         delay(2000);
+        attempts++;
+        
+        if (attempts > MAX_ATTEMPTS) {
+          println("No file returned. Breaking...");
+          break;
+        }
+        
       }
       jsonFile = new File(markovPath);
       
@@ -64,6 +72,8 @@ public class ReadMarkovNode  implements ModNode {
     
     if (jsonFile == null || main == null) {
       oscCli.clearMarkov();
+      this.curFrame++;
+    
       return frame;
     }
     

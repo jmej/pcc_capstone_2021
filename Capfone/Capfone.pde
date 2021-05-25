@@ -172,14 +172,14 @@ void setup() {
   // For nodes that have a specfic color to track...
   color TRACK_COLOR = color(random(100), random(100), random(100));
    
-  try { //<>//
+  try { //<>// //<>//
     // Loop through the nodes and init, set default vars
     for (int i = 0; i < mods.length; i++) {
       mods[i].init(settings);
       mods[i].setDim(PIX_DIM);
       mods[i].setColor(TRACK_COLOR);
     }
-  } catch (NullPointerException e) { //<>// //<>//
+  } catch (NullPointerException e) { //<>//
     println("Node init error. Check node names in settings.json: " + e.getMessage());
   }
   
@@ -191,7 +191,7 @@ void setup() {
   rms.input(soundSource);
 }
 
-void draw() { //<>//
+void draw() {  //<>//
   canvas.beginDraw();
   canvas.image(movie, 0, 0);
 
@@ -275,7 +275,7 @@ void mouseClicked() {
 void endMovie() {
   String infoPath = frameData.writeToJson();
   String finalAudio = "";
-  int ct = 0;
+  int waitTime = 0;
   
   oscCli.sendJsonPath(infoPath);
   delay(100);
@@ -287,9 +287,11 @@ void endMovie() {
     finalAudio = oscCli.getFinalAudio();
     println("no audio...delaying 2s");
     delay(2000);
-    
-    ct++;
-    if (ct > 30) break; 
+    waitTime += 2;
+    if (waitTime >= movie.time() + 10) {
+      println("Timed out waiting for audio node reponse");
+      break;
+    }
   }
   
   if (!finalAudio.equals("")) {
