@@ -31,17 +31,14 @@ class MolnarNode implements ModNode {
     
     if (!pause){
       rotation += 0.0004;
-      rotation = rotation%PI;
+      rotation = random(PI);
     }
     
     canvas.translate(width/2, height/2);
     for(int i =1; i < 500; i ++) {
-     //pushMatrix();
-   //  float rotation = map(mouseX, 0, width, 0, PI);
      canvas.rotate(rotation);
      canvas.stroke(255);
-     molnar(canvas, 50 * (i % 10), 50);
-     
+     molnar(canvas, 50 * (i % 10), 50);  
      canvas.fill(255);
     }
     
