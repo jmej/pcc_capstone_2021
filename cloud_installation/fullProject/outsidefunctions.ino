@@ -2,30 +2,34 @@ void colorWipe(uint32_t color, int wait) {
   for(int i = 0; i < strip.numPixels() * 2; i++) {
     if (i < 240) {
       strip.setPixelColor(i, color);
-      strip.show();
     }
     else {
       strip2.setPixelColor(i - 240, color);
-      strip2.show();  
+      Serial.println(i-240);  
     }
+    strip.show();
+    strip2.show();
     delay(wait);
       
   }  
 }
 
 void reverseColorWipe(uint32_t color, int wait) {
-  for (int i = (strip.numPixels() * 2) -1; i >= 0; i--) {
+  for(int i = strip.numPixels() * 2 - 1; i >= 0; i--) {
     if (i >= 240) {
       strip2.setPixelColor(i - 240, color);
-      strip2.show();
     }
     else {
-      strip.setPixelColor(i, color);
-      strip.show();  
+      strip.setPixelColor(i, color); 
     }
-    delay(wait);  
+    strip.show();
+    strip2.show();
+    delay(wait);
+      
   }  
 }
+
+
 
 void whiteOverRainbow(int whiteSpeed, int whiteLength) {
 
@@ -72,13 +76,17 @@ void pulseWhite(uint8_t wait) {
   for(int j=0; j<256; j++) { // Ramp up from 0 to 255
     // Fill entire strip with white at gamma-corrected brightness level 'j':
     strip.fill(strip.Color(0, 0, 0, strip.gamma8(j)));
+    strip2.fill(strip.Color(0, 0, 0, strip.gamma8(j)));
     strip.show();
+    strip2.show();
     delay(wait);
   }
 
   for(int j=255; j>=0; j--) { // Ramp down from 255 to 0
     strip.fill(strip.Color(0, 0, 0, strip.gamma8(j)));
+    strip2.fill(strip.Color(0, 0, 0, strip.gamma8(j)));
     strip.show();
+    strip2.show();
     delay(wait);
   }
 }
@@ -137,40 +145,40 @@ void rainbowFade2White(int wait, int rainbowLoops, int whiteLoops) {
 }
 
 
-void meteorRain(int red, int green, int blue, byte meteorSize, byte meteorTrailDecay, boolean meteorRandomDecay, int SpeedDelay) {  
-  for (int i = 0; i < strip.numPixels(); i++) {
-    strip.setPixelColor(0, 0, 0, 0);
-  }
- 
-  for(int i = 0; i < 2 * strip.numPixels(); i++) {
-   
-   
-    // fade brightness all LEDs one step
-    for(int j=0; j<strip.numPixels(); j++) {
-      if( (!meteorRandomDecay) || (random(100)>99) ) {
-        fadeToBlack(j, meteorTrailDecay );        
-      }
-    }
-   
-    // draw meteor
-    for(int j = 0; j < meteorSize; j++) {
-      if( ( i-j <strip.numPixels()) && (i-j>=0) ) {
-        strip.setPixelColor(i-j, red, green, blue);
-      }
-    strip.show();
-    }
-   
-    
-    //delay(SpeedDelay);
-  }
-}
+//void meteorRain(int red, int green, int blue, byte meteorSize, byte meteorTrailDecay, boolean meteorRandomDecay, int SpeedDelay) {  
+//  for (int i = 0; i < strip.numPixels(); i++) {
+//    strip.setPixelColor(0, 0, 0, 0);
+//  }
+// 
+//  for(int i = 0; i < 2 * strip.numPixels(); i++) {
+//   
+//   
+//    // fade brightness all LEDs one step
+//    for(int j=0; j<strip.numPixels(); j++) {
+//      if( (!meteorRandomDecay) || (random(100)>99) ) {
+//        fadeToBlack(j, meteorTrailDecay );        
+//      }
+//    }
+//   
+//    // draw meteor
+//    for(int j = 0; j < meteorSize; j++) {
+//      if( ( i-j <strip.numPixels()) && (i-j>=0) ) {
+//        strip.setPixelColor(i-j, red, green, blue);
+//      }
+//    strip.show();
+//    }
+//   
+//    
+//    //delay(SpeedDelay);
+//  }
+//}
 
-void fadeToBlack(int ledNo, byte fadeValue) {
+void fadeToBlack(byte fadeValue) {
     uint32_t oldColor;
     uint8_t r, g, b;
     int value;
    
-    oldColor = strip.getPixelColor(ledNo);
+    oldColor = strip.getPixelColor(0);
     r = (oldColor & 0x00ff0000UL) >> 16;
     g = (oldColor & 0x0000ff00UL) >> 8;
     b = (oldColor & 0x000000ffUL);
@@ -179,7 +187,8 @@ void fadeToBlack(int ledNo, byte fadeValue) {
     g=(g<=10)? 0 : (int) g-(g*fadeValue/256);
     b=(b<=10)? 0 : (int) b-(b*fadeValue/256);
    
-    strip.setPixelColor(ledNo, r,g,b);
+    //strip.setPixelColor(ledNo, r,g,b);
+    strip.fill(r, g, b);
     strip.show();
 
 }

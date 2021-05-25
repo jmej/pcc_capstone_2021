@@ -1,6 +1,35 @@
 void fromItoC() {
 
-    colorWipe(
 
     
+}
+
+void fromCtoI() {
+  
+  
+}
+
+void fromItoW() {
+  
+  
+  
+}
+
+void fromCtoW() {
+  
+
+}
+
+
+void fromWtoI() {
+
+  
+  
+}
+
+
+void fade() {
+
+  
+  
 }

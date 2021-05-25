@@ -5,12 +5,17 @@
 
 #define LED_PIN1 18
 #define LED_PIN2 6
-#define LED_COUNT 240
+#define LED_COUNT1 240
+#define LED_COUNT2 240
 
 #define BRIGHTNESS 100
 
-Adafruit_NeoPixel strip(LED_COUNT, LED_PIN1, NEO_GRBW + NEO_KHZ800);
-Adafruit_NeoPixel strip2(LED_COUNT, LED_PIN2, NEO_GRBW + NEO_KHZ800);
+Adafruit_NeoPixel strip(LED_COUNT1, LED_PIN1, NEO_GRBW + NEO_KHZ800);
+Adafruit_NeoPixel strip2(LED_COUNT2, LED_PIN2, NEO_GRBW + NEO_KHZ800);
+
+int valCheck = 1000;
+
+int frameCount = 0;
 
 
 int randBehaviorTime = random(10000, 20000);
@@ -25,6 +30,8 @@ int sensor1Val, sensor2Val, sensor3Val, sensor4Val;
 int s1scaled, s2scaled, s3scaled, s4scaled; 
 long mm1, mm2, mm3, mm4;
 int usedSensors = 0;
+
+int currentBrightness;
 
 bool trig = false;
 bool interrupt = false;
@@ -49,16 +56,26 @@ uint32_t incompColor4 = strip.Color(120, 255, 30);
 uint32_t incompColor5 = strip.Color(227, 79, 30);
 
 uint32_t incompColors[] = {incompColor1, incompColor4, incompColor5};
+uint32_t compColors[] = {incompColor1, incompColor2, incompColor3, incompColor4};
+
+
+// generate time to read sensors, maybe every second? start smaller?
 
 
 
+//char command;
 
 void setup() {
   // put your setup code here, to run once:
 //  strip.begin();
 //  strip.show();
 //  strip.setBrightness(50);
-  Serial.begin(9600);
+//  Serial.begin(38400);
+//  Serial1.begin(38400);
+//
+//  while(!Serial);
+//  while(!Serial1);
+
   pinMode(sensor1Pin, INPUT);
   pinMode(sensor2Pin, INPUT);
   pinMode(sensor3Pin, INPUT);
@@ -66,14 +83,36 @@ void setup() {
 
   strip.begin();
   strip.show();
+  strip2.begin();
+  strip2.show();
   strip.setBrightness(BRIGHTNESS);
+  strip2.setBrightness(BRIGHTNESS);
 
 }
 
 void loop() {
 
+
+  //incomplete(1);
+
   complete();
 
+  //colorWipe(incompColor1, 5);
+
+//  int s1 = pulseIn(sensor1Pin, HIGH);
+//  int s2 = pulseIn(sensor2Pin, HIGH);
+//  int s3 = pulseIn(sensor3Pin, HIGH);
+//  int s4 = pulseIn(sensor4Pin, HIGH);
+//
+//  int vals[] = {s1, s2, s3, s4};
+//
+//  for (int i = 0; i < 4; i++) {
+//    Serial.print(vals[i]);
+//    Serial.print(", ");  
+//  }
+//  Serial.println();
+  
+  
 }
 
 
@@ -83,16 +122,21 @@ void waiting() {
   for(;;) {
 
     //trackSensors();
+
+    strip.setBrightness(BRIGHTNESS);
+    currentBrightness = BRIGHTNESS;
     
     whiteOverRainbow(40,5);
     pulseWhite(5);
     rainbowFade2White(3, 3, 1);
     if (waitingToIncomplete) {
       waitingToIncomplete = false;
+      fromWtoI();
       incomplete(usedSensors);  
     }
     if (waitingToComplete) {
       waitingToComplete = false;
+      fromCtoI();
       complete();  
     }
   }
@@ -114,59 +158,124 @@ void printRange() {
   Serial.println(mm3);
 }
 
-void trackSensors() {
+void trackSensors(int vals[]) {
 
   usedSensors = 0;
 
-  sensor1Val = pulseIn(sensor1Pin, HIGH);
-  sensor2Val = pulseIn(sensor2Pin, HIGH);
-  sensor3Val = pulseIn(sensor3Pin, HIGH);
-  sensor4Val = pulseIn(sensor4Pin, HIGH);
-
-  int sensorVals[] = {sensor1Val, sensor2Val, sensor3Val, sensor4Val};
+//  sensor1Val = pulseIn(sensor1Pin, HIGH);
+//  sensor2Val = pulseIn(sensor2Pin, HIGH);
+//  sensor3Val = pulseIn(sensor3Pin, HIGH);
+//  sensor4Val = pulseIn(sensor4Pin, HIGH);
+//
+//  int sensorVals[] = {sensor1Val, sensor2Val, sensor3Val, sensor4Val};
 
   for (int i = 0; i < 4; i++) {
-    if (sensorVals[i] < sensorMax) {
+    if (vals[i] < sensorMax) {
       usedSensors++; 
     }
   }
 
   if (usedSensors != previous) {
     if (usedSensors < 4 && usedSensors > previous) {
-      growingIncomplete = true;  
+      growingIncomplete = true;
+      Serial.print("growing Incomplete");  
     }
     else if (usedSensors < 4 && usedSensors < previous) {
-      shrinkingIncomplete = true;  
+      shrinkingIncomplete = true;
+      Serial.print("shrinking incomplete");  
     }
     else if (usedSensors == 4) {
-      incompleteToComplete = true;  
+      incompleteToComplete = true;
+      Serial.print("i to c");  
     }
     else if (usedSensors < 4 && previous == 4) {
-      completeToIncomplete = true;  
+      completeToIncomplete = true;
+      Serial.print("c to i");  
     }
     else if (1 <= usedSensors && usedSensors < 4 && previous == 0) {
-      waitingToIncomplete = true;  
+      waitingToIncomplete = true;
+      Serial.print("w to i");  
     }
     else if (usedSensors == 0 && previous > 0 && previous < 4) {
       incompleteToWaiting = true;
+      Serial.print("i to w");
     }
     else if (usedSensors == 0 && previous == 4) {
-      completeToWaiting = true;  
+      completeToWaiting = true;
+      Serial.print("c to i");  
     }
     else if (usedSensors == 4 && previous == 0) {
-      waitingToComplete = true;  
+      waitingToComplete = true;
+      Serial.print("w to c");  
     }   
   }
+
+  previous = usedSensors;
+
+
 }
 
-int avgSensorVal() {
+//array storeVals() {
+//
+//  int s1 = pulseIn(sensor1Pin, HIGH);
+//  int s2 = pulseIn(sensor2Pin, HIGH);
+//  int s3 = pulseIn(sensor3Pin, HIGH);
+//  int s4 = pulseIn(sensor4Pin, HIGH);
+//
+//  return {s1, s2, s3, s4};
+//
+//}
 
-  int s1 = pulseIn(sensor1Pin, HIGH);
-  int s2 = pulseIn(sensor2Pin, HIGH);
-  int s3 = pulseIn(sensor3Pin, HIGH);
-  int s4 = pulseIn(sensor4Pin, HIGH);
 
-  return (s1 + s2 + s3 + s4) / 4;
+int avgSensorVal(int vals[]) {
+
+  int sum = 0;
+
+  for (int i = 0; i < 4; i++) {
+    sum += vals[i];
+  }
+
+  return sum / 4;
+}
+
+int findMaxSensor(int vals[]) {
+
+  int maxVal = 0;
+  int maxIndex = 0;
+
+  for (int i = 0; i < 4; i++) {
+    if (vals[i] > maxVal) {
+      maxIndex = i;  
+    }
+  }
+
+  return maxIndex;
+
+}
+
+void smoothedVals(int vals[]) {
+
+  const int numReadings = 10;
+
+  int readings[4][numReadings];
+  int readIndex = 0;
+  int total[4] = {0};
+  int average[4] = {0};
+
+  for(int i = 0; i < 4; i++) {
+    total[i] = total[i] - readings[i][readIndex];
+    readings[i][readIndex] = vals[i];
+    average[i] = total[i] / numReadings;
+  }
+
+  readIndex++;
+
+  if (readIndex >= numReadings) {
+    readIndex = 0;
+  }
+
+  return average;
+
 }
 
 //array orderedSensors() {

@@ -1,3 +1,25 @@
+void complete() {
+  for(;;) {
+    completeBase();
+    if (completeToIncomplete) {
+      completeToIncomplete = false;
+      fromCtoI();
+      incomplete(usedSensors);  
+    }
+    if (completeToWaiting) {
+      completeToWaiting = false;
+      fromCtoW();
+      waiting();  
+    }
+    if (interrupt) {
+      completeInterrupt();
+      interrupt = false;
+    }  
+  }
+}
+
+
+
 void completeInterrupt() {
 
   
@@ -13,63 +35,119 @@ void completeBase() {
 
   //map sensor1Val to dominance of color1, sensor2Val -> color2, sensor3Val -> color3, sensor4Val -> color4
 
-  strip.setbrightness(BRIGHTNESS);
+
 
   for(;;){
-    if (completeToIncomplete || completeToWaiting) return;
+    if (completeToIncomplete || completeToWaiting || interrupt) return;
 
-    int centerArrayLength = 5;
+//    maxSensorIndex = findMaxSensor(storeVals());
+//
+//    int avg = avgSensors(storeVals());
+//    int startingIndex;
+//    if (maxSensorIndex < 3) {
+//      startingIndex = maxSensorIndex + 1; 
+//    }
+//    else {
+//      startingIndex = 0;  
+//    }
+
+
+    int centerArrayLength = 4;
 
     int maxLength = 10;
 
     int growthVals[] = {0, 0, 0, 0};
 
-    int color1Centers[centerArrayLength];
-    int color2Centers[centerArrayLength];
-    int color3Centers[centerArrayLength];
-    int color4Centers[centerArrayLength];
-    
-    for (int i = 0; i < centerArrayLength; i++) {
-      color1Centers[i] = int(random(0, 256));  /// might get duplicates, need to figure that out
-      color2Centers[i] = int(random(0, 256));
-      color3Centers[i] = int(random(0, 256));
-      color4Centers[i] = int(random(0, 256));
+
+    int centers1[4][centerArrayLength];
+    for (int i = 0; i < 4; i++) {
+      for (int j = 0; j < centerArrayLength; j++) {
+        //centers[i][j] = int(random(0, 256));
+        centers1[i][j] = int(random(j * strip.numPixels()/centerArrayLength, (j + 1) * strip.numPixels()/centerArrayLength));  
+      }  
     }
+
+    int centers2[4][centerArrayLength];
+    for (int i = 0; i < 4; i++) {
+      for (int j = 0; j < centerArrayLength; j++) {
+        //centers[i][j] = int(random(0, 256));
+        centers2[i][j] = int(random(j * strip.numPixels()/centerArrayLength, (j + 1) * strip.numPixels()/centerArrayLength));  
+      }  
+    }
+
+    bool doneGrowing[] = {false, false, false, false};
+
+    
     
     for(;;) {
-      //trackSensors();
-      if (completeToIncomplete || completeToWaiting) return;
+
+      int s1 = pulseIn(sensor1Pin, HIGH);
+      int s2 = pulseIn(sensor2Pin, HIGH);
+      int s3 = pulseIn(sensor3Pin, HIGH);
+      int s4 = pulseIn(sensor4Pin, HIGH);
+
+      int vals[] = {s1, s2, s3, s4};
+
+      trackSensors(vals);
+      if (completeToIncomplete || completeToWaiting || interrupt) return;
+
+//      
+      int mappedAvgBrightness = map(avgSensorVal(vals), sensorMin, sensorMax, 200, 0);
+      int mappedAvgIndices = int(map(avgSensorVal(vals), sensorMin, sensorMax, 120, 10)); 
       int numDone = 0;
 
-      bool doneGrowing[] = {false, false, false, false};
+      int color1MaxLength = map(s1, sensorMin, sensorMax, 16, 1);
+      int color2MaxLength = map(s2, sensorMin, sensorMax, 16, 1);
+      int color3MaxLength = map(s3, sensorMin, sensorMax, 16, 1);
+      int color4MaxLength = map(s4, sensorMin, sensorMax, 16, 1);
 
-      int color1MaxLength = map(sensor1Val, 1500, 45000, 16, 1);
-      int color2MaxLength = map(sensor2Val, 1500, 45000, 16, 1);
-      int color3MaxLength = map(sensor3Val, 1500, 45000, 16, 1);
-      int color4MaxLength = map(sensor4Val, 1500, 45000, 16, 1);
+      int maxLengths[] = {color1MaxLength, color2MaxLength, color3MaxLength, color4MaxLength};
+      //int maxLengths[] = {10, 10, 10, 10};
 
-      //int maxLengths[] = {color1MaxLength, color2MaxLength, color3MaxLength, color4MaxLength};
-      int maxLengths[] = {10, 10, 10, 10};
+      //int mappedAvg = map(avgSensorVal(), 1500, 45000, 60, 10);
+
+      int startingIndex;
+
+      if (findMaxSensor(vals) == 4) {
+        startingIndex = 0;  
+      }
+      else {
+        startingIndex = findMaxSensor(vals) + 1;  
+      }
+   
+      int twinklingIndices[mappedAvgIndices];
+
+      for (int i = 0; i < mappedAvgIndices; i++) {
+        twinklingIndices[i] = int(random(0, 480));  
+      }
       
 
-      for (int i = 0; i < strip.numPixels(); i++) {
+      for (int i = 0; i < strip.numPixels() * 2; i++) {
         for (int j = 0; j < centerArrayLength; j++) {
-          if (i <= color1Centers[j] + growthVals[0] && i >= color1Centers[j] - growthVals[0]) {
-            strip.setPixelColor(i, incompColor1);  
-          }
-          else if (i <= color2Centers[j] + growthVals[1] && i >= color2Centers[j] - growthVals[1]) {
-            strip.setPixelColor(i, incompColor2);  
-          }
-          else if (i <= color3Centers[j] + growthVals[2] && i >= color3Centers[j] - growthVals[2]) {
-            strip.setPixelColor(i, incompColor3);  
-          }
-          else if (i <= color4Centers[j] + growthVals[3] && i >= color4Centers[j] - growthVals[3]) {
-            strip.setPixelColor(i, incompColor4);  
-          }
-//          else {
-//            strip.setPixelColor(i, strip.Color(0, 0, 0, 255));  
-//          }  
+          for (int k = startingIndex; k < startingIndex + 4; k++) {
+            if (i < 240) {
+              if (i <= centers1[k % 4][j] + growthVals[k % 4] && i >= centers1[k % 4][j] - growthVals[k % 4]) {
+                strip.setPixelColor(i, compColors[k % 4]);  
+              }
+            }
+            else {
+              if ((i-240) <= centers2[k % 4][j] + growthVals[k % 4] && (i-240) >= centers2[k % 4][j] - growthVals[k % 4]) {
+                strip2.setPixelColor(i-240, compColors[k % 4 ]);
+              }  
+            } 
+          } 
         }
+      }
+
+      for (int i = 0; i < strip.numPixels() * 2; i++) {
+        if (arrayContains(twinklingIndices, mappedAvgIndices, i)) {
+          if (i < 240) {
+            strip.setPixelColor(i, strip.Color(0,0,0,255));
+          }
+          else {
+            strip2.setPixelColor(i - 240, strip.Color(0, 0, 0, 255));  
+          }  
+        }  
       }
 
       for (int i = 0; i < 4; i++) {
@@ -83,30 +161,23 @@ void completeBase() {
           numDone++;
         }  
       }
-  
-      if (numDone == 4) return;
-      
-      strip.show();
-      delay(100);
-      
-    }
-  }
-}
 
-void complete() {
-  for(;;) {
-    completeBase();
-    if (completeToIncomplete) {
-      completeToIncomplete = false;
-      incomplete(usedSensors);  
+      if (numDone == 4) {
+        Serial.println("done");
+        return;
+      }
+     
+      //delay(100);
+
+      //int mappedAvgBrightness = map(dummyAvg, 1500, 45000, 200, 0);
+      //int mappedAvgBrightness = map(avgSensorVal(), sensorMin, sensorMax, 200, 0);
+
+      //strip.setBrightness(mappedAvgBrightness);
+      //currentBrightness = mappedAvgBrightness;
+
+      strip.show();
+      strip2.show();
+      
     }
-    if (completeToWaiting) {
-      completeToWaiting = false;
-      waiting();  
-    }
-    if (interrupt) {
-      completeInterrupt();
-      interrupt = false;
-    }  
   }
 }

@@ -29,8 +29,6 @@ void incomplete(int num) {
 
 void incompleteBase(int num) {  // num will be numOfSensors, 1 thru 3
 
-    //trackSensors();
-
     int stripLength = 0;
 
 //    int mappedMinTime = map(dummyAvg, 1500, 45000, 4000, 35000);
@@ -57,6 +55,42 @@ void incompleteBase(int num) {  // num will be numOfSensors, 1 thru 3
     }
 
     for(;;) {
+
+//      int s1;
+//      int s2;
+//      int s3;
+//      int s4;
+//      int vals[4];
+//      if (frameCount % 5 == 0) {
+//        s1 = pulseIn(sensor1Pin, HIGH);
+//        s2 = pulseIn(sensor2Pin, HIGH);
+//        s3 = pulseIn(sensor3Pin, HIGH);
+//        s4 = pulseIn(sensor4Pin, HIGH);
+//        vals[0] = s1;
+//        vals[1] = s2;
+//        vals[3] = s3;
+//        vals[4] = s4;
+//        for (int i = 0; i < 4; i++) {
+//          Serial.println(vals[i]);  
+//        }
+//        trackSensors(vals);
+//      }
+
+      int s1 = pulseIn(sensor1Pin, HIGH);
+      int s2 = pulseIn(sensor2Pin, HIGH);
+      int s3 = pulseIn(sensor3Pin, HIGH);
+      int s4 = pulseIn(sensor4Pin, HIGH);
+      int vals[] = {s1, s2, s3, s4};
+
+      for (int i = 0; i < 4; i++) {
+        Serial.print(vals[i]);
+        Serial.print(", ");  
+      }
+      Serial.println();
+
+      
+
+      
       if (incompleteToComplete || incompleteToWaiting || shrinkingIncomplete || growingIncomplete) return;
       for (int i = 0; i < strip.numPixels() * 2; i++) {
         for (int j = 0; j < strip.numPixels()/stripLength; j++) {
@@ -149,6 +183,7 @@ void incompleteBase(int num) {  // num will be numOfSensors, 1 thru 3
     }
 
     int mappedAvgSpeed = map(dummyAvg, 1500, 45000, 30, 150);
+    //int mappedAvgSpeed = map(avgSensorVal(vals), sensorMin, sensorMax, 30, 150);
     
     if (millis() > randBehaviorTime) {
       randBehaviorTime = millis() + random(20000, 30000);
@@ -158,87 +193,25 @@ void incompleteBase(int num) {  // num will be numOfSensors, 1 thru 3
     }
 
     int mappedAvgBrightness = map(dummyAvg, 1500, 45000, 200, 0);
+    //int mappedAvgBrightness = map(avgSensorVal, sensorMin, sensorMax, 200, 0);
 
     strip.setBrightness(mappedAvgBrightness);
+    strip2.setBrightness(mappedAvgBrightness);
+    currentBrightness = mappedAvgBrightness;
 
-    delay(mappedAvgSpeed);
+    //delay(mappedAvgSpeed);
 
     dummyAvg += avgChange;
     if ((dummyAvg <= 1500) || (dummyAvg >= 45000)) {
       avgChange = -avgChange; 
     }
-
+    frameCount++;
   }
 
 }
 
 void incompleteInterrupt(int wait) {
 
-
-  for(int j=0; j<256; j++) { // Ramp up from 0 to 255
-    // Fill entire strip with white at gamma-corrected brightness level 'j':
-    strip.fill(strip.Color(201, 87, 194, strip.gamma8(j)));
-    strip.show();
-    delay(wait);
-  }
-
-  for(int j=255; j>=0; j--) { // Ramp down from 255 to 0
-    strip.fill(strip.Color(201, 87, 194, strip.gamma8(j)));
-    strip.show();
-    delay(wait);
-  }
-
-  for(int j=0; j<256; j++) { // Ramp up from 0 to 255
-    // Fill entire strip with white at gamma-corrected brightness level 'j':
-    strip.fill(strip.Color(85, 206, 191, strip.gamma8(j)));
-    strip.show();
-    delay(wait);
-  }
-
-  for(int j=255; j>=0; j--) { // Ramp down from 255 to 0
-    strip.fill(strip.Color(85, 206, 191, strip.gamma8(j)));
-    strip.show();
-    delay(wait);
-  }
-
-  for(int j=0; j<256; j++) { // Ramp up from 0 to 255
-    // Fill entire strip with white at gamma-corrected brightness level 'j':
-    strip.fill(strip.Color(245, 180, 50, strip.gamma8(j)));
-    strip.show();
-    delay(wait);
-  }
-
-  for(int j=255; j>=0; j--) { // Ramp down from 255 to 0
-    strip.fill(strip.Color(245, 180, 50, strip.gamma8(j)));
-    strip.show();
-    delay(wait);
-  }
-
-//  if (num >= 2) {
-//    for(int j = 0; j < 256; j++) {
-//      strip.fill(strip.Color(120, 255, 30, strip.gamma8(j)));
-//      strip.show();
-//      delay(wait);  
-//    }
-//
-//    for(int j = 255; j >= 0; j++) {
-//      strip.fill(strip.Color(120, 255, 30, strip.gamma8(j)));
-//      strip.show();
-//      delay(wait);  
-//    }
-//  }
-//
-//  if (num == 3) {
-//    for(int j = 0; j < 256; j++) {
-//      strip.fill(strip.Color(227, 79, 30, strip.gamma8(j)));
-//      strip.show();
-//      delay(wait); 
-//    }
-//    for(int j = 255; j >= 0; j--) {
-//      strip.fill(strip.Color(227, 79, 30, strip.gamma8(j)));
-//      strip.show();
-//      delay(wait);  
-//    }   
-//  }
+  
   
 }
