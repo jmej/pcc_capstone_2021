@@ -30,14 +30,16 @@ void draw() {
   background(15, 20, 30);
   //frames++;
   if (!pause){
+    //rotation = random(PI*2);
     rotation += 0.0004;
       rotation = rotation%PI;
       //rotation = rotation%PI*2;
     }
   translate(width/2, height/2);
+  //float rotation = map(mouseX, 0, width, 0, PI);
   for(int i =1; i < 500; i ++) {
    //pushMatrix();
-   float rotation = map(mouseX, 0, width, 0, PI);
+   
    rotate(rotation);
    stroke(255);
    molnar(50 * (i % 10), 50);
@@ -53,7 +55,7 @@ void draw() {
     //  colArrayNum = (int)random(7);
     //}
     int colArrayNum = (int)random(7);
-      stroke(colArray[colArrayNum]);
+    stroke(colArray[colArrayNum]);
     strokeWeight(2);
     pushMatrix();
     translate(xLoc, yLoc);
