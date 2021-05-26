@@ -13,7 +13,6 @@ void complete() {
     }
     if (interrupt) {
       completeInterrupt();
-      interrupt = false;
     }  
   }
 }
@@ -22,8 +21,14 @@ void complete() {
 
 void completeInterrupt() {
 
-  if (fWhite < 255) {
+  interrupt = false;
+
+  for(;;) {
     Fire(20, 50, 15);
+    if (fWhite >= 255) return;
+  }
+  for (int i = 0; i < strip.numPixels()*2; i++) {
+    doubleFade(i, 22);
   }
   // play around with values
   
@@ -31,6 +36,9 @@ void completeInterrupt() {
 }
 
 void completeBase() {
+
+  fBrightness = 0;
+  fWhite = 0;
 
 
   // for now, generate random location and random max length
@@ -96,12 +104,6 @@ void completeBase() {
 
       smoothVals(vals);
 
-      for (int i = 0; i < 4; i++) {
-        Serial.print(vals[i]);
-        Serial.print(", ");  
-      }
-      Serial.println();
-
       //trackSensors(vals);
       if (completeToIncomplete || completeToWaiting || interrupt) return;
 
@@ -161,16 +163,16 @@ void completeBase() {
         }
       }
 //
-      for (int i = 0; i < strip.numPixels() * 2; i++) {
-        if (arrayContains(twinklingIndices, mappedAvgIndices, i)) {
-          if (i < 240) {
-            strip.setPixelColor(i, strip.Color(0,0,0,255));
-          }
-          else {
-            strip2.setPixelColor(i - 240, strip.Color(0, 0, 0, 255));  
-          }  
-        }  
-      }
+//      for (int i = 0; i < strip.numPixels() * 2; i++) {
+//        if (arrayContains(twinklingIndices, mappedAvgIndices, i)) {
+//          if (i < 240) {
+//            strip.setPixelColor(i, strip.Color(0,0,0,255));
+//          }
+//          else {
+//            strip2.setPixelColor(i - 240, strip.Color(0, 0, 0, 255));  
+//          }  
+//        }  
+//      }
 
       for (int i = 0; i < 4; i++) {
         if (growthVals[i] < maxLengths[i]) {
@@ -185,10 +187,14 @@ void completeBase() {
       }
 
       if (numDone == 4) {
+        Serial.println("done");
         return;
       }
 
-      if(millis() > checkTime || !didIt) {
+      strip.show();
+      strip2.show();
+
+      if(millis() > checkTime && !didIt) {
         didIt = true;
         interrupt = true;
         return;
@@ -200,9 +206,6 @@ void completeBase() {
 //      strip.setBrightness(mappedAvgBrightness);
 //      strip2.setBrightness(mappedAvgBrightness);
       //currentBrightness = mappedAvgBrightness;
-
-      strip.show();
-      strip2.show();
       
     }
   }

@@ -179,11 +179,11 @@ float Fire(int Cooling, int Sparking, int SpeedDelay) {
     }
 
     if (fBrightness < 255) {
-      fBrightness+=0.5;  
+      fBrightness+=1;  
     }
 
     if (fBrightness >= 255) {
-      fWhite+=0.5;  
+      fWhite+=1;  
     }
   
     strip.setBrightness(fBrightness);
@@ -257,6 +257,40 @@ void fadeToBlack(int ledNo, byte fadeValue) {
     b=(b<=10)? 0 : (int) b-(b*fadeValue/256);
    
     strip.setPixelColor(ledNo, r,g,b);
+
+}
+
+void doubleFade(int ledNo, byte fadeValue) {
+  uint32_t oldColor;
+  uint8_t r, g, b;
+  int value;
+
+  if (ledNo < 240) {
+    oldColor = strip.getPixelColor(ledNo);
+    r = (oldColor & 0x00ff0000UL) >> 16;
+    g = (oldColor & 0x0000ff00UL) >> 8;
+    b = (oldColor & 0x000000ffUL);
+  
+    r=(r<=10)? 0 : (int) r-(r*fadeValue/256);
+    g=(g<=10)? 0 : (int) g-(g*fadeValue/256);
+    b=(b<=10)? 0 : (int) b-(b*fadeValue/256);
+     
+    strip.setPixelColor(ledNo, r,g,b);
+  }
+  else {
+    oldColor = strip2.getPixelColor(ledNo - 240);
+    r = (oldColor & 0x00ff0000UL) >> 16;
+    g = (oldColor & 0x0000ff00UL) >> 8;
+    b = (oldColor & 0x000000ffUL);
+  
+    r=(r<=10)? 0 : (int) r-(r*fadeValue/256);
+    g=(g<=10)? 0 : (int) g-(g*fadeValue/256);
+    b=(b<=10)? 0 : (int) b-(b*fadeValue/256);
+     
+    strip2.setPixelColor(ledNo - 240, r,g,b);
+  }
+  strip.show();
+  strip2.show();  
 
 }
 
