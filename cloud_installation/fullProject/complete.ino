@@ -81,14 +81,24 @@ void completeBase() {
     
     for(;;) {
 
-      int s1 = pulseIn(sensor1Pin, HIGH);
-      int s2 = pulseIn(sensor2Pin, HIGH);
-      int s3 = pulseIn(sensor3Pin, HIGH);
-      int s4 = pulseIn(sensor4Pin, HIGH);
+//      int s1 = pulseIn(sensor1Pin, HIGH);
+//      int s2 = pulseIn(sensor2Pin, HIGH);
+//      int s3 = pulseIn(sensor3Pin, HIGH);
+//      int s4 = pulseIn(sensor4Pin, HIGH);
+//
+//      int vals[] = {s1, s2, s3, s4};
 
-      int vals[] = {s1, s2, s3, s4};
+      int vals[] = {0, 0, 0, 0};
 
-      trackSensors(vals);
+      smoothVals(vals);
+
+      for (int i = 0; i < 4; i++) {
+        Serial.print(vals[i]);
+        Serial.print(", ");  
+      }
+      Serial.println();
+
+      //trackSensors(vals);
       if (completeToIncomplete || completeToWaiting || interrupt) return;
 
 //      
@@ -96,23 +106,31 @@ void completeBase() {
       int mappedAvgIndices = int(map(avgSensorVal(vals), sensorMin, sensorMax, 120, 10)); 
       int numDone = 0;
 
-      int color1MaxLength = map(s1, sensorMin, sensorMax, 16, 1);
-      int color2MaxLength = map(s2, sensorMin, sensorMax, 16, 1);
-      int color3MaxLength = map(s3, sensorMin, sensorMax, 16, 1);
-      int color4MaxLength = map(s4, sensorMin, sensorMax, 16, 1);
+      int color1MaxLength = map(vals[0], sensorMin, sensorMax, 16, 1);
+      int color2MaxLength = map(vals[1], sensorMin, sensorMax, 16, 1);
+      int color3MaxLength = map(vals[2], sensorMin, sensorMax, 16, 1);
+      int color4MaxLength = map(vals[3], sensorMin, sensorMax, 16, 1);
 
       int maxLengths[] = {color1MaxLength, color2MaxLength, color3MaxLength, color4MaxLength};
       //int maxLengths[] = {10, 10, 10, 10};
 
       //int mappedAvg = map(avgSensorVal(), 1500, 45000, 60, 10);
-
+      
+      int maxVal = 0;
+      int maxSensor;
       int startingIndex;
 
-      if (findMaxSensor(vals) == 4) {
+      for (int i = 0; i < 4; i++) {
+        if (vals[i] > maxVal) {
+          maxSensor = i;
+        }
+      }
+
+      if (maxSensor == 4) {
         startingIndex = 0;  
       }
       else {
-        startingIndex = findMaxSensor(vals) + 1;  
+        startingIndex = maxSensor + 1;  
       }
    
       int twinklingIndices[mappedAvgIndices];
@@ -138,7 +156,7 @@ void completeBase() {
           } 
         }
       }
-
+//
       for (int i = 0; i < strip.numPixels() * 2; i++) {
         if (arrayContains(twinklingIndices, mappedAvgIndices, i)) {
           if (i < 240) {
@@ -163,16 +181,14 @@ void completeBase() {
       }
 
       if (numDone == 4) {
-        Serial.println("done");
         return;
       }
      
       //delay(100);
 
-      //int mappedAvgBrightness = map(dummyAvg, 1500, 45000, 200, 0);
-      //int mappedAvgBrightness = map(avgSensorVal(), sensorMin, sensorMax, 200, 0);
 
-      //strip.setBrightness(mappedAvgBrightness);
+      strip.setBrightness(mappedAvgBrightness);
+      strip2.setBrightness(mappedAvgBrightness);
       //currentBrightness = mappedAvgBrightness;
 
       strip.show();

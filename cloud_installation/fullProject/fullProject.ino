@@ -1,7 +1,4 @@
 #include <Adafruit_NeoPixel.h>
-#include <OSCMessage.h>
-#include <WiFi.h>
-#include <WiFiUdp.h>
 
 #define LED_PIN1 18
 #define LED_PIN2 6
@@ -12,6 +9,7 @@
 
 Adafruit_NeoPixel strip(LED_COUNT1, LED_PIN1, NEO_GRBW + NEO_KHZ800);
 Adafruit_NeoPixel strip2(LED_COUNT2, LED_PIN2, NEO_GRBW + NEO_KHZ800);
+
 
 int valCheck = 1000;
 
@@ -59,6 +57,13 @@ uint32_t incompColors[] = {incompColor1, incompColor4, incompColor5};
 uint32_t compColors[] = {incompColor1, incompColor2, incompColor3, incompColor4};
 
 
+const int numReadings = 20;
+int readings[4][numReadings];
+int readIndex = 0;
+int totals[4];
+int averages[4];
+
+
 // generate time to read sensors, maybe every second? start smaller?
 
 
@@ -66,20 +71,24 @@ uint32_t compColors[] = {incompColor1, incompColor2, incompColor3, incompColor4}
 //char command;
 
 void setup() {
-  // put your setup code here, to run once:
-//  strip.begin();
-//  strip.show();
-//  strip.setBrightness(50);
-//  Serial.begin(38400);
-//  Serial1.begin(38400);
-//
-//  while(!Serial);
-//  while(!Serial1);
 
   pinMode(sensor1Pin, INPUT);
   pinMode(sensor2Pin, INPUT);
   pinMode(sensor3Pin, INPUT);
   pinMode(sensor4Pin, INPUT);
+
+  for (int i = 0; i < 4; i++) {
+    for (int j = 0; j < numReadings; j++) {
+      readings[i][j] = 0;  
+    }  
+  }
+
+  for (int i = 0; i < numReadings; i++) {
+    readings1[i] = 0;
+    readings2[i] = 0;
+    readings3[i] = 0;
+    readings4[i] = 0;  
+  }
 
   strip.begin();
   strip.show();
@@ -95,23 +104,9 @@ void loop() {
 
   //incomplete(1);
 
-  complete();
+  //complete();
 
   //colorWipe(incompColor1, 5);
-
-//  int s1 = pulseIn(sensor1Pin, HIGH);
-//  int s2 = pulseIn(sensor2Pin, HIGH);
-//  int s3 = pulseIn(sensor3Pin, HIGH);
-//  int s4 = pulseIn(sensor4Pin, HIGH);
-//
-//  int vals[] = {s1, s2, s3, s4};
-//
-//  for (int i = 0; i < 4; i++) {
-//    Serial.print(vals[i]);
-//    Serial.print(", ");  
-//  }
-//  Serial.println();
-  
   
 }
 
@@ -253,49 +248,31 @@ int findMaxSensor(int vals[]) {
 
 }
 
-void smoothedVals(int vals[]) {
+void smoothVals(int vals[]) {
 
-  const int numReadings = 10;
-
-  int readings[4][numReadings];
-  int readIndex = 0;
-  int total[4] = {0};
-  int average[4] = {0};
-
-  for(int i = 0; i < 4; i++) {
-    total[i] = total[i] - readings[i][readIndex];
-    readings[i][readIndex] = vals[i];
-    average[i] = total[i] / numReadings;
+  for (int i = 0; i < 4; i++) {
+    totals[i] = totals[i] - readings[i][readIndex];
+    readings[i][readIndex] = pulseIn(i + 14, HIGH);
+    totals[i] = totals[i] + readings[i][readIndex];  
   }
 
   readIndex++;
 
   if (readIndex >= numReadings) {
-    readIndex = 0;
+    readIndex = 0;  
   }
 
-  return average;
+  for (int i = 0; i < 4; i++) {
+    averages[i] = totals[i] / numReadings;  
+  }
+
+  for (int i = 0; i < 4; i++) {
+    vals[i] = averages[i];  
+  }
+
+  
 
 }
-
-//array orderedSensors() {
-//
-//  int s1 = pulseIn(sensor1Pin, HIGH);
-//  int s2 = pulseIn(sensor2Pin, HIGH);
-//  int s3 = pulseIn(sensor3Pin, HIGH);
-//  int s4 = pulseIn(sensor4Pin, HIGH);
-//
-//  int sensors[] = {s1, s2, s3, s4};
-//  int sortedSensors[4];
-//
-//  
-//
-//
-//  return sortedSensors;
-//  
-//  
-//  
-//}
 
 //void sendSensorData() {
 //

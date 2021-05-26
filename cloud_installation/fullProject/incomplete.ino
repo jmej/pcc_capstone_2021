@@ -11,7 +11,7 @@ void incomplete(int num) {
     }
     if (interrupt == true) {
       //incompleteInterrupt();
-      pulseWhite(5);
+      //pulseWhite(5);
       interrupt = false;  
     }
     if (incompleteToComplete) {
@@ -56,26 +56,6 @@ void incompleteBase(int num) {  // num will be numOfSensors, 1 thru 3
 
     for(;;) {
 
-//      int s1;
-//      int s2;
-//      int s3;
-//      int s4;
-//      int vals[4];
-//      if (frameCount % 5 == 0) {
-//        s1 = pulseIn(sensor1Pin, HIGH);
-//        s2 = pulseIn(sensor2Pin, HIGH);
-//        s3 = pulseIn(sensor3Pin, HIGH);
-//        s4 = pulseIn(sensor4Pin, HIGH);
-//        vals[0] = s1;
-//        vals[1] = s2;
-//        vals[3] = s3;
-//        vals[4] = s4;
-//        for (int i = 0; i < 4; i++) {
-//          Serial.println(vals[i]);  
-//        }
-//        trackSensors(vals);
-//      }
-
       int s1 = pulseIn(sensor1Pin, HIGH);
       int s2 = pulseIn(sensor2Pin, HIGH);
       int s3 = pulseIn(sensor3Pin, HIGH);
@@ -88,10 +68,14 @@ void incompleteBase(int num) {  // num will be numOfSensors, 1 thru 3
       }
       Serial.println();
 
-      
+      //smoothVals(vals);
+
+      //trackSensors(vals);
+      if (incompleteToComplete || incompleteToWaiting || shrinkingIncomplete || growingIncomplete) return;
+
+      int mappedAvgBrightness = map(avgSensorVal(vals), sensorMin, sensorMax, 200, 0);
 
       
-      if (incompleteToComplete || incompleteToWaiting || shrinkingIncomplete || growingIncomplete) return;
       for (int i = 0; i < strip.numPixels() * 2; i++) {
         for (int j = 0; j < strip.numPixels()/stripLength; j++) {
           if (((i >= tails[j]) && (i <= heads[j])) || ((tails[j] > heads[j]) && ((i >= tails[j]) || (i <= heads[j])))) {
@@ -181,9 +165,6 @@ void incompleteBase(int num) {  // num will be numOfSensors, 1 thru 3
         tails[i] = strip.numPixels()-1;  
       }  
     }
-
-    int mappedAvgSpeed = map(dummyAvg, 1500, 45000, 30, 150);
-    //int mappedAvgSpeed = map(avgSensorVal(vals), sensorMin, sensorMax, 30, 150);
     
     if (millis() > randBehaviorTime) {
       randBehaviorTime = millis() + random(20000, 30000);
@@ -192,20 +173,16 @@ void incompleteBase(int num) {  // num will be numOfSensors, 1 thru 3
       return;
     }
 
-    int mappedAvgBrightness = map(dummyAvg, 1500, 45000, 200, 0);
-    //int mappedAvgBrightness = map(avgSensorVal, sensorMin, sensorMax, 200, 0);
+    //int mappedAvgBrightness = map(dummyAvg, 1500, 45000, 200, 0);
 
     strip.setBrightness(mappedAvgBrightness);
     strip2.setBrightness(mappedAvgBrightness);
     currentBrightness = mappedAvgBrightness;
 
-    //delay(mappedAvgSpeed);
-
-    dummyAvg += avgChange;
-    if ((dummyAvg <= 1500) || (dummyAvg >= 45000)) {
-      avgChange = -avgChange; 
-    }
-    frameCount++;
+//    dummyAvg += avgChange;
+//    if ((dummyAvg <= 1500) || (dummyAvg >= 45000)) {
+//      avgChange = -avgChange; 
+//    }
   }
 
 }
