@@ -2,11 +2,11 @@ void incomplete(int num) {
   for(;;) {
     incompleteBase(num);
     if (growingIncomplete == true) {
-      colorWipe(incompColors[num - 2], 5);
+      colorWipe(incompColors[num]);
       growingIncomplete = false;  
     }
     if (shrinkingIncomplete == true) {
-      reverseColorWipe(incompColors[num - 1], 5);   // not sure num -1 is correct here
+      reverseColorWipe(incompColors[num - 1]);
       shrinkingIncomplete = false;  
     }
     if (interrupt == true) {
@@ -165,18 +165,23 @@ void incompleteBase(int num) {  // num will be numOfSensors, 1 thru 3
         tails[i] = strip.numPixels()-1;  
       }  
     }
-    
-    if (millis() > randBehaviorTime) {
-      randBehaviorTime = millis() + random(20000, 30000);
-      interrupt = true;
-      d = -d;
-      return;
+
+    if (millis() > checkTime) {
+      checkTime = millis() + 5000;
+      shrinkingIncomplete = true;  
     }
+    
+//    if (millis() > randBehaviorTime) {
+//      randBehaviorTime = millis() + random(20000, 30000);
+//      interrupt = true;
+//      d = -d;
+//      return;
+//    }
 
     //int mappedAvgBrightness = map(dummyAvg, 1500, 45000, 200, 0);
 
-    strip.setBrightness(mappedAvgBrightness);
-    strip2.setBrightness(mappedAvgBrightness);
+//    strip.setBrightness(mappedAvgBrightness);
+//    strip2.setBrightness(mappedAvgBrightness);
     currentBrightness = mappedAvgBrightness;
 
 //    dummyAvg += avgChange;
@@ -187,8 +192,11 @@ void incompleteBase(int num) {  // num will be numOfSensors, 1 thru 3
 
 }
 
-void incompleteInterrupt(int wait) {
+void incompleteInterrupt() {
 
+  meteorRain(201, 87, 194, 4, 22, true, 8);
+
+  
   
   
 }

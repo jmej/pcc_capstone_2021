@@ -10,11 +10,14 @@
 Adafruit_NeoPixel strip(LED_COUNT1, LED_PIN1, NEO_GRBW + NEO_KHZ800);
 Adafruit_NeoPixel strip2(LED_COUNT2, LED_PIN2, NEO_GRBW + NEO_KHZ800);
 
+bool didIt = false;
 
 int valCheck = 1000;
 
 int frameCount = 0;
 
+float fBrightness = 0;
+float fWhite = 0;
 
 int randBehaviorTime = random(10000, 20000);
 
@@ -46,6 +49,8 @@ bool waitingToIncomplete = false;
 bool incompleteToWaiting = false;
 bool completeToWaiting = false;
 bool waitingToComplete = false;
+
+int checkTime = 20000;
 
 uint32_t incompColor1 = strip.Color(201, 87, 194);
 uint32_t incompColor2 = strip.Color(85, 206, 191);
@@ -83,13 +88,6 @@ void setup() {
     }  
   }
 
-  for (int i = 0; i < numReadings; i++) {
-    readings1[i] = 0;
-    readings2[i] = 0;
-    readings3[i] = 0;
-    readings4[i] = 0;  
-  }
-
   strip.begin();
   strip.show();
   strip2.begin();
@@ -102,12 +100,17 @@ void setup() {
 void loop() {
 
 
-  //incomplete(1);
+  //incomplete(2);
 
-  //complete();
+  //meteorRain(201, 87, 194, 4, 22, true, 8);
+  
+  //strip.fill(0, strip.Color(255, 0, 0, 0));
+
+  complete();
 
   //colorWipe(incompColor1, 5);
-  
+  //Fire(20, 50, 15);
+ 
 }
 
 
@@ -126,12 +129,12 @@ void waiting() {
     rainbowFade2White(3, 3, 1);
     if (waitingToIncomplete) {
       waitingToIncomplete = false;
-      fromWtoI();
+      //fromWtoI();
       incomplete(usedSensors);  
     }
     if (waitingToComplete) {
       waitingToComplete = false;
-      fromCtoI();
+      //fromCtoI();
       complete();  
     }
   }

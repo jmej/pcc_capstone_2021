@@ -22,6 +22,10 @@ void complete() {
 
 void completeInterrupt() {
 
+  if (fWhite < 255) {
+    Fire(20, 50, 15);
+  }
+  // play around with values
   
   
 }
@@ -183,12 +187,18 @@ void completeBase() {
       if (numDone == 4) {
         return;
       }
+
+      if(millis() > checkTime || !didIt) {
+        didIt = true;
+        interrupt = true;
+        return;
+      }
      
       //delay(100);
 
 
-      strip.setBrightness(mappedAvgBrightness);
-      strip2.setBrightness(mappedAvgBrightness);
+//      strip.setBrightness(mappedAvgBrightness);
+//      strip2.setBrightness(mappedAvgBrightness);
       //currentBrightness = mappedAvgBrightness;
 
       strip.show();
