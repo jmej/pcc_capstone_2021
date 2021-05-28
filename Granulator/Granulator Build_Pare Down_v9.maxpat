@@ -10,7 +10,7 @@
 		}
 ,
 		"classnamespace" : "box",
-		"rect" : [ 380.0, 45.0, 918.0, 721.0 ],
+		"rect" : [ 148.0, 45.0, 1098.0, 721.0 ],
 		"bglocked" : 1,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -47,7 +47,6 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 1477.0, 1353.481992661952972, 100.0, 76.0 ],
-					"presentation_linecount" : 5,
 					"text" : "/Users/tobygn/Documents/Processing/Capstone/pcc_Capstone_2021/Granulator/"
 				}
 
@@ -292,19 +291,18 @@
 , 			{
 				"box" : 				{
 					"id" : "obj-105",
-					"linecount" : 2,
 					"maxclass" : "newobj",
 					"numinlets" : 2,
 					"numoutlets" : 4,
 					"outlettype" : [ "dictionary", "", "", "" ],
-					"patching_rect" : [ 1909.0, 221.888430118560791, 98.0, 35.0 ],
+					"patching_rect" : [ 1909.0, 221.888430118560791, 165.0, 22.0 ],
 					"saved_object_attributes" : 					{
 						"embed" : 0,
 						"parameter_enable" : 0,
 						"parameter_mappable" : 0
 					}
 ,
-					"text" : "dict maxsettings maxsettings.json"
+					"text" : "dict maxsettings settings.json"
 				}
 
 			}

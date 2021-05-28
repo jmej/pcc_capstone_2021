@@ -6,3 +6,6 @@ Capfone/ffmpeg-audio.txt
 Capfone/data/toMarkov
 Capfone/data/fromMarkov
 Capfone/data/frameData
+Capfone/data/settings.json
+Granulator/settings.json
+CapstoneMarkov/settings.json
