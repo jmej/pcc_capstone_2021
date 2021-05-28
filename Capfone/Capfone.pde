@@ -172,7 +172,7 @@ void setup() {
   // For nodes that have a specfic color to track...
   color TRACK_COLOR = color(random(100), random(100), random(100));
    
-  try { //<>// //<>//
+  try { //<>//
     // Loop through the nodes and init, set default vars
     for (int i = 0; i < mods.length; i++) {
       mods[i].init(settings);
@@ -185,10 +185,12 @@ void setup() {
   
   // Sound / fft stuff
   soundSource = new SoundFile(this, audioOut); //<>//
+  soundSource.play();
   fft = new FFT(this, fftBands);
   rms = new Amplitude(this);
   fft.input(soundSource);
   rms.input(soundSource);
+  soundSource.pause();
 }
 
 void draw() {  //<>//

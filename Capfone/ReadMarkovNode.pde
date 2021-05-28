@@ -64,7 +64,6 @@ public class ReadMarkovNode  implements ModNode {
       jsonFile = new File(markovPath);
       
       println("JSON file: " + jsonFile.getAbsolutePath());
-      main = loadJSONObject(jsonFile.getAbsolutePath()); 
       
     } catch (NullPointerException e) {
       println("NULL POINTER: " + e.getMessage());

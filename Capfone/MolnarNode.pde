@@ -56,8 +56,9 @@ class MolnarNode implements ModNode {
       canvas.pushMatrix();
       canvas.translate(xLoc, yLoc);
       
+      int mod = (int)map(fftData[0], 0.0, .5, 0, 10);
       for(int num = 0; num<8; num++){
-        float d = grid;
+        float d = grid + mod;
         float x1 = -random(d);
         float y1 = -random(d);
         float x2 = random(d);
