@@ -10,7 +10,7 @@ ffmpeg version 4.4 Copyright (c) 2000-2021 the FFmpeg developers
   libswscale      5.  9.100 /  5.  9.100
   libswresample   3.  9.100 /  3.  9.100
   libpostproc    55.  9.100 / 55.  9.100
-Input #0, mov,mp4,m4a,3gp,3g2,mj2, from '/Users/tobygn/Documents/Processing/Capstone/pcc_Capstone_2021/Capfone/data/test.mp4':
+Input #0, mov,mp4,m4a,3gp,3g2,mj2, from '/Users/tobygn/Documents/Processing/Capstone/pcc_Capstone_2021/Mycelium/data/test.mp4':
   Metadata:
     major_brand     : mp42
     minor_version   : 0
@@ -28,4 +28,4 @@ Input #0, mov,mp4,m4a,3gp,3g2,mj2, from '/Users/tobygn/Documents/Processing/Caps
       creation_time   : 2021-03-16T05:14:42.000000Z
       handler_name    : #Mainconcept MP4 Sound Media Handler
       vendor_id       : [0][0][0][0]
-File '/Users/tobygn/Documents/Processing/Capstone/pcc_Capstone_2021/Capfone/data/test.mp4_audio.mp3' already exists. Overwrite? [y/N] Not overwriting - exiting
+File '/Users/tobygn/Documents/Processing/Capstone/pcc_Capstone_2021/Mycelium/data/test.mp4_audio.mp3' already exists. Overwrite? [y/N] Not overwriting - exiting

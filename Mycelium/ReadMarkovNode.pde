@@ -7,10 +7,11 @@ public class ReadMarkovNode  implements ModNode {
   private boolean active = true;
   private int fileIdx = 0;
   private final int MAX_ATTEMPTS = 20;
+  private String route = "/markovpath";
   private File[] files;
   private String fromMarkovPath;
   private String toMarkovPath;
-  private int outport = 12003;
+  private int outport = 12000;
   private NetAddress remoteLocation;
     
   public PImage mod(PImage frame) {
@@ -37,7 +38,9 @@ public class ReadMarkovNode  implements ModNode {
     
     String outPath = sketchPath(this.toMarkovPath + "/frame-" + this.curFrame + "-" + i + ".json");
     saveJSONObject(out, outPath);
-    msg = new OscMessage(outPath);
+    
+    msg = new OscMessage(this.route);
+    msg.add(outPath);
     oscP5.send(msg, this.remoteLocation);
     
     println("SENT JSON to markov: " + outPath);
@@ -164,7 +167,7 @@ public class ReadMarkovNode  implements ModNode {
   public void init(Settings set) {
     this.set = set;
     this.fromMarkovPath = (String)this.set.get("fromMarkovPath");
-    this.outport = (int)this.set.get("markovOSCPort");
+    this.outport = (int)this.set.get("remoteOSCPort");
     this.remoteLocation = new NetAddress("127.0.0.1", outport);
     this.dim = (int)this.set.get("defaultDim");
     this.toMarkovPath = (String)this.set.get("toMarkovPath");

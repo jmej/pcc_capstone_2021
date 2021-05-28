@@ -77,7 +77,7 @@ public class Pix2JSON {
   
   public void init(Settings set) {
     this.set = set;
-    this.port = (int)this.set.get("markovOSCPort");
+    this.port = (int)this.set.get("remoteOSCPort");
     this.remoteLocation = new NetAddress("127.0.0.1", this.port);
     this.active = (boolean)this.set.get("markovGen");
     this.dim = (int)this.set.get("defaultDim");
