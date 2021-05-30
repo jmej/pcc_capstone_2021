@@ -15,13 +15,10 @@ public class XModNode implements ModNode {
     canvas.colorMode(HSB, 100);
     
     int auMod = this.audioMod ? (int)map(fftData[0], 0, .5, 0, 10) : 0;
-    
     for (int x = 0; x < frame.width; x += this.dim ) {
       for (int y = 0; y < frame.height; y += this.dim ) {
-        x += this.curFrame;
-        x = (x % frame.width);
-      //  y+= this.curFrame;
-      //  y = (y % frame.height);
+         x += this.curFrame;
+         x = (x % frame.width);
         
         int loc = x + y*frame.width;
         color currentColor = frame.pixels[loc];

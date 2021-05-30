@@ -10,7 +10,7 @@
 		}
 ,
 		"classnamespace" : "box",
-		"rect" : [ -148.0, -1001.0, 1742.0, 967.0 ],
+		"rect" : [ 351.0, -1001.0, 1742.0, 967.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -40,12 +40,26 @@
 		"assistshowspatchername" : 0,
 		"boxes" : [ 			{
 				"box" : 				{
-					"id" : "obj-66",
+					"id" : "obj-69",
 					"maxclass" : "message",
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 1388.0, 110.0, 50.0, 22.0 ]
+					"patching_rect" : [ 1306.0, 562.0, 50.0, 22.0 ],
+					"text" : "80"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-66",
+					"linecount" : 19,
+					"maxclass" : "message",
+					"numinlets" : 2,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 1548.0, 77.0, 50.0, 263.0 ],
+					"text" : "/markovpath /Users/tobygn/Documents/Processing/Capstone/pcc_Capstone_2021/Mycelium/data/toMarkov/frame-152-36864.json"
 				}
 
 			}
@@ -53,7 +67,7 @@
 				"box" : 				{
 					"comment" : "",
 					"id" : "obj-63",
-					"index" : 0,
+					"index" : 1,
 					"maxclass" : "inlet",
 					"numinlets" : 0,
 					"numoutlets" : 1,
@@ -222,7 +236,7 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 1382.0, 170.0, 119.0, 89.0 ],
-					"text" : "/Users/tobygn/Documents/Processing/Capstone/pcc_Capstone_2021/Capfone/data/toMarkov/frame-83-36864.json"
+					"text" : "/Users/tobygn/Documents/Processing/Capstone/pcc_Capstone_2021/Mycelium/data/toMarkov/frame-152-36864.json"
 				}
 
 			}
@@ -235,7 +249,7 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 1732.0, 1232.0, 120.0, 89.0 ],
-					"text" : "/Users/tobygn/Documents/Processing/Capstone/pcc_Capstone_2021/Capfone/data/fromMarkov/83-markov.json"
+					"text" : "/Users/tobygn/Documents/Processing/Capstone/pcc_Capstone_2021/Mycelium/data/fromMarkov/152-markov.json"
 				}
 
 			}
@@ -477,7 +491,7 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 280.0, 472.0, 125.0, 102.0 ],
-					"text" : "import /Users/tobygn/Documents/Processing/Capstone/pcc_Capstone_2021/Mycelium/data/toMarkov/frame-5-36864.json"
+					"text" : "import /Users/tobygn/Documents/Processing/Capstone/pcc_Capstone_2021/Mycelium/data/toMarkov/frame-152-36864.json"
 				}
 
 			}
@@ -500,7 +514,7 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 1469.0, 665.0, 29.5, 22.0 ],
-					"text" : "83"
+					"text" : "152"
 				}
 
 			}
@@ -659,13 +673,13 @@
 , 			{
 				"box" : 				{
 					"id" : "obj-112",
-					"linecount" : 4,
+					"linecount" : 5,
 					"maxclass" : "message",
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 1567.0, 476.5, 167.0, 62.0 ],
-					"text" : "/Users/tobygn/Documents/Processing/Capstone/pcc_Capstone_2021/Capfone/data/toMarkov/frame-83-36864.json"
+					"patching_rect" : [ 1567.0, 476.5, 167.0, 76.0 ],
+					"text" : "/Users/tobygn/Documents/Processing/Capstone/pcc_Capstone_2021/Mycelium/data/toMarkov/frame-152-36864.json"
 				}
 
 			}
@@ -785,7 +799,7 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 1732.0, 920.0, 120.0, 89.0 ],
-					"text" : "/Users/tobygn/Documents/Processing/Capstone/pcc_Capstone_2021/Capfone/data/fromMarkov/83-markov.json"
+					"text" : "/Users/tobygn/Documents/Processing/Capstone/pcc_Capstone_2021/Mycelium/data/fromMarkov/152-markov.json"
 				}
 
 			}
@@ -810,7 +824,7 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 1732.0, 677.0, 145.0, 62.0 ],
-					"text" : "/Users/tobygn/Documents/Processing/Capstone/pcc_Capstone_2021/Capfone/data/fromMarkov"
+					"text" : "/Users/tobygn/Documents/Processing/Capstone/pcc_Capstone_2021/Mycelium/data/fromMarkov"
 				}
 
 			}
@@ -1037,7 +1051,7 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 826.0, 978.0, 50.0, 22.0 ],
-					"text" : "84"
+					"text" : "41"
 				}
 
 			}
@@ -1121,7 +1135,7 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 601.0, 978.0, 50.0, 22.0 ],
-					"text" : "255"
+					"text" : "44"
 				}
 
 			}
@@ -1224,13 +1238,13 @@
 , 			{
 				"box" : 				{
 					"id" : "obj-78",
-					"linecount" : 3,
+					"linecount" : 4,
 					"maxclass" : "message",
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 45.666666666666671, 422.5, 55.0, 49.0 ],
-					"text" : "\"36863\" 189 255 91"
+					"patching_rect" : [ 45.666666666666671, 422.5, 33.0, 62.0 ],
+					"text" : "\"36863\" 7 62 45"
 				}
 
 			}
@@ -1380,7 +1394,7 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 84.0, 978.0, 50.0, 22.0 ],
-					"text" : "185"
+					"text" : "7"
 				}
 
 			}
@@ -1950,6 +1964,15 @@
 , 			{
 				"patchline" : 				{
 					"destination" : [ "obj-14", 0 ],
+					"order" : 1,
+					"source" : [ "obj-176", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-69", 1 ],
+					"order" : 0,
 					"source" : [ "obj-176", 0 ]
 				}
 
@@ -2631,13 +2654,7 @@
 				}
 
 			}
- ],
-		"dependency_cache" : [ 			{
-				"name" : "ml.markov.mxo",
-				"type" : "iLaX"
-			}
- ],
-		"autosave" : 0
+ ]
 	}
 
 }

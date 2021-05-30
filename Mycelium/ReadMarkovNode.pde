@@ -20,6 +20,7 @@ public class ReadMarkovNode  implements ModNode {
     JSONObject main = null;
     File jsonFile = null;
     OscMessage msg = null;
+    colorMode(HSB, 100);
 
     JSONObject out = new JSONObject();
     int i = 0;
@@ -64,15 +65,15 @@ public class ReadMarkovNode  implements ModNode {
         }
         
       }
-      jsonFile = new File(markovPath);
       
+      jsonFile = new File(markovPath);
       println("JSON file: " + jsonFile.getAbsolutePath());
       
     } catch (NullPointerException e) {
       println("NULL POINTER: " + e.getMessage());
     }
     
-    if (jsonFile == null || main == null) {
+    if (jsonFile == null) {
       oscCli.clearMarkov();
       this.curFrame++;
     
@@ -84,7 +85,7 @@ public class ReadMarkovNode  implements ModNode {
     canvas.beginDraw();
     canvas.noStroke();
     canvas.colorMode(HSB, 100);
-   
+
     for (int x = 0; x < width; x+= this.dim) {
       for (int y = 0; y< height; y+= this.dim) {
         try {
@@ -104,6 +105,8 @@ public class ReadMarkovNode  implements ModNode {
           canvas.endDraw();
           
           fileIdx++;
+          this.curFrame++;
+          
           if (files != null && fileIdx > files.length) fileIdx = 0;
          
           return canvas;

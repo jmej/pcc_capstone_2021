@@ -17,7 +17,6 @@ FFT fft;
 Amplitude rms;
 
 // Internal classes
-Pix2JSON p2j;         // Calculates pixel data to be fed to a markov chain
 FrameData frameData;  // Generates json file for max nodes
 Settings settings;    // Contains global settings from data/settings.json
 OscClient oscCli;     // General purpose OSC stuff
@@ -77,42 +76,48 @@ void setup() {
   // Choose the nodes you want to load by changing setting.json
   for (int i = 0; i < classList.length; i++) {
     switch(classList[i]) {
+       case "AtoVNode":
+        mods[i] = new AtoVNode(fftBands);
+        break;
+      case "AvgPixNode":
+        mods[i] = new AvgPixNode();
+        break;
       case "BlendNode":
         mods[i] = new BlendNode();
         break;
-      case "HueNode":
-        mods[i] = new HueNode();
-        break;
-      case "GrowPixNode" : 
-        mods[i] = new GrowPixNode();
-        break;
-      case "AtoVNode":
-        mods[i] = new AtoVNode(fftBands);
-        break;
-      case "FlipBlendNode":
-        mods[i] = new FlipBlendNode();
-        break;
-      case "HarmDistNode":
-        mods[i] = new HarmDistNode();
-        break;   
-      case "ReadMarkovNode":
-        mods[i] = new ReadMarkovNode();
-        break;    
       case "CircleizeNode":
         mods[i] = new CircleizeNode();
         break;  
-      case "PixSizeNode": 
-        mods[i] = new PixSizeNode();
+      case "ConvolverNode":
+        mods[i] = new ConvolverNode();
+        break;
+      case "DivRepeatNode":
+        mods[i] = new DivRepeatNode();
         break;
       case "ExplodeColorNode":
         mods[i] = new ExplodeColorNode();
         break;
-      case "ConvolverNode":
-        mods[i] = new ConvolverNode();
+      case "FlipBlendNode":
+        mods[i] = new FlipBlendNode();
+        break;
+      case "GrowPixNode" : 
+        mods[i] = new GrowPixNode();
+        break;
+      case "HarmDistNode":
+        mods[i] = new HarmDistNode();
+        break;  
+      case "HueNode":
+        mods[i] = new HueNode();
         break;
       case "MolnarNode":
         mods[i] = new MolnarNode();
         break;
+      case "PixSizeNode": 
+        mods[i] = new PixSizeNode();
+        break;
+      case "ReadMarkovNode":
+        mods[i] = new ReadMarkovNode();
+        break;    
       case "XModNode":
         mods[i] = new XModNode();
         break;
@@ -120,8 +125,6 @@ void setup() {
   }
   
   // Data generation / communication clients
-  p2j = new Pix2JSON();
-  p2j.init(settings);
   oscCli = new OscClient();
   frameData = new FrameData();
   frameData.init(settings);
@@ -169,31 +172,31 @@ void setup() {
   videoExport.setQuality((int)settings.get("videoQuality"), (int)settings.get("audioQuality"));
   videoExport.setDebugging((boolean)settings.get("videoExportDebug"));
   
-  // For nodes that have a specfic color to track...
+  // For nodes that have a specfic color to track... //<>//
   color TRACK_COLOR = color(random(100), random(100), random(100));
    
   try { //<>//
     // Loop through the nodes and init, set default vars
     for (int i = 0; i < mods.length; i++) {
       mods[i].init(settings);
-      mods[i].setDim(PIX_DIM);
+      mods[i].setDim(PIX_DIM); //<>//
       mods[i].setColor(TRACK_COLOR);
     }
-  } catch (NullPointerException e) { //<>//
+  } catch (NullPointerException e) { 
     println("Node init error. Check node names in settings.json: " + e.getMessage());
-  }
+  } //<>//
   
   // Sound / fft stuff
-  soundSource = new SoundFile(this, audioOut); //<>//
+  soundSource = new SoundFile(this, audioOut); 
   soundSource.play();
   fft = new FFT(this, fftBands);
   rms = new Amplitude(this);
   fft.input(soundSource);
   rms.input(soundSource);
-  soundSource.pause();
+  soundSource.pause(); //<>//
 }
 
-void draw() {  //<>//
+void draw() {  
   canvas.beginDraw();
   canvas.image(movie, 0, 0);
 
@@ -246,11 +249,6 @@ void draw() {  //<>//
 }
 
 /* Thread functions */
-
-void pix2JsonAnalyze() {
-  p2j.analyze();
-}
-
 void getFrameInfo() {
   frameData.analyze();
 }
@@ -290,7 +288,7 @@ void endMovie() {
     println("no audio...delaying 2s");
     delay(2000);
     waitTime += 2;
-    if (waitTime >= movie.time() + 10) {
+    if (waitTime >= movie.time() + 25) {
       println("Timed out waiting for audio node reponse");
       break;
     }

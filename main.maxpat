@@ -10,7 +10,7 @@
 		}
 ,
 		"classnamespace" : "box",
-		"rect" : [ 59.0, 104.0, 640.0, 480.0 ],
+		"rect" : [ 196.0, 216.0, 561.0, 480.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -40,6 +40,17 @@
 		"assistshowspatchername" : 0,
 		"boxes" : [ 			{
 				"box" : 				{
+					"id" : "obj-5",
+					"maxclass" : "newobj",
+					"numinlets" : 1,
+					"numoutlets" : 0,
+					"patching_rect" : [ 276.0, 244.0, 116.0, 22.0 ],
+					"text" : "myceliumGranulator"
+				}
+
+			}
+, 			{
+				"box" : 				{
 					"id" : "obj-2",
 					"maxclass" : "newobj",
 					"numinlets" : 1,
@@ -65,6 +76,15 @@
 		"lines" : [ 			{
 				"patchline" : 				{
 					"destination" : [ "obj-2", 0 ],
+					"order" : 1,
+					"source" : [ "obj-1", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-5", 0 ],
+					"order" : 0,
 					"source" : [ "obj-1", 0 ]
 				}
 
@@ -74,6 +94,20 @@
 				"name" : "myceliumMarkov.maxpat",
 				"bootpath" : "~/Documents/Processing/Capstone/pcc_Capstone_2021/MyceliumMarkov",
 				"patcherrelativepath" : "./MyceliumMarkov",
+				"type" : "JSON",
+				"implicit" : 1
+			}
+, 			{
+				"name" : "myceliumGranulator.maxpat",
+				"bootpath" : "~/Documents/Processing/Capstone/pcc_Capstone_2021/Granulator",
+				"patcherrelativepath" : "./Granulator",
+				"type" : "JSON",
+				"implicit" : 1
+			}
+, 			{
+				"name" : "voice-engine.maxpat",
+				"bootpath" : "~/Documents/Processing/Capstone/pcc_Capstone_2021/Granulator",
+				"patcherrelativepath" : "./Granulator",
 				"type" : "JSON",
 				"implicit" : 1
 			}
