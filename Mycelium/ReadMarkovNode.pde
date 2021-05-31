@@ -5,11 +5,8 @@ public class ReadMarkovNode  implements ModNode {
   private int dim = 4;
   private int curFrame = 0;
   private boolean active = true;
-  private int fileIdx = 0;
-  private final int MAX_ATTEMPTS = 20;
+  private int MAX_ATTEMPTS = 20;
   private String route = "/markovpath";
-  private File[] files;
-  private String fromMarkovPath;
   private String toMarkovPath;
   private int outport = 12000;
   private NetAddress remoteLocation;
@@ -20,7 +17,6 @@ public class ReadMarkovNode  implements ModNode {
     JSONObject main = null;
     File jsonFile = null;
     OscMessage msg = null;
-    colorMode(HSB, 100);
 
     JSONObject out = new JSONObject();
     int i = 0;
@@ -42,8 +38,7 @@ public class ReadMarkovNode  implements ModNode {
     
     msg = new OscMessage(this.route);
     msg.add(outPath);
-    oscP5.send(msg, this.remoteLocation);
-    
+    oscP5.send(msg, this.remoteLocation);  
     println("SENT JSON to markov: " + outPath);
     
     try {
@@ -66,8 +61,11 @@ public class ReadMarkovNode  implements ModNode {
         
       }
       
-      jsonFile = new File(markovPath);
-      println("JSON file: " + jsonFile.getAbsolutePath());
+      if (found) {
+        jsonFile = new File(markovPath);
+        main = loadJSONObject(jsonFile);
+        println("JSON file: " + jsonFile.getAbsolutePath());
+      }
       
     } catch (NullPointerException e) {
       println("NULL POINTER: " + e.getMessage());
@@ -104,19 +102,11 @@ public class ReadMarkovNode  implements ModNode {
           oscCli.clearMarkov();
           canvas.endDraw();
           
-          fileIdx++;
           this.curFrame++;
-          
-          if (files != null && fileIdx > files.length) fileIdx = 0;
          
           return canvas;
         }
       }
-    }
-
-    fileIdx++;
-    if (files != null && fileIdx > files.length) {
-      fileIdx = 0;
     }
     
     canvas.endDraw();
@@ -126,35 +116,6 @@ public class ReadMarkovNode  implements ModNode {
     return canvas;
   }
   
-  private File getNextFile(File file) {
-    File jsonFile = null;
-    
-    if (file.isDirectory()) {
-       this.files = file.listFiles();
-       Comparator<File> byModificationDate = new ModificationDateCompare();
-       java.util.Arrays.sort(this.files, byModificationDate);
-       
-       if (this.files.length > 0 && this.fileIdx < this.files.length) {
-         jsonFile = this.files[fileIdx]; 
-         
-         if (jsonFile.isDirectory()) {
-           return null;
-         } 
-         
-         if (jsonFile.getName().equals(".DS_Store")) {
-           println("Deleted .DS_store");
-           jsonFile.delete();
-           return null;
-         }
-         
-         if (jsonFile.getName().indexOf(".json") == -1) {
-           return null;
-         }
-       }
-    }
-    
-    return jsonFile;
-  }
   
   public void setColor(color c) {
   }
@@ -169,20 +130,13 @@ public class ReadMarkovNode  implements ModNode {
   
   public void init(Settings set) {
     this.set = set;
-    this.fromMarkovPath = (String)this.set.get("fromMarkovPath");
     this.outport = (int)this.set.get("remoteOSCPort");
     this.remoteLocation = new NetAddress("127.0.0.1", outport);
     this.dim = (int)this.set.get("defaultDim");
-    this.toMarkovPath = (String)this.set.get("toMarkovPath");
+    this.toMarkovPath = (String)this.set.get("toMarkovPath"); 
     
+    this.MAX_ATTEMPTS = (int)map(this.dim, 1, 10, 40, 10);
   }
   
   public void clicked() {}
-}
-
-
-class ModificationDateCompare implements Comparator<File> {
-    public int compare(File f1, File f2) {
-      return Long.valueOf(f1.lastModified()).compareTo(f2.lastModified());    
-    }
 }

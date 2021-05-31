@@ -37,10 +37,9 @@ class BlendNode implements ModNode {
     canvas.endDraw();
     
     if (this.curFrame % (int)(this.frameModCt/2) == 0) {
-      println("COPYING FRESH FRAME - " + methIdx);
+      println("COPYING FRESH FRAME - " + methIdx + ", BLEND: " + method);
        prevFrame = frame.copy();
     } else {
-      println("CONTINUING BLEND - " + methIdx);
       prevFrame =  canvas.copy();
     }
     

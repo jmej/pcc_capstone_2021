@@ -10,7 +10,7 @@
 		}
 ,
 		"classnamespace" : "box",
-		"rect" : [ 558.0, 93.0, 1110.0, 721.0 ],
+		"rect" : [ 271.0, -748.0, 1110.0, 721.0 ],
 		"bglocked" : 1,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -66,7 +66,7 @@
 				"box" : 				{
 					"comment" : "",
 					"id" : "obj-16",
-					"index" : 0,
+					"index" : 1,
 					"maxclass" : "inlet",
 					"numinlets" : 0,
 					"numoutlets" : 1,
@@ -140,7 +140,7 @@
 					"maxclass" : "newobj",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 1533.0, 1723.0, 87.0, 22.0 ],
+					"patching_rect" : [ 1470.0, 1725.0, 87.0, 22.0 ],
 					"text" : "print maxaudio"
 				}
 
@@ -167,7 +167,7 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 451.666670918464661, 720.333333134651184, 128.0, 89.0 ],
-					"text" : "/Users/tobygn/Documents/Processing/Capstone/pcc_Capstone_2021/Capfone/data/frameData/telephone-21-5-2021-23-42-13.json"
+					"text" : "/Users/tobygn/Documents/Processing/Capstone/pcc_Capstone_2021/Mycelium/data/frameData/telephone-31-5-2021-1-6-7.json"
 				}
 
 			}
@@ -358,24 +358,13 @@
 			}
 , 			{
 				"box" : 				{
-					"id" : "obj-145",
-					"maxclass" : "message",
-					"numinlets" : 2,
-					"numoutlets" : 1,
-					"outlettype" : [ "" ],
-					"patching_rect" : [ 1561.499999463558197, 1611.053080976009369, 81.0, 22.0 ],
-					"text" : "/maxaudio $1"
-				}
-
-			}
-, 			{
-				"box" : 				{
+					"comment" : "",
 					"id" : "obj-143",
-					"maxclass" : "newobj",
+					"index" : 1,
+					"maxclass" : "outlet",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 1561.499999463558197, 1657.702806949615479, 142.0, 22.0 ],
-					"text" : "udpsend localhost 12001"
+					"patching_rect" : [ 1440.499999463558197, 1664.5, 30.0, 30.0 ]
 				}
 
 			}
@@ -580,7 +569,7 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 1407.333374083042145, 1473.036132037639618, 107.333335041999817, 89.0 ],
-					"text" : "/Users/tobygn/Documents/Processing/Capstone/pcc_Capstone_2021/Granulator/1069113.wav"
+					"text" : "/Users/tobygn/Documents/Processing/Capstone/pcc_Capstone_2021/Granulator/34876865.wav"
 				}
 
 			}
@@ -640,7 +629,7 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 350.428571428571445, 1353.500017762184143, 50.0, 22.0 ],
-					"text" : "50"
+					"text" : "0"
 				}
 
 			}
@@ -652,7 +641,7 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 316.428571428571445, 1326.500017762184143, 50.0, 22.0 ],
-					"text" : "40"
+					"text" : "0"
 				}
 
 			}
@@ -664,7 +653,7 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 275.428571428571445, 1299.500017762184143, 50.0, 22.0 ],
-					"text" : "30"
+					"text" : "0"
 				}
 
 			}
@@ -676,7 +665,7 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 241.428571428571445, 1270.500017762184143, 50.0, 22.0 ],
-					"text" : "20"
+					"text" : "0"
 				}
 
 			}
@@ -688,7 +677,7 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 200.428571428571445, 1243.500017762184143, 50.0, 22.0 ],
-					"text" : "84"
+					"text" : "62"
 				}
 
 			}
@@ -700,7 +689,7 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 166.428571428571445, 1216.500017762184143, 50.0, 22.0 ],
-					"text" : "100"
+					"text" : "72"
 				}
 
 			}
@@ -712,7 +701,7 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 120.428571428571445, 1190.500017762184143, 50.0, 22.0 ],
-					"text" : "16"
+					"text" : "46"
 				}
 
 			}
@@ -3691,18 +3680,8 @@
 			}
 , 			{
 				"patchline" : 				{
-					"destination" : [ "obj-143", 0 ],
-					"midpoints" : [ 1677.5, 1644.0, 1570.999999463558197, 1644.0 ],
-					"order" : 1,
-					"source" : [ "obj-118", 0 ]
-				}
-
-			}
-, 			{
-				"patchline" : 				{
 					"destination" : [ "obj-144", 1 ],
 					"midpoints" : [ 1677.5, 1644.0, 1783.5, 1644.0 ],
-					"order" : 0,
 					"source" : [ "obj-118", 0 ]
 				}
 
@@ -3835,23 +3814,6 @@
 				"patchline" : 				{
 					"destination" : [ "obj-34", 0 ],
 					"source" : [ "obj-139", 0 ]
-				}
-
-			}
-, 			{
-				"patchline" : 				{
-					"destination" : [ "obj-119", 0 ],
-					"midpoints" : [ 1570.999999463558197, 1644.0, 1542.5, 1644.0 ],
-					"order" : 1,
-					"source" : [ "obj-145", 0 ]
-				}
-
-			}
-, 			{
-				"patchline" : 				{
-					"destination" : [ "obj-143", 0 ],
-					"order" : 0,
-					"source" : [ "obj-145", 0 ]
 				}
 
 			}
@@ -4707,16 +4669,7 @@
 			}
 , 			{
 				"patchline" : 				{
-					"destination" : [ "obj-108", 0 ],
-					"order" : 0,
-					"source" : [ "obj-85", 0 ]
-				}
-
-			}
-, 			{
-				"patchline" : 				{
-					"destination" : [ "obj-145", 0 ],
-					"order" : 1,
+					"destination" : [ "obj-143", 0 ],
 					"source" : [ "obj-85", 0 ]
 				}
 
@@ -4898,15 +4851,6 @@
 
 			}
  ],
-		"dependency_cache" : [ 			{
-				"name" : "voice-engine.maxpat",
-				"bootpath" : "~/Documents/Processing/Capstone/pcc_Capstone_2021/Granulator",
-				"patcherrelativepath" : ".",
-				"type" : "JSON",
-				"implicit" : 1
-			}
- ],
-		"autosave" : 0,
 		"color" : [ 0.666666666666667, 0.196078431372549, 0.662745098039216, 1.0 ],
 		"bgcolor" : [ 0.776470588235294, 0.674509803921569, 0.796078431372549, 1.0 ],
 		"editing_bgcolor" : [ 0.764705882352941, 0.890196078431372, 0.784313725490196, 1.0 ],

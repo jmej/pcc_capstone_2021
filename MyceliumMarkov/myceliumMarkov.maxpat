@@ -10,7 +10,7 @@
 		}
 ,
 		"classnamespace" : "box",
-		"rect" : [ 351.0, -1001.0, 1742.0, 967.0 ],
+		"rect" : [ -38.0, -1001.0, 1742.0, 967.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -40,25 +40,37 @@
 		"assistshowspatchername" : 0,
 		"boxes" : [ 			{
 				"box" : 				{
+					"comment" : "",
+					"id" : "obj-8",
+					"index" : 1,
+					"maxclass" : "outlet",
+					"numinlets" : 1,
+					"numoutlets" : 0,
+					"patching_rect" : [ 1519.0, 1409.0, 30.0, 30.0 ]
+				}
+
+			}
+, 			{
+				"box" : 				{
 					"id" : "obj-69",
 					"maxclass" : "message",
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 1306.0, 562.0, 50.0, 22.0 ],
-					"text" : "80"
+					"text" : "60"
 				}
 
 			}
 , 			{
 				"box" : 				{
 					"id" : "obj-66",
-					"linecount" : 19,
+					"linecount" : 6,
 					"maxclass" : "message",
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 1548.0, 77.0, 50.0, 263.0 ],
+					"patching_rect" : [ 1476.5, 170.0, 143.0, 89.0 ],
 					"text" : "/markovpath /Users/tobygn/Documents/Processing/Capstone/pcc_Capstone_2021/Mycelium/data/toMarkov/frame-152-36864.json"
 				}
 
@@ -235,7 +247,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 1382.0, 170.0, 119.0, 89.0 ],
+					"patching_rect" : [ 1338.0, 170.0, 119.0, 89.0 ],
 					"text" : "/Users/tobygn/Documents/Processing/Capstone/pcc_Capstone_2021/Mycelium/data/toMarkov/frame-152-36864.json"
 				}
 
@@ -250,17 +262,6 @@
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 1732.0, 1232.0, 120.0, 89.0 ],
 					"text" : "/Users/tobygn/Documents/Processing/Capstone/pcc_Capstone_2021/Mycelium/data/fromMarkov/152-markov.json"
-				}
-
-			}
-, 			{
-				"box" : 				{
-					"id" : "obj-12",
-					"maxclass" : "newobj",
-					"numinlets" : 1,
-					"numoutlets" : 0,
-					"patching_rect" : [ 1732.0, 1422.0, 142.0, 22.0 ],
-					"text" : "udpsend localhost 12001"
 				}
 
 			}
@@ -1243,7 +1244,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 45.666666666666671, 422.5, 33.0, 62.0 ],
+					"patching_rect" : [ 45.666666666666671, 422.5, 35.0, 62.0 ],
 					"text" : "\"36863\" 7 62 45"
 				}
 
@@ -2268,13 +2269,6 @@
 			}
 , 			{
 				"patchline" : 				{
-					"destination" : [ "obj-12", 0 ],
-					"source" : [ "obj-51", 0 ]
-				}
-
-			}
-, 			{
-				"patchline" : 				{
 					"destination" : [ "obj-38", 0 ],
 					"source" : [ "obj-53", 0 ]
 				}
@@ -2397,7 +2391,7 @@
 			}
 , 			{
 				"patchline" : 				{
-					"destination" : [ "obj-12", 0 ],
+					"destination" : [ "obj-8", 0 ],
 					"source" : [ "obj-64", 0 ]
 				}
 

@@ -7,9 +7,12 @@ public class HarmDistNode implements ModNode {
   private int frames;
   private int curFrame = 0;
   private int frameModCt = 2;
+  private boolean hdHueMod = false;
   
   public void init(Settings set) {
     this.set = set;
+    this.frameModCt = (int)this.set.get("frameModCount");
+    this.hdHueMod = (boolean)this.set.get("harmDistHueMod");
   }
   
   public PImage mod(PImage f) {
@@ -19,26 +22,32 @@ public class HarmDistNode implements ModNode {
     canvas.image(f, 0, 0, f.width, f.height);
     
     frames+= rampSpeed; 
-    frames = frames % 360;
-    
-    if (this.curFrame % this.frameModCt == 0) {
-      frequency = map(RMS_SCALED, 0.0, 1.0, 1, 100); 
+    frames = frames % 360;    
+
+    if (this.curFrame % 2 == 0) {
+      frequency = (this.curFrame % 100) + 1;
       magnitude = map(fftData[0], 0.0, 0.5, 2, 50);
     }
-    
+
     for (int x = 0; x < f.width; x += this.dim){
       for(int y = 0; y < f.height; y += this.dim){
-        color pix = f.get(x, y);
-        canvas.fill(pix, 128);
+        color pix = f.pixels[x+y*width];
         float phase = map(x, 0, width, 0, frequency);
         float wave = sin(frames-phase);
-        wave = wave * magnitude;
+        float h = hue(pix);
+        
+        if(hdHueMod) {
+          h *= wave; 
+        }
+ 
+        canvas.fill(color(h, saturation(pix), brightness(pix)));
+        
+        wave = wave * magnitude; 
         canvas.rect(x, y+wave, this.dim, this.dim);
       }
     }
     
     canvas.endDraw();
-    soundSource.pause();
     this.curFrame++;
     
     return canvas;

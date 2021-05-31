@@ -24,7 +24,7 @@ ModNode[] mods;       // All of our processing nodes for this run
   
 int curFrame = 0;
 int lastMovieUpdate = 0;
-PGraphics canvas;
+PGraphics main;
 PImage infoFrame = null;
 boolean saved = false;
 String path = "";
@@ -36,7 +36,6 @@ String settingsPath;
 boolean LOOP;
 boolean EXTRACT_AUDIO;
 boolean AUDIODONE = false;
-boolean MARKOV_GEN;
 int PIX_DIM; 
 int START_FRAME;
 String VIDEO_IN_PATH;
@@ -58,7 +57,6 @@ void setup() {
   VIDEO_IN_PATH = (String)settings.get("videoInputPath");
   START_FRAME = (int)settings.get("startFrame");
   FRAME_MOD_COUNT = (int)settings.get("frameModCount");
-  MARKOV_GEN = (boolean)settings.get("markovGen");
   int fftBands = (int)settings.get("fftBands");
   String classNames = (String)settings.get("nodeNames");
   String[] classList = classNames.split(",");
@@ -84,10 +82,7 @@ void setup() {
         break;
       case "BlendNode":
         mods[i] = new BlendNode();
-        break;
-      case "CircleizeNode":
-        mods[i] = new CircleizeNode();
-        break;  
+        break; 
       case "ConvolverNode":
         mods[i] = new ConvolverNode();
         break;
@@ -99,6 +94,9 @@ void setup() {
         break;
       case "FlipBlendNode":
         mods[i] = new FlipBlendNode();
+        break;
+      case "FurthestNeighborNode":
+        mods[i] = new FurthestNeighborNode();
         break;
       case "GrowPixNode" : 
         mods[i] = new GrowPixNode();
@@ -112,12 +110,18 @@ void setup() {
       case "MolnarNode":
         mods[i] = new MolnarNode();
         break;
+      case "PerlinNode":
+        mods[i] = new PerlinNode();
+        break;
       case "PixSizeNode": 
         mods[i] = new PixSizeNode();
         break;
       case "ReadMarkovNode":
         mods[i] = new ReadMarkovNode();
         break;    
+      case "TrigModNode":
+        mods[i] = new TrigModNode();
+        break; 
       case "XModNode":
         mods[i] = new XModNode();
         break;
@@ -139,10 +143,6 @@ void setup() {
   movie.jump(curFrame);
   movie.pause();
   movie.loadPixels();
-
-  
-  // This is the object we will write to with each frame of the movie
-  canvas = createGraphics(movie.width, movie.height, P2D); 
   
   if ((boolean)settings.get("promptVideoPath")) {
     boolean asked = false;
@@ -175,7 +175,7 @@ void setup() {
   // For nodes that have a specfic color to track... //<>//
   color TRACK_COLOR = color(random(100), random(100), random(100));
    
-  try { //<>//
+  try { 
     // Loop through the nodes and init, set default vars
     for (int i = 0; i < mods.length; i++) {
       mods[i].init(settings);
@@ -194,18 +194,20 @@ void setup() {
   fft.input(soundSource);
   rms.input(soundSource);
   soundSource.pause(); //<>//
+  
+  // This is the object we will write to with each frame of the movie
+  main = createGraphics(movie.width, movie.height, P2D); 
 }
 
 void draw() {  
-  canvas.beginDraw();
-  canvas.image(movie, 0, 0);
-
-  canvas.endDraw();
+  main.beginDraw();
+  main.image(movie, 0, 0);
+  main.endDraw();
 
   PImage f = createImage(width, height, ALPHA);
    
   // Resize the image to our dims
-  f.copy(canvas, 0, 0, canvas.width, canvas.height, 0, 0, f.width, f.height);
+  f.copy(main, 0, 0, main.width, main.height, 0, 0, f.width, f.height);
   
   // Calculate fft, amplitude stuff for this frame
   soundSource.play(1, 0.0, 1.0, 0, movie.time());

@@ -5,7 +5,6 @@ public class PixSizeNode implements ModNode {
   private int curFrame = 0;
   private color trackColor = 0;
   private boolean active = true;
-  private int shift = 0;
   private int frameModCt = 90;
   private int dir = 1;    // 1 = up, 0 = down
   private boolean audioMod = true;

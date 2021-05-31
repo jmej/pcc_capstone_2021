@@ -5,11 +5,14 @@ public class DivRepeatNode implements ModNode {
   private boolean active = true;
   private int frameModCt = 60;
   private boolean audioMod = false;
-  private int defaultDivs = 8;
+  private int defaultXDivs = 8;
+  private int defaultYDivs = 4;
   private boolean up = true;
+  private boolean yup = true;
   private boolean divRepeatYMod = false;
   private int updateRate = 4;
-  private int curDivs = 1;
+  private int curXDivs = 1;
+  private int curYDivs = 1;
   
   public PImage mod(PImage frame) {
     if (frame.pixels.length == 0) frame.loadPixels();
@@ -20,21 +23,22 @@ public class DivRepeatNode implements ModNode {
     canvas.colorMode(HSB, 100);
     
     int auMod = this.audioMod ? (int)map(fftData[0], 0, .5, 1, 10) : 0;
-    int divs = curDivs;
+    int xdivs = curXDivs;
+    int ydivs = curYDivs;
     
     if (auMod > 0) {
-      divs = auMod;
+      xdivs = auMod;
     } 
-    if (divs <= 0) divs = 1;
+    if (xdivs <= 0) xdivs = 1;
+    if (ydivs <= 0) ydivs = 1;
     
     for (int x = 0; x < frame.width; x += this.dim ) {
       for (int y = 0; y < frame.height; y += this.dim ) {      
-        int myx = (x % (int)(frame.width/divs)) + (this.curFrame % frame.width);
+        int myx = (x % (int)(frame.width/xdivs)) + (this.curFrame % frame.width);
         myx = (myx % frame.width);
        
         int myy = y;
         if (divRepeatYMod) {
-          int ydivs = int(divs/2)+1;
           myy = (y % (int)(frame.height / ydivs)) + (this.curFrame % frame.height);
           myy = (myy % frame.height);
         }
@@ -47,14 +51,28 @@ public class DivRepeatNode implements ModNode {
     
     if (this.curFrame % this.updateRate == 0) {
       if (up) {
-        curDivs++;
-        if (curDivs % this.defaultDivs == 0) {
+        curXDivs++;
+        if (curXDivs % this.defaultXDivs == 0) {
           up = false;
         }
       } else {
-        curDivs--;
-        if (curDivs == 0 || curDivs % this.defaultDivs == 0) {
+        curXDivs--;
+        if (curXDivs == 0 || curXDivs % this.defaultXDivs == 0) {
           up = true;
+        }
+      }
+      
+      if (divRepeatYMod) {
+        if (yup) {
+          curYDivs++;
+          if (curYDivs % this.defaultYDivs == 0) {
+            yup = false;
+          }
+        } else {
+          curYDivs--;
+          if (curYDivs == 0 || curYDivs % this.defaultYDivs == 0) {
+            yup = true;
+          }
         }
       }
     }
@@ -69,7 +87,8 @@ public class DivRepeatNode implements ModNode {
     this.set = set;
     this.frameModCt = (int)this.set.get("frameModCount");
     this.audioMod = (boolean)this.set.get("audioMod");
-    this.defaultDivs = (int)this.set.get("divRepeatCount");
+    this.defaultXDivs = (int)this.set.get("divRepeatXCount");
+    this.defaultYDivs = (int)this.set.get("divRepeatYCount");
     this.updateRate = (int)this.set.get("divRepeatUpdateRate");
     this.divRepeatYMod = (boolean)this.set.get("divRepeatYMod");
   }

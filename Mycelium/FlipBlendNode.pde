@@ -8,14 +8,13 @@ class FlipBlendNode implements ModNode {
   private int curFrame = 0;
   
   public PImage mod(PImage frame) {
-    int method;
+    int method = blend2;
     PGraphics canvas = createGraphics(frame.width, frame.height);
     
     canvas.beginDraw();
     canvas.noStroke(); 
     
     canvas.translate((int)frame.width, 0);
-    method = this.curFrame % this.frameModCt >= (this.frameModCt / 2) ? this.blend1 : this.blend2;
     canvas.scale(-1,1);
     canvas.image(frame, 0, 0);
     canvas.translate(0, 0);

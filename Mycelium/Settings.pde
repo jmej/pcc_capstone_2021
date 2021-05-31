@@ -7,9 +7,6 @@ class Settings {
   public Settings(PApplet p) {
     try {
       File set = new File(dataPath("settings.json"));
-      /*new File(CapstoneClient.class.getProtectionDomain()
-        .getCodeSource().getLocation().toURI().getPath())
-        .getParentFile().getParentFile(); */
       settingsPath = set.getAbsolutePath();
       println(settingsPath);
 
