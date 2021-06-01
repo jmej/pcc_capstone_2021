@@ -10,7 +10,7 @@
 		}
 ,
 		"classnamespace" : "box",
-		"rect" : [ 129.0, 241.0, 778.0, 587.0 ],
+		"rect" : [ 129.0, 87.0, 1096.0, 741.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -43,7 +43,8 @@
 					"id" : "obj-1",
 					"maxclass" : "newobj",
 					"numinlets" : 0,
-					"numoutlets" : 0,
+					"numoutlets" : 1,
+					"outlettype" : [ "signal" ],
 					"patching_rect" : [ 533.0, 241.0, 99.0, 22.0 ],
 					"text" : "convolutionpatch"
 				}
@@ -53,7 +54,7 @@
 				"box" : 				{
 					"id" : "obj-7",
 					"maxclass" : "newobj",
-					"numinlets" : 0,
+					"numinlets" : 2,
 					"numoutlets" : 0,
 					"patching_rect" : [ 300.0, 376.0, 73.0, 22.0 ],
 					"text" : "NodeOutput"
@@ -65,8 +66,8 @@
 					"id" : "obj-5",
 					"maxclass" : "newobj",
 					"numinlets" : 0,
-					"numoutlets" : 2,
-					"outlettype" : [ "", "" ],
+					"numoutlets" : 3,
+					"outlettype" : [ "", "", "" ],
 					"patching_rect" : [ 300.0, 42.0, 64.0, 22.0 ],
 					"text" : "NodeInput"
 				}
@@ -76,17 +77,31 @@
 				"box" : 				{
 					"id" : "obj-4",
 					"maxclass" : "newobj",
-					"numinlets" : 0,
-					"numoutlets" : 0,
+					"numinlets" : 2,
+					"numoutlets" : 2,
+					"outlettype" : [ "signal", "signal" ],
 					"patching_rect" : [ 300.0, 241.0, 189.0, 22.0 ],
 					"text" : "\"Granulator Build_Pare Down_v9\""
 				}
 
 			}
  ],
-		"lines" : [  ],
+		"lines" : [ 			{
+				"patchline" : 				{
+					"destination" : [ "obj-4", 1 ],
+					"source" : [ "obj-5", 1 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-4", 0 ],
+					"source" : [ "obj-5", 0 ]
+				}
+
+			}
+ ],
 		"parameters" : 		{
-			"obj-1::obj-3" : [ "live.gain~[2]", "live.gain~", 0 ],
 			"obj-1::obj-41" : [ "live.gain~[1]", "live.gain~[1]", 0 ],
 			"obj-1::obj-42" : [ "live.gain~[3]", "live.gain~[1]", 0 ],
 			"obj-1::obj-43" : [ "live.gain~[4]", "live.gain~[1]", 0 ],

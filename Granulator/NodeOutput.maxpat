@@ -40,6 +40,42 @@
 		"assistshowspatchername" : 0,
 		"boxes" : [ 			{
 				"box" : 				{
+					"id" : "obj-5",
+					"maxclass" : "comment",
+					"numinlets" : 1,
+					"numoutlets" : 0,
+					"patching_rect" : [ 757.0, 49.0, 93.0, 20.0 ],
+					"text" : "Inlet for audio"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"comment" : "",
+					"id" : "obj-3",
+					"index" : 2,
+					"maxclass" : "inlet",
+					"numinlets" : 0,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 717.0, 44.0, 30.0, 30.0 ]
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-2",
+					"linecount" : 2,
+					"maxclass" : "comment",
+					"numinlets" : 1,
+					"numoutlets" : 0,
+					"patching_rect" : [ 429.0, 34.0, 150.0, 33.0 ],
+					"text" : "This needs to receive sample length"
+				}
+
+			}
+, 			{
+				"box" : 				{
 					"id" : "obj-147",
 					"maxclass" : "newobj",
 					"numinlets" : 2,
@@ -77,24 +113,24 @@
 , 			{
 				"box" : 				{
 					"id" : "obj-143",
-					"linecount" : 2,
 					"maxclass" : "newobj",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 390.166625380516052, 373.702805161476135, 109.0, 35.0 ],
-					"text" : "udpsend localhost 1338"
+					"patching_rect" : [ 390.166625380516052, 373.702805161476135, 142.0, 22.0 ],
+					"text" : "udpsend localhost 12001"
 				}
 
 			}
 , 			{
 				"box" : 				{
+					"comment" : "",
 					"id" : "obj-117",
-					"maxclass" : "newobj",
+					"index" : 1,
+					"maxclass" : "inlet",
 					"numinlets" : 0,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 304.360896289348602, 22.0, 128.0, 22.0 ],
-					"text" : "receive SampleLength"
+					"patching_rect" : [ 390.360896289348602, 34.0, 30.0, 30.0 ]
 				}
 
 			}
@@ -179,18 +215,6 @@
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 538.666625916957855, 251.369426250457764, 59.0, 22.0 ],
 					"text" : "record $1"
-				}
-
-			}
-, 			{
-				"box" : 				{
-					"id" : "obj-50",
-					"maxclass" : "message",
-					"numinlets" : 2,
-					"numoutlets" : 1,
-					"outlettype" : [ "" ],
-					"patching_rect" : [ 494.916625916957855, 172.036130249500275, 41.0, 22.0 ],
-					"text" : "grains"
 				}
 
 			}
@@ -281,15 +305,15 @@
 			}
 , 			{
 				"patchline" : 				{
-					"destination" : [ "obj-78", 0 ],
-					"source" : [ "obj-30", 2 ]
+					"destination" : [ "obj-28", 0 ],
+					"source" : [ "obj-3", 0 ]
 				}
 
 			}
 , 			{
 				"patchline" : 				{
-					"destination" : [ "obj-28", 0 ],
-					"source" : [ "obj-50", 0 ]
+					"destination" : [ "obj-78", 0 ],
+					"source" : [ "obj-30", 2 ]
 				}
 
 			}
