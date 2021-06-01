@@ -1,5 +1,5 @@
 {
-  "audioMod": false,
+  "audioMod": true,
   "audioQuality": 128,
   "blendCount": 2,
   "defaultDim": 4,
@@ -18,7 +18,7 @@
   "harmDistHueMod": true,
   "incomingOSCPort": 12001,
   "markovGen": false,
-  "nodeNames": "HarmDistNode,PixSizeNode,MolnarNode,ExplodeColorNode,FlipBlendNode,ReadMarkovNode",
+  "nodeNames": "BezierNode,MolnarNode,HarmDistNode,FlipBlendNode,ReadMarkovNode",
   "objPath": "OBJs/orchid.obj",
   "outputLength": 20,
   "promptVideoPath": false,

@@ -10,7 +10,7 @@
 		}
 ,
 		"classnamespace" : "box",
-		"rect" : [ 35.0, 262.0, 561.0, 480.0 ],
+		"rect" : [ 303.0, 178.0, 561.0, 480.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -280,10 +280,48 @@
 
 			}
  ],
+		"parameters" : 		{
+			"obj-6::obj-25" : [ "live.gain~", "live.gain~", 0 ],
+			"parameterbanks" : 			{
+
+			}
+,
+			"parameter_overrides" : 			{
+				"obj-6::obj-25" : 				{
+					"parameter_longname" : "live.gain~",
+					"parameter_shortname" : "live.gain~"
+				}
+
+			}
+,
+			"inherited_shortname" : 1
+		}
+,
 		"dependency_cache" : [ 			{
 				"name" : "myceliumMarkov.maxpat",
 				"bootpath" : "~/Documents/Processing/Capstone/pcc_Capstone_2021/MyceliumMarkov",
 				"patcherrelativepath" : "./MyceliumMarkov",
+				"type" : "JSON",
+				"implicit" : 1
+			}
+, 			{
+				"name" : "myceliumGranulator.maxpat",
+				"bootpath" : "~/Documents/Processing/Capstone/pcc_Capstone_2021/Granulator",
+				"patcherrelativepath" : "./Granulator",
+				"type" : "JSON",
+				"implicit" : 1
+			}
+, 			{
+				"name" : "voice-engine.maxpat",
+				"bootpath" : "~/Documents/Processing/Capstone/pcc_Capstone_2021/Granulator",
+				"patcherrelativepath" : "./Granulator",
+				"type" : "JSON",
+				"implicit" : 1
+			}
+, 			{
+				"name" : "mushroomTea.maxpat",
+				"bootpath" : "~/Documents/Processing/Capstone/pcc_Capstone_2021/mushroomTea",
+				"patcherrelativepath" : "./mushroomTea",
 				"type" : "JSON",
 				"implicit" : 1
 			}

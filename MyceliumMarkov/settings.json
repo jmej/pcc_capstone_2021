@@ -1,7 +1,8 @@
 {
   "fromMarkovDir": "/Users/tobygn/Documents/Processing/Capstone/pcc_Capstone_2021/Mycelium/data/fromMarkov",
   "toMarkovDir": "/Users/tobygn/Documents/Processing/Capstone/pcc_Capstone_2021/Mycelium/data/toMarkov",
-  "order": 70,
+  "order": 80,
   "inPort": 12004,
-  "outPort": 12001
+  "outPort": 12001,
+  "resetCount": 1
 }

@@ -80,6 +80,9 @@ void setup() {
       case "AvgPixNode":
         mods[i] = new AvgPixNode();
         break;
+      case "BezierNode":
+        mods[i] = new BezierNode();
+        break;
       case "BlendNode":
         mods[i] = new BlendNode();
         break; 
@@ -169,31 +172,31 @@ void setup() {
   videoExport = new VideoExport(this);
   videoExport.setFrameRate(movie.frameRate);
   videoExport.setLoadPixels(false);
-  videoExport.setQuality((int)settings.get("videoQuality"), (int)settings.get("audioQuality"));
+  videoExport.setQuality((int)settings.get("videoQuality"), (int)settings.get("audioQuality")); //<>//
   videoExport.setDebugging((boolean)settings.get("videoExportDebug"));
   
-  // For nodes that have a specfic color to track... //<>//
+  // For nodes that have a specfic color to track...
   color TRACK_COLOR = color(random(100), random(100), random(100));
    
   try { 
-    // Loop through the nodes and init, set default vars
+    // Loop through the nodes and init, set default vars //<>//
     for (int i = 0; i < mods.length; i++) {
       mods[i].init(settings);
-      mods[i].setDim(PIX_DIM); //<>//
+      mods[i].setDim(PIX_DIM);
       mods[i].setColor(TRACK_COLOR);
-    }
+    } //<>//
   } catch (NullPointerException e) { 
     println("Node init error. Check node names in settings.json: " + e.getMessage());
-  } //<>//
+  }
   
   // Sound / fft stuff
   soundSource = new SoundFile(this, audioOut); 
   soundSource.play();
   fft = new FFT(this, fftBands);
-  rms = new Amplitude(this);
+  rms = new Amplitude(this); //<>//
   fft.input(soundSource);
   rms.input(soundSource);
-  soundSource.pause(); //<>//
+  soundSource.pause();
   
   // This is the object we will write to with each frame of the movie
   main = createGraphics(movie.width, movie.height, P2D); 

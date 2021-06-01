@@ -10,6 +10,7 @@ public class ReadMarkovNode  implements ModNode {
   private String toMarkovPath;
   private int outport = 12000;
   private NetAddress remoteLocation;
+  private int waittime = 2000;
     
   public PImage mod(PImage frame) {
     if (frame.pixels.length == 0) frame.loadPixels();
@@ -17,6 +18,7 @@ public class ReadMarkovNode  implements ModNode {
     JSONObject main = null;
     File jsonFile = null;
     OscMessage msg = null;
+    colorMode(HSB, 100);
 
     JSONObject out = new JSONObject();
     int i = 0;
@@ -45,26 +47,27 @@ public class ReadMarkovNode  implements ModNode {
       boolean found = false;
       String markovPath = "";
       int attempts = 0;
+      
       while(!found) {
         markovPath = oscCli.getMarkovPath();
         if (!markovPath.equals("")){
           found = true;
         }
         println("No Markov file...waiting");
-        delay(2000);
+        delay(waittime);
         attempts++;
         
         if (attempts > MAX_ATTEMPTS) {
           println("No file returned. Breaking...");
           break;
         }
-        
       }
       
       if (found) {
         jsonFile = new File(markovPath);
         main = loadJSONObject(jsonFile);
-        println("JSON file: " + jsonFile.getAbsolutePath());
+        println("Turnaround time: " + attempts*(waittime/1000) + " -- JSON file: " + jsonFile.getAbsolutePath() );
+   
       }
       
     } catch (NullPointerException e) {
@@ -134,7 +137,6 @@ public class ReadMarkovNode  implements ModNode {
     this.remoteLocation = new NetAddress("127.0.0.1", outport);
     this.dim = (int)this.set.get("defaultDim");
     this.toMarkovPath = (String)this.set.get("toMarkovPath"); 
-    
     this.MAX_ATTEMPTS = (int)map(this.dim, 1, 10, 40, 10);
   }
   

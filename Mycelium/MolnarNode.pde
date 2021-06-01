@@ -1,9 +1,7 @@
-
 class MolnarNode implements ModNode {
   private Settings set;
   private int dim = 4;
   private int curFrame = 0;
-  private color trackColor = 0;
   private boolean active = true;
   private int frameModCt = 90;
   private float PHI = 1.618033988749894848204586834365638117720309179805762862135448;
@@ -11,7 +9,6 @@ class MolnarNode implements ModNode {
   private boolean pause = false;
   private color[] colArray = new color[7];
   private int grid = 15;
-  private int margin = 70;
   
   PImage mod(PImage frame) {
     if (frame.pixels.length == 0) frame.loadPixels();
@@ -81,7 +78,6 @@ class MolnarNode implements ModNode {
   }
   
   public void setColor(color c) {
-    this.trackColor = c;
   }
   
   public void setDim(int d) {
@@ -93,7 +89,5 @@ class MolnarNode implements ModNode {
   }
   
   public void clicked() {
-    int loc = mouseX + mouseY*width;
-    this.trackColor = pixels[loc];
   }
 }
