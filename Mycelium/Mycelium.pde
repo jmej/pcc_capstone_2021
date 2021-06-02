@@ -39,6 +39,7 @@ boolean AUDIODONE = false;
 int PIX_DIM; 
 int START_FRAME;
 String VIDEO_IN_PATH;
+String FFMPEG_PATH;
 int FRAME_MOD_COUNT;
 float RMS_SCALED;
 float[] fftData;
@@ -57,6 +58,7 @@ void setup() {
   VIDEO_IN_PATH = (String)settings.get("videoInputPath");
   START_FRAME = (int)settings.get("startFrame");
   FRAME_MOD_COUNT = (int)settings.get("frameModCount");
+  FFMPEG_PATH = (String)settings.get("ffmpegPath");
   int fftBands = (int)settings.get("fftBands");
   String classNames = (String)settings.get("nodeNames");
   String[] classList = classNames.split(",");
@@ -122,6 +124,9 @@ void setup() {
       case "ReadMarkovNode":
         mods[i] = new ReadMarkovNode();
         break;    
+      case "SaladNode":
+        mods[i] = new SaladNode();
+        break;   
       case "TrigModNode":
         mods[i] = new TrigModNode();
         break; 
@@ -147,6 +152,9 @@ void setup() {
   movie.pause();
   movie.loadPixels();
   
+  // This is the object we will write to with each frame of the movie
+  main = createGraphics(movie.width, movie.height, P2D); 
+  
   if ((boolean)settings.get("promptVideoPath")) {
     boolean asked = false;
     
@@ -164,28 +172,28 @@ void setup() {
     audioFilePath = VIDEO_IN_PATH;
   }
   
-  // Save audio from Video separately
+  // Save audio from Video separately //<>//
   audioOut = saveAudio(audioFilePath);
   println("AUDIO SEPARATED FROM VIDEO" + audioOut);
   
   // Video export settings
   videoExport = new VideoExport(this);
   videoExport.setFrameRate(movie.frameRate);
-  videoExport.setLoadPixels(false);
-  videoExport.setQuality((int)settings.get("videoQuality"), (int)settings.get("audioQuality")); //<>//
+  videoExport.setLoadPixels(false); //<>//
+  videoExport.setQuality((int)settings.get("videoQuality"), (int)settings.get("audioQuality"));
   videoExport.setDebugging((boolean)settings.get("videoExportDebug"));
   
   // For nodes that have a specfic color to track...
-  color TRACK_COLOR = color(random(100), random(100), random(100));
+  color TRACK_COLOR = color(random(100), random(100), random(100)); //<>//
    
   try { 
-    // Loop through the nodes and init, set default vars //<>//
+    // Loop through the nodes and init, set default vars
     for (int i = 0; i < mods.length; i++) {
       mods[i].init(settings);
       mods[i].setDim(PIX_DIM);
       mods[i].setColor(TRACK_COLOR);
-    } //<>//
-  } catch (NullPointerException e) { 
+    }
+  } catch (NullPointerException e) {  //<>//
     println("Node init error. Check node names in settings.json: " + e.getMessage());
   }
   
@@ -193,16 +201,17 @@ void setup() {
   soundSource = new SoundFile(this, audioOut); 
   soundSource.play();
   fft = new FFT(this, fftBands);
-  rms = new Amplitude(this); //<>//
+  rms = new Amplitude(this);
   fft.input(soundSource);
   rms.input(soundSource);
   soundSource.pause();
   
-  // This is the object we will write to with each frame of the movie
-  main = createGraphics(movie.width, movie.height, P2D); 
+  colorMode(HSB, 100);
+  delay(1000);
 }
 
 void draw() {  
+  if (main == null) return;
   main.beginDraw();
   main.image(movie, 0, 0);
   main.endDraw();
@@ -355,7 +364,7 @@ https://discourse.processing.org/t/monitoring-process-of-ffmpeg-in-processing/17
 ***/
 String saveAudio(String fileName) {
   saved = true;
-  String ffmpegPath = "/usr/local/bin/ffmpeg";
+  String ffmpegPath = FFMPEG_PATH;
   String audioOut = dataPath(fileName + "_audio.mp3");
   String[] commands = {
     ffmpegPath,

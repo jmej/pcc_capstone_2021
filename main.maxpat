@@ -305,20 +305,6 @@
 				"implicit" : 1
 			}
 , 			{
-				"name" : "myceliumGranulator.maxpat",
-				"bootpath" : "~/Documents/Processing/Capstone/pcc_Capstone_2021/Granulator",
-				"patcherrelativepath" : "./Granulator",
-				"type" : "JSON",
-				"implicit" : 1
-			}
-, 			{
-				"name" : "voice-engine.maxpat",
-				"bootpath" : "~/Documents/Processing/Capstone/pcc_Capstone_2021/Granulator",
-				"patcherrelativepath" : "./Granulator",
-				"type" : "JSON",
-				"implicit" : 1
-			}
-, 			{
 				"name" : "mushroomTea.maxpat",
 				"bootpath" : "~/Documents/Processing/Capstone/pcc_Capstone_2021/mushroomTea",
 				"patcherrelativepath" : "./mushroomTea",

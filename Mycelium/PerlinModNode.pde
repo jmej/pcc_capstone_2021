@@ -25,7 +25,7 @@ public class PerlinNode implements ModNode {
       for (int y = 0; y < frame.height; y += this.dim ) {
         int loc = x + y*frame.width;
         color currentColor = frame.pixels[loc];    
-        float noiseVal1 = noise((brightness(currentColor)+x)*noiseScale, (brightness(currentColor)+y)*noiseScale);
+        float noiseVal1 = noise((hue(currentColor)+x)*noiseScale, (hue(currentColor)+y)*noiseScale);
         float noiseVal2 = noise((saturation(currentColor)+x)*noiseScale, (saturation(currentColor)+y)*noiseScale);
       //  float noiseVal3 = noise((brightness(currentColor)+x)*noiseScale, (brightness(currentColor)+y)*noiseScale);
             
