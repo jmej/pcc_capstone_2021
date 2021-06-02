@@ -68,7 +68,5 @@ public class AvgPixNode implements ModNode {
   }
   
   public void clicked() {
-    int loc = mouseX + mouseY*width;
-    this.trackColor = pixels[loc];
   }
 }
