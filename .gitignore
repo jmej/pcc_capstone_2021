@@ -1,5 +1,4 @@
 .DS_Store
-.gitignore
 Mycelium/.DS_Store
 Mycelium/ffmpeg.txt
 Mycelium/ffmpeg-audio.txt
@@ -9,3 +8,4 @@ Mycelium/data/frameData
 Mycelium/data/settings.json
 Granulator/settings.json
 MyceliumMarkov/settings.json
+*wav
