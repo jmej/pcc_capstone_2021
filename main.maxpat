@@ -10,7 +10,7 @@
 		}
 ,
 		"classnamespace" : "box",
-		"rect" : [ 34.0, 79.0, 1212.0, 687.0 ],
+		"rect" : [ 285.0, -944.0, 1212.0, 687.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -1395,28 +1395,28 @@
 ,
 		"dependency_cache" : [ 			{
 				"name" : "Granulator Build_Pare Down_v9.maxpat",
-				"bootpath" : "~/Documents/Processing/Capstone/pcc_Capstone_2021",
+				"bootpath" : "~/pcc_capstone_2021",
 				"patcherrelativepath" : ".",
 				"type" : "JSON",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "NodeInput.maxpat",
-				"bootpath" : "~/Documents/Processing/Capstone/pcc_Capstone_2021",
+				"bootpath" : "~/pcc_capstone_2021",
 				"patcherrelativepath" : ".",
 				"type" : "JSON",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "NodeOutput.maxpat",
-				"bootpath" : "~/Documents/Processing/Capstone/pcc_Capstone_2021",
+				"bootpath" : "~/pcc_capstone_2021",
 				"patcherrelativepath" : ".",
 				"type" : "JSON",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "convolutionpatch.maxpat",
-				"bootpath" : "~/Documents/Processing/Capstone/pcc_Capstone_2021",
+				"bootpath" : "~/pcc_capstone_2021",
 				"patcherrelativepath" : ".",
 				"type" : "JSON",
 				"implicit" : 1
@@ -1424,7 +1424,7 @@
 , 			{
 				"name" : "cw_fft.maxpat",
 				"bootpath" : "~/Library/Application Support/Cycling '74/Max 8/Examples/fft-fun/lib",
-				"patcherrelativepath" : "../../../../Library/Application Support/Cycling '74/Max 8/Examples/fft-fun/lib",
+				"patcherrelativepath" : "../Library/Application Support/Cycling '74/Max 8/Examples/fft-fun/lib",
 				"type" : "JSON",
 				"implicit" : 1
 			}
@@ -1436,14 +1436,10 @@
 			}
 , 			{
 				"name" : "myceliumMarkov.maxpat",
-				"bootpath" : "~/Documents/Processing/Capstone/pcc_Capstone_2021/MyceliumMarkov",
+				"bootpath" : "~/pcc_capstone_2021/MyceliumMarkov",
 				"patcherrelativepath" : "./MyceliumMarkov",
 				"type" : "JSON",
 				"implicit" : 1
-			}
-, 			{
-				"name" : "ml.markov.mxo",
-				"type" : "iLaX"
 			}
  ],
 		"autosave" : 0
