@@ -2,9 +2,7 @@ public class SaladNode implements ModNode {
   private Settings set;
   private int dim = 4;
   private int curFrame = 0;
-  private color trackColor = 0;
   private boolean active = true;
-  private PImage prev = null;
   private int frameModCt = 60;
   private int div = 100;
   private float rotation = 0.0;
@@ -13,10 +11,6 @@ public class SaladNode implements ModNode {
   public PImage mod(PImage frame) {
     if (frame.pixels.length == 0) frame.loadPixels();
     
-    if (prev == null) {
-      prev = frame.copy();
-      return frame;
-    }
     
     PGraphics canvas = createGraphics(frame.width, frame.height);
     canvas.beginDraw();           
@@ -37,8 +31,7 @@ public class SaladNode implements ModNode {
         if (rotation >= 2*PI) {
           rotation = 0.0;
         } 
-        
-        
+             
         canvas.rotate(rotation);
         canvas.fill(frame.pixels[loc]);
         canvas.square(myx, myy, this.dim);
@@ -47,12 +40,6 @@ public class SaladNode implements ModNode {
     }
     
     canvas.endDraw();
-    
-    if (curFrame % this.frameModCt == 0) {
-      prev = frame.copy();
-    } else {
-      prev = canvas;
-    }
     this.curFrame++;
     
     return canvas;
@@ -70,7 +57,6 @@ public class SaladNode implements ModNode {
   }
   
   public void setColor(color c) {
-    this.trackColor = c;
   }
   
   public void setDim(int d) {
@@ -82,7 +68,5 @@ public class SaladNode implements ModNode {
   }
   
   public void clicked() {
-    int loc = mouseX + mouseY*width;
-    this.trackColor = pixels[loc];
   }
 }

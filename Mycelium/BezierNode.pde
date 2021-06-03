@@ -90,6 +90,7 @@ class BezierNode implements ModNode {
   public void init(Settings set) {
     this.set = set;
     this.frameModCt = (int) this.set.get("frameModCount");
+    this.noiseMode = (boolean)this.set.get("bezierNoiseMode");
   }
   
   public void setColor(color c) {
