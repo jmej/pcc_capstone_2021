@@ -81,21 +81,16 @@ class Motion {
       timer2 ++;
       }
 
-      let newX = map(timer, 0, 2000, this.x, width/2 + random(20)); //+ random(10));
-      let newY = map(timer, 0, 2000, this.y, height/2 - 100 + random(20));//+random(10));
+    let newX = map(timer, 0, 2000, this.x, width/2 + random(20)); //+ random(10));
+    let newY = map(timer, 0, 2000, this.y, height/2 - 100 + random(20));//+random(10));
     
     beginShape();
-    for (let i=0; i<1500; i++) {
-      
-      
-      vertex(newX, newY);
-      
-      
-
-      mass = map(timer2, 0, 2500, 0.6, 0.001);
-      newX += random(-mass, mass);
-      newY += random(-mass, mass);
-    }
+      for (let i=0; i<1500; i++) {
+        vertex(newX, newY);
+        mass = map(timer2, 0, 2500, 0.6, 0.001);
+        newX += random(-mass, mass);
+        newY += random(-mass, mass);
+      }
     endShape();
   }
 }
