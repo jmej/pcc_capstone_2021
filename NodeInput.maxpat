@@ -93,8 +93,8 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 156.0, 199.666684031486511, 49.0, 22.0 ],
-					"text" : "read $1"
+					"patching_rect" : [ 156.0, 199.666684031486511, 59.0, 22.0 ],
+					"text" : "read $1 2"
 				}
 
 			}
