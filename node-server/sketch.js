@@ -1,5 +1,5 @@
 //dropzone for file dropping
-var dropzone;
+
 
 //robby's sketchy birds
 let birds = [];
@@ -13,12 +13,6 @@ let mass = 0.6;
 function setup() {
   createCanvas(1800, 1000, WEBGL);
   background(0);
-
-
-  dropzone = select('#dropzone');
-  dropzone.dragOver(highlight);
-  dropzone.dragLeave(unhighlight);
-  dropzone.drop(gotFile, unhighlight);
 
   angleMode(DEGREES);
 
