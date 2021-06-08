@@ -10,7 +10,7 @@
 		}
 ,
 		"classnamespace" : "box",
-		"rect" : [ 285.0, -944.0, 1212.0, 687.0 ],
+		"rect" : [ 49.0, -987.0, 1386.0, 785.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -467,7 +467,7 @@
 									"maxclass" : "inlet",
 									"numinlets" : 0,
 									"numoutlets" : 1,
-									"outlettype" : [ "" ],
+									"outlettype" : [ "signal" ],
 									"patching_rect" : [ 10.0, 8.0, 25.0, 25.0 ]
 								}
 
@@ -692,7 +692,6 @@
 						"style" : "",
 						"subpatcher_template" : "",
 						"assistshowspatchername" : 0,
-						"visible" : 1,
 						"boxes" : [ 							{
 								"box" : 								{
 									"fontname" : "Lato",
@@ -1017,7 +1016,7 @@
 									"maxclass" : "inlet",
 									"numinlets" : 0,
 									"numoutlets" : 1,
-									"outlettype" : [ "" ],
+									"outlettype" : [ "signal" ],
 									"patching_rect" : [ 10.0, 8.0, 25.0, 25.0 ]
 								}
 
@@ -1237,7 +1236,7 @@
 					"maxclass" : "newobj",
 					"numinlets" : 2,
 					"numoutlets" : 2,
-					"outlettype" : [ "", "" ],
+					"outlettype" : [ "signal", "signal" ],
 					"patching_rect" : [ 308.5, 241.0, 189.0, 22.0 ],
 					"text" : "\"Granulator Build_Pare Down_v9\""
 				}
@@ -1395,6 +1394,13 @@
 ,
 		"dependency_cache" : [ 			{
 				"name" : "Granulator Build_Pare Down_v9.maxpat",
+				"bootpath" : "~/pcc_capstone_2021",
+				"patcherrelativepath" : ".",
+				"type" : "JSON",
+				"implicit" : 1
+			}
+, 			{
+				"name" : "voice-engine.maxpat",
 				"bootpath" : "~/pcc_capstone_2021",
 				"patcherrelativepath" : ".",
 				"type" : "JSON",
