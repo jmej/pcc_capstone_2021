@@ -3378,8 +3378,8 @@
 					"numinlets" : 1,
 					"numoutlets" : 2,
 					"outlettype" : [ "float", "bang" ],
-					"patching_rect" : [ 451.666670918464661, 655.333333134651184, 66.0, 22.0 ],
-					"text" : "buffer~ fo1"
+					"patching_rect" : [ 451.666670918464661, 655.333333134651184, 90.0, 22.0 ],
+					"text" : "buffer~ fo1 -1 2"
 				}
 
 			}
