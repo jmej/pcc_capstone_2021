@@ -34,9 +34,6 @@ public class ExplodeColorNode implements ModNode {
     
     for (int x = 0; x < frame.width; x += this.dim ) {
       for (int y = 0; y < frame.height; y += this.dim ) {
-    //    x += this.curFrame;
-     //   x = (x % frame.width);
-        
         int loc = x + y*frame.width;
         color currentColor = frame.pixels[loc];
         
@@ -51,11 +48,11 @@ public class ExplodeColorNode implements ModNode {
           );
           
           if (d < this.colorThresh) {
-            float noiseVal3 = noise((brightness(currentColor)+x)*noiseScale, (brightness(currentColor)+y)*noiseScale);
+            float noiseVal1 = noise((hue(currentColor)+x)*noiseScale, (hue(currentColor)+y)*noiseScale);
             color c = color(
-              hue(currentColor),
+              hue(currentColor)* noiseVal1,
               saturation(currentColor),
-              brightness(currentColor) * noiseVal3
+              brightness(currentColor)
             );
             canvas.fill(c);
             canvas.circle(x, y, thisDim);

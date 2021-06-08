@@ -117,6 +117,9 @@ void setup() {
       case "MolnarNode":
         mods[i] = new MolnarNode();
         break;
+      case "PartRotateNode":
+        mods[i] = new PartRotateNode();
+        break;
       case "PerlinNode":
         mods[i] = new PerlinNode();
         break;
@@ -175,8 +178,13 @@ void setup() {
   } //<>//
   
   // Save audio from Video separately
-  audioOut = saveAudio(audioFilePath);
-  println("AUDIO SEPARATED FROM VIDEO" + audioOut);
+  File audio = new File(audioFilePath);
+  if (!audio.exists()) {
+    audioOut = saveAudio(audioFilePath);
+    println("AUDIO SEPARATED FROM VIDEO" + audioOut);
+  } else {
+    println("AUDIO FILE ALREADY EXISTS. WILL NOT SEPARATE FROM VIDEO.");
+  }
   
   // Video export settings
   videoExport = new VideoExport(this); //<>//

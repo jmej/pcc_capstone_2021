@@ -1,24 +1,20 @@
-
 class FlipBlendNode implements ModNode {
   private Settings set;
   private int frameModCt = 30;
-  private int blend1 = BLEND;
-  private int blend2 = EXCLUSION;
+  private int blendMethod = EXCLUSION;
   private boolean active = true;
   private int curFrame = 0;
   
   public PImage mod(PImage frame) {
-    int method = blend2;
     PGraphics canvas = createGraphics(frame.width, frame.height);
     
     canvas.beginDraw();
-    canvas.noStroke(); 
-    
+    canvas.noStroke();  
     canvas.translate((int)frame.width, 0);
     canvas.scale(-1,1);
     canvas.image(frame, 0, 0);
     canvas.translate(0, 0);
-    canvas.blend(frame, 0, 0, frame.width, frame.height, 0, 0, frame.width, frame.height, method);
+    canvas.blend(frame, 0, 0, frame.width, frame.height, 0, 0, frame.width, frame.height, blendMethod);
     
     canvas.endDraw();
    
@@ -48,10 +44,5 @@ class FlipBlendNode implements ModNode {
   
   public boolean active() {
     return this.active;
-  }
-  
-  public void setBlends(int mode1, int mode2) {
-    this.blend1 = mode1;
-    this.blend2 = mode2;
   }
 }
