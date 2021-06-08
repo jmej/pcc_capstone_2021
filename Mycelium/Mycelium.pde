@@ -182,6 +182,7 @@ void setup() {
   if (!audio.exists()) {
     audioOut = saveAudio(audioFilePath);
     println("AUDIO SEPARATED FROM VIDEO" + audioOut);
+    delay(1000);
   } else {
     println("AUDIO FILE ALREADY EXISTS. WILL NOT SEPARATE FROM VIDEO.");
   }
@@ -208,6 +209,19 @@ void setup() {
   }
   
   // Sound / fft stuff
+  int tries = 0;
+  int maxtries = 10;
+  while(tries < maxtries) {
+    File audioFile = new File(audioOut);
+    if (!audioFile.exists()) {
+      println("No audio file found");
+      delay(1000);
+      tries++;
+    } else {
+      break;
+    }
+  }
+  
   soundSource = new SoundFile(this, audioOut); 
   soundSource.play();
   fft = new FFT(this, fftBands);
@@ -222,9 +236,14 @@ void setup() {
 
 void draw() {  
   if (main == null) return;
-  main.beginDraw();
-  main.image(movie, 0, 0);
-  main.endDraw();
+  try {
+    main.beginDraw();
+    main.image(movie, 0, 0);
+    main.endDraw();
+  } catch (NullPointerException e) {
+    println("Caught NULL pointer in main: " + e.getMessage());
+    return;
+  }
 
   PImage f = createImage(width, height, ALPHA);
    
