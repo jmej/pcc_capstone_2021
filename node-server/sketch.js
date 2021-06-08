@@ -11,7 +11,7 @@ let mass = 0.6;
 
 
 function setup() {
-  createCanvas(1800, 1000);
+  createCanvas(1800, 1000, WEBGL);
   background(0);
 
 
@@ -32,11 +32,15 @@ function setup() {
 function draw(){
 
 
+  push();
+  translate(-width*0.5, -height*0.5);
   //sketchy birds
     for (let i = 0; i < birds.length; i++) {
       birds[i].move();
       birds[i].display();
       }
+  pop();
+
 }
 
 
@@ -62,10 +66,11 @@ class Motion {
     this.x = random(width);
     this.y = random(height);
     this.diameter = random(10, 30);
-    this.speed = 1;
+    this.speed = 10;
     this.r = random(150, 200);
     this.g = random(50, 75);
     this.b = random(50, 75);
+    this.alpha = random(0, 100);
     // this.newX = 0;
     // this.newY = 0;
   }
@@ -74,14 +79,25 @@ class Motion {
     this.x += random(-this.speed, this.speed);
     this.y += random(-this.speed, this.speed);
 
-    this.r += random(-this.speed, this.speed);
-    this.g += random(-this.speed, this.speed);
-    this.b += random(-this.speed, this.speed);
+    this.r += random(-1, 1);
+    this.g += random(-1, 1);
+    this.b += random(-1, 1);
+
+    if (this.alpha <= 0)
+      {
+      this.alpha += random(this.alpha*0.1);
+      }
+    if (this.alpha >= 100)
+      {
+      this.alpha -= random(this.alpha*0.1);
+      }
+      
   }
 
   display() {
     noFill();
-    stroke(this.r, this.g, this.b);
+
+    stroke(this.r, this.g, this.b, this.alpha);
     
     if(timer <= 2000){
       timer ++;
