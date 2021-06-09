@@ -33,6 +33,7 @@ String audioOut = "";
 String settingsPath;
 
 // Settings from settings.json and related
+boolean AUDIO_INIT = false;
 boolean LOOP;
 boolean EXTRACT_AUDIO;
 boolean AUDIODONE = false;
@@ -222,13 +223,30 @@ void setup() {
     }
   }
   
-  soundSource = new SoundFile(this, audioOut); 
-  soundSource.play();
-  fft = new FFT(this, fftBands);
-  rms = new Amplitude(this);
-  fft.input(soundSource);
-  rms.input(soundSource);
-  soundSource.pause();
+  boolean played = false;
+  tries = 0;
+  while (!played) {
+    try {
+      soundSource = new SoundFile(this, audioOut); 
+      soundSource.play();
+      played = true;
+    } catch (NullPointerException e) {
+      println("Failed to play sound file");
+      tries++;
+      if (tries >= maxtries) {
+        println("Couldn't play audio");
+      }
+    }
+  }
+  
+  if (played) {
+    AUDIO_INIT = true;
+    fft = new FFT(this, fftBands);
+    rms = new Amplitude(this);
+    fft.input(soundSource);
+    rms.input(soundSource);
+    soundSource.pause();
+  }
   
   colorMode(HSB, 100);
   delay(1000);
@@ -251,14 +269,16 @@ void draw() {
   f.copy(main, 0, 0, main.width, main.height, 0, 0, f.width, f.height);
   
   // Calculate fft, amplitude stuff for this frame
-  soundSource.play(1, 0.0, 1.0, 0, movie.time());
-  soundSource.amp(1);
-  fft.analyze();
-  arrayCopy(fft.spectrum, fftData);
-  
-  RMS_SCALED = rms.analyze() * 13;
-  delay(100);
-  soundSource.pause();
+  if (AUDIO_INIT) {
+    soundSource.play(1, 0.0, 1.0, 0, movie.time());
+    soundSource.amp(1);
+    fft.analyze();
+    arrayCopy(fft.spectrum, fftData);
+    
+    RMS_SCALED = rms.analyze() * 13;
+    delay(100);
+    soundSource.pause();
+  }
   
   // Continually pass the modded version to each Node
   for (int i = 0; i < mods.length; i++) {
@@ -299,7 +319,6 @@ void draw() {
 void getFrameInfo() {
   frameData.analyze();
 }
-
 /* END Thread Functions */
 
 void oscEvent(OscMessage m) {
@@ -330,22 +349,25 @@ void endMovie() {
  
   println(curFrame + " frames processed, movie length: " + movie.time() + " seconds");
   
-  while(finalAudio.equals("")) {
-    finalAudio = oscCli.getFinalAudio();
-    println("no audio...delaying 2s");
-    delay(2000);
-    waitTime += 2;
-    if (waitTime >= movie.time() + 25) {
-      println("Timed out waiting for audio node reponse");
-      break;
+  if (AUDIO_INIT) {
+    while(finalAudio.equals("")) {
+      finalAudio = oscCli.getFinalAudio();
+      println("no audio...delaying 2s");
+      delay(2000);
+      waitTime += 2;
+      if (waitTime >= movie.time() + 25) {
+        println("Timed out waiting for audio node reponse");
+        break;
+      }
+    }
+    
+    if (!finalAudio.equals("")) {
+      videoExport.setAudioFileName(finalAudio);
     }
   }
   
-  if (!finalAudio.equals("")) {
-    videoExport.setAudioFileName(finalAudio);
-  }
   videoExport.endMovie();
-  
+
   exit();
 }
 

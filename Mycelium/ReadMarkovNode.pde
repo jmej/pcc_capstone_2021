@@ -22,17 +22,25 @@ public class ReadMarkovNode  implements ModNode {
 
     JSONObject out = new JSONObject();
     int i = 0;
+    int totalbright = 0;
     for (int x = 0; x < width; x += this.dim ) {
       for (int y = 0; y < height; y += this.dim ) {
         int loc = x + y*width;
         color c = frame.pixels[loc];  
         JSONArray elem = new JSONArray();
+        int bri = (int)brightness(c);
+        totalbright += bri;
         elem.setInt(0, (int)hue(c));
         elem.setInt(1, (int)saturation(c));
-        elem.setInt(2, (int)brightness(c));
+        elem.setInt(2, bri);
         out.setJSONArray("" + i, elem);
         i++;  
       } 
+    }
+    
+    if (totalbright == 0) {
+      println("Black frame. Skipping markov chain");
+      return frame;
     }
     
     String outPath = sketchPath(this.toMarkovPath + "/frame-" + this.curFrame + "-" + i + ".json");

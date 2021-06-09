@@ -3,6 +3,7 @@ public class HueNode implements ModNode {
   private int dim = 3;
   private int curFrame = 0;
   private color trackColor = 0;
+  private int thresh = 30;
   private int minHue = 0;
   private int maxHue = 100;
   private boolean active = true;
@@ -47,8 +48,16 @@ public class HueNode implements ModNode {
             brightness(this.trackColor)
           );
           
-          if (d < 20) {
-            canvas.fill(trackColor);
+          if (d < this.thresh) {
+            float noiseScale = map(this.curFrame % this.frameModCt, 0, this.frameModCt, .01, .1);
+            float noiseVal1 = noise((hue(this.trackColor)+x)*noiseScale, (hue(this.trackColor)+y)*noiseScale);
+            color c = color(
+              hue(this.trackColor)*noiseVal1,
+              saturation(this.trackColor),
+              brightness(this.trackColor)        
+            );
+            
+            canvas.fill(c);
             canvas.square(x, y, dim);
             continue;
           }

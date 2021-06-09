@@ -1,7 +1,7 @@
 public class ExplodeColorNode implements ModNode {
   private Settings set;
   private int dim = 4;
-  private int hiDim = 8;
+  private int hiDim = 10;
   private int curFrame = 0;
   private color trackColor = 0;
   private boolean active = true;
