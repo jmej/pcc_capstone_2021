@@ -1,81 +1,43 @@
-// The file system module
-const http = require('http');
-const path = require('path');
-const fs = require('fs');
+var express = require('express');
+var app = express();
+var path = require('path');
+var formidable = require('formidable');
+var fs = require('fs');
 
-let server = http.createServer(handleRequest);
-let port = process.env.PORT;
-if (port == null || port == "") {
-  port = 80;
-}
-server.listen(port);
+app.use(express.static(path.join(__dirname, 'public')));
+app.get('/', function(req, res){
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
 
-function handleRequest(req, res) {
-  // What did we request?
-  let pathname = req.url;
-  
-  // If blank let's ask for index.html
-  if (pathname == '/') {
-    pathname = '/index.html';
-  }
-  
-  // Ok what's our file extension
-  let ext = path.extname(pathname);
+app.get('/gallery', function(req, res){
+  res.sendFile(path.join(__dirname, 'gallery.html'));
+});
 
-  // Map extension to file type
-  const typeExt = {
-    '.html': 'text/html',
-    '.js':   'text/javascript',
-    '.css':  'text/css'
-  };
 
-  // What is it?  Default to plain text
-  let contentType = typeExt[ext] || 'text/plain';
+app.post('/upload', function(req, res){
+  // create an incoming form object
+  var form = new formidable.IncomingForm();
+  // specify that we want to allow the user to upload multiple files in a single request
+  form.multiples = true;
+  // store all uploads in the /uploads directory
+  form.uploadDir = path.join(__dirname, '/uploads');
+  // every time a file has been uploaded successfully,
+  // rename it to it's orignal name
+  form.on('file', function(field, file) {
+    fs.rename(file.path, path.join(form.uploadDir, file.name));
+  });
+  // log any errors that occur
+  form.on('error', function(err) {
+    console.log('An error has occured: \n' + err);
+  });
+  // once all the files have been uploaded, send a response to the client
+  form.on('end', function() {
+    res.end('success');
+  });
+  // parse the incoming request containing the form data
+  form.parse(req);
+});
 
-  // Now read and write back the file with the appropriate content type
-  fs.readFile(__dirname + pathname,
-    function (err, data) {
-      if (err) {
-        res.writeHead(500);
-        return res.end('Error loading ' + pathname);
-      }
-      // Dynamically setting content type
-      res.writeHead(200,{ 'Content-Type': contentType });
-      res.end(data);
-    }
-  );
-}
-
-// WebSocket Portion
-// WebSockets work with the HTTP server
-// var io = require('socket.io').listen(server);
-
-// // Register a callback function to run when we have an individual connection
-// // This is run for each individual user that connects
-// io.sockets.on('connection',
-//   // We are given a websocket object in our function
-//   function (socket) {
-  
-//     console.log("We have a new client: " + socket.id);
-  
-//     // When this user emits, client side: socket.emit('otherevent',some data);
-//     socket.on('mouse',
-//       function(data) {
-//         // Data comes in as whatever was sent, including objects
-//         console.log("Received: 'mouse' " + data.x + " " + data.y);
-      
-//         // Send it to all other clients
-//         socket.broadcast.emit('mouse', data);
-        
-//         // This is a way to send to everyone including sender
-//         // io.sockets.emit('message', "this goes to everyone");
-
-//       }
-//     );
-    
-//     socket.on('disconnect', function() {
-//       console.log("Client has disconnected");
-//     });
-//   }
-// );
-
+var server = app.listen(80, function(){
+  console.log('Server listening on port 80');
+});
