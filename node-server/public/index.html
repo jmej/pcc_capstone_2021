@@ -17,19 +17,23 @@
 </head>
 
 <body>
-  <!-- (B) FILE DROP ZONE -->
-    <div id="upzone">
-      Drop Files Here
+  <div id="container" >
+      <!-- (B) FILE DROP ZONE -->
+      <div id="upzone" class="box stack-top" >
+        Drop Files Here
+      </div>
+
+      <!-- (C) UPLOAD STATUS -->
+      <div id="upstat" ></div>
+
+      <!-- (D) FALLBACK -->
+      <form id="upform" method="post" enctype="multipart/form-data" class="box stack-top" >
+        <input type="file" name="upfile" accept="image/*" required>
+        <input type="submit" value="Upload File">
+      </form>
+    <div id="sketch-container" class="box"></div>
+
     </div>
-
-    <!-- (C) UPLOAD STATUS -->
-    <div id="upstat"></div>
-
-    <!-- (D) FALLBACK -->
-    <form id="upform" method="post" enctype="multipart/form-data">
-      <input type="file" name="upfile" accept="image/*" required>
-      <input type="submit" value="Upload File">
-    </form>
 </body>
 
 </html>
