@@ -12,7 +12,7 @@ let mass = 0.6;
 
 function setup() {
   let canvas = createCanvas(1800, 1000, WEBGL);
-  canvas.parent('sketch-container');
+  canvas.parent('container');
   background(0);
 
   angleMode(DEGREES);
