@@ -1,11 +1,11 @@
 #include <Adafruit_NeoPixel.h>
 
-#define LED_PIN1 18
-#define LED_PIN2 6
+#define LED_PIN1 11
+#define LED_PIN2 4
 #define LED_COUNT1 240
 #define LED_COUNT2 240
 
-#define BRIGHTNESS 100
+#define BRIGHTNESS 200
 
 Adafruit_NeoPixel strip(LED_COUNT1, LED_PIN1, NEO_GRBW + NEO_KHZ800);
 Adafruit_NeoPixel strip2(LED_COUNT2, LED_PIN2, NEO_GRBW + NEO_KHZ800);
@@ -16,15 +16,26 @@ int valCheck = 1000;
 
 int frameCount = 0;
 
-float fBrightness = 0;
+float fBrightness = 100;
 float fWhite = 0;
 
 int randBehaviorTime = random(10000, 20000);
+
+int pot1Pin = 18;
+int pot2Pin = 19;
+int pot3Pin = 20;
+int pot4Pin = 21;
+
+int pot1Val, pot2Val, pot3Val, pot4Val;
 
 int sensor1Pin = 15;
 int sensor2Pin = 14;
 int sensor3Pin = 16;
 int sensor4Pin = 17;
+int sensor1Max = 45000;
+int sensor2Max = 45000;
+int sensor3Max = 45000;
+int sensor4Max = 45000;
 int sensorMax = 45000;
 int sensorMin = 1500;
 int sensor1Val, sensor2Val, sensor3Val, sensor4Val;
@@ -58,8 +69,13 @@ uint32_t incompColor3 = strip.Color(245, 180, 50);
 uint32_t incompColor4 = strip.Color(120, 255, 30);
 uint32_t incompColor5 = strip.Color(227, 79, 30);
 
+uint32_t compColor1 = strip.Color(8, 157, 101);
+uint32_t compColor2 = strip.Color(27, 173, 191);
+uint32_t compColor3 = strip.Color(37, 88, 152);
+uint32_t compColor4 = strip.Color(149, 216, 216);
+
 uint32_t incompColors[] = {incompColor1, incompColor4, incompColor5};
-uint32_t compColors[] = {incompColor1, incompColor2, incompColor3, incompColor4};
+uint32_t compColors[] = {compColor1, compColor2, compColor3, compColor4};
 
 
 const int numReadings = 20;
@@ -67,6 +83,8 @@ int readings[4][numReadings];
 int readIndex = 0;
 int totals[4];
 int averages[4];
+
+bool reachedEnd = false;
 
 
 // generate time to read sensors, maybe every second? start smaller?
@@ -76,6 +94,11 @@ int averages[4];
 //char command;
 
 void setup() {
+
+  pinMode(pot1Pin, INPUT);
+  pinMode(pot2Pin, INPUT);
+  pinMode(pot3Pin, INPUT);
+  pinMode(pot4Pin, INPUT);
 
   pinMode(sensor1Pin, INPUT);
   pinMode(sensor2Pin, INPUT);
@@ -100,9 +123,12 @@ void setup() {
 void loop() {
 
 
-  //incomplete(2);
-
-  //meteorRain(201, 87, 194, 4, 22, true, 8);
+  //incomplete(1);
+  //Fire(20, 50, 15);
+//  meteorRain(201, 87, 194, 4, 22, true, 25);
+//  if (reachedEnd) {
+//    reverseMeteorRain(201, 87, 194, 4, 22, true, 25);  
+//  }
   
   //strip.fill(0, strip.Color(255, 0, 0, 0));
 
@@ -141,10 +167,10 @@ void waiting() {
 }
 
 void readSensors() {
-  mm1 = pulseIn(sensor1Pin, HIGH);
-  mm2 = pulseIn(sensor2Pin, HIGH);
-  mm3 = pulseIn(sensor3Pin, HIGH);
-  mm4 = pulseIn(sensor4Pin, HIGH);
+  mm1 = analogRead(sensor1Pin);
+  mm2 = analogRead(sensor2Pin);
+  mm3 = analogRead(sensor3Pin);
+  mm4 = analogRead(sensor4Pin);
 }
 
 void printRange() {
@@ -159,13 +185,6 @@ void printRange() {
 void trackSensors(int vals[]) {
 
   usedSensors = 0;
-
-//  sensor1Val = pulseIn(sensor1Pin, HIGH);
-//  sensor2Val = pulseIn(sensor2Pin, HIGH);
-//  sensor3Val = pulseIn(sensor3Pin, HIGH);
-//  sensor4Val = pulseIn(sensor4Pin, HIGH);
-//
-//  int sensorVals[] = {sensor1Val, sensor2Val, sensor3Val, sensor4Val};
 
   for (int i = 0; i < 4; i++) {
     if (vals[i] < sensorMax) {
@@ -213,17 +232,6 @@ void trackSensors(int vals[]) {
 
 }
 
-//array storeVals() {
-//
-//  int s1 = pulseIn(sensor1Pin, HIGH);
-//  int s2 = pulseIn(sensor2Pin, HIGH);
-//  int s3 = pulseIn(sensor3Pin, HIGH);
-//  int s4 = pulseIn(sensor4Pin, HIGH);
-//
-//  return {s1, s2, s3, s4};
-//
-//}
-
 
 int avgSensorVal(int vals[]) {
 
@@ -255,7 +263,7 @@ void smoothVals(int vals[]) {
 
   for (int i = 0; i < 4; i++) {
     totals[i] = totals[i] - readings[i][readIndex];
-    readings[i][readIndex] = pulseIn(i + 14, HIGH);
+    readings[i][readIndex] = analogRead(i+14); 
     totals[i] = totals[i] + readings[i][readIndex];  
   }
 
@@ -276,6 +284,24 @@ void smoothVals(int vals[]) {
   
 
 }
+
+void scaleMax(int vals[]) {
+
+  pot1Val = analogRead(pot1Pin);
+  pot2Val = analogRead(pot2Pin);
+  pot3Val = analogRead(pot3Pin);
+  pot4Val = analogRead(pot4Pin);
+
+  sensor1Max = map(vals[0], 0, 1023, 2000, 45000);
+  sensor2Max = map(vals[1], 0, 1023, 2000, 45000);
+  sensor3Max = map(vals[2], 0, 1023, 2000, 45000);
+  sensor4Max = map(vals[3], 0, 1023, 2000, 45000);
+  
+}
+
+// the data mapping logic needs to change based on how the max changes
+// instead of it just being max to min, it's about the percentage or something of the distance
+// 
 
 //void sendSensorData() {
 //

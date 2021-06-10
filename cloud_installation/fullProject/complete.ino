@@ -1,23 +1,24 @@
 void complete() {
   for(;;) {
-    completeBase();
+    completeBasev2();
     if (completeToIncomplete) {
+      Serial.println("c to i");
       completeToIncomplete = false;
       fromCtoI();
       incomplete(usedSensors);  
     }
     if (completeToWaiting) {
+      Serial.println("c to w");
       completeToWaiting = false;
       fromCtoW();
       waiting();  
     }
     if (interrupt) {
+      Serial.println("interrupt");
       completeInterrupt();
     }  
   }
 }
-
-
 
 void completeInterrupt() {
 
@@ -66,7 +67,7 @@ void completeBase() {
 
     int centerArrayLength = 4;
 
-    int maxLength = 10;
+    int maxLength = 10; 
 
     int growthVals[] = {0, 0, 0, 0};
 
@@ -93,29 +94,29 @@ void completeBase() {
     
     for(;;) {
 
-//      int s1 = pulseIn(sensor1Pin, HIGH);
-//      int s2 = pulseIn(sensor2Pin, HIGH);
-//      int s3 = pulseIn(sensor3Pin, HIGH);
-//      int s4 = pulseIn(sensor4Pin, HIGH);
+      int s1 = analogRead(sensor1Pin);
+      int s2 = analogRead(sensor2Pin);
+      int s3 = analogRead(sensor3Pin);
+      int s4 = analogRead(sensor4Pin);
+
+      int vals[] = {s1, s2, s3, s4};
 //
-//      int vals[] = {s1, s2, s3, s4};
-
-      int vals[] = {0, 0, 0, 0};
-
       smoothVals(vals);
+      scaleMax(vals);
 
       //trackSensors(vals);
       if (completeToIncomplete || completeToWaiting || interrupt) return;
 
 //      
       int mappedAvgBrightness = map(avgSensorVal(vals), sensorMin, sensorMax, 200, 0);
-      int mappedAvgIndices = int(map(avgSensorVal(vals), sensorMin, sensorMax, 120, 10)); 
+      //int mappedAvgIndices = int(map(avgSensorVal(vals), sensorMin, sensorMax, 120, 10));
+      int mappedAvgIndices = 20;
       int numDone = 0;
 
-      int color1MaxLength = map(vals[0], sensorMin, sensorMax, 16, 1);
-      int color2MaxLength = map(vals[1], sensorMin, sensorMax, 16, 1);
-      int color3MaxLength = map(vals[2], sensorMin, sensorMax, 16, 1);
-      int color4MaxLength = map(vals[3], sensorMin, sensorMax, 16, 1);
+      int color1MaxLength = map(vals[0], sensorMin, sensor1Max, 16, 1);
+      int color2MaxLength = map(vals[1], sensorMin, sensor2Max, 16, 1);
+      int color3MaxLength = map(vals[2], sensorMin, sensor3Max, 16, 1);
+      int color4MaxLength = map(vals[3], sensorMin, sensor4Max, 16, 1);
 
       int maxLengths[] = {color1MaxLength, color2MaxLength, color3MaxLength, color4MaxLength};
       //int maxLengths[] = {10, 10, 10, 10};
@@ -187,20 +188,19 @@ void completeBase() {
       }
 
       if (numDone == 4) {
-        Serial.println("done");
         return;
       }
 
       strip.show();
       strip2.show();
 
-      if(millis() > checkTime && !didIt) {
-        didIt = true;
+      if(millis() > checkTime) {
         interrupt = true;
+        checkTime = millis() + 20000;
         return;
       }
      
-      //delay(100);
+      delay(100);
 
 
 //      strip.setBrightness(mappedAvgBrightness);
@@ -209,4 +209,121 @@ void completeBase() {
       
     }
   }
+}
+
+void completeBasev2() {
+
+  int d1 = 1;
+  int d2 = 1;
+  int d3 = 1;
+  int d4 = 1;
+
+  bool wave1ReachedMax = false;
+  bool wave2ReachedMax = false;
+  bool wave3ReachedMax = false;
+  bool wave4ReachedMax = false;
+
+  bool wave1ReachedMin = false;
+  bool wave2ReachedMin = false;
+  bool wave3ReachedMin = false;
+  bool wave4ReachedMin = false;
+
+  int centers[] = {20, 60, 100, 140, 180, 220};
+  int growthVals[] = {0, 0, 0, 0, 0, 0};
+  int maxGrowthVals[] = {19, 19, 19, 19, 19, 19};
+  int minGrowthVals[] = {0, 0, 0, 0, 0, 0};
+  
+
+  for(;;) {
+
+    int s1 = analogRead(sensor1Pin);
+    int s2 = analogRead(sensor2Pin);
+    int s3 = analogRead(sensor3Pin);
+    int s4 = analogRead(sensor4Pin);
+
+    int vals[] = {s1, s2, s3, s4};
+
+    smoothVals(vals);
+    scaleMax(vals);
+    //trackSensors(vals);
+
+    if (wave1ReachedMax || wave1ReachedMin) {
+      d1 = -d1;
+      if (wave1ReachedMax) {
+        wave1ReachedMax = false;
+      }
+      else if (wave1ReachedMin) {
+        wave1ReachedMin = false;  
+      }
+    }
+    if (wave2ReachedMax || wave2ReachedMin) {
+      d2 = -d2;
+      if(wave2ReachedMax) {
+        wave2ReachedMax = false;
+      }
+      else if (wave2ReachedMin) {
+        wave2ReachedMin = false;
+      }
+    }
+    if (wave3ReachedMax || wave3ReachedMin) {
+      d3 = -d3;
+      if (wave3ReachedMax) {
+        wave3ReachedMax = false;
+      }
+      else if (wave3ReachedMin) {
+        wave3ReachedMin = false;  
+      }  
+    }
+//    if (wave4ReachedMax || wave4ReachedMin) {
+//      d4 = -d4;
+//      if (wave4ReachedMax) {
+//        wave4ReachedMax = false;
+//      }
+//      else if (wave4ReachedMin) {
+//        wave4ReachedMin = false;  
+//      }  
+//    }
+
+    for (int i = 0; i < strip.numPixels(); i++) {
+      for(int j = 0; j < 6; j++) {
+        if (i <= centers[j] + growthVals[j] && i >= centers[j] - growthVals[j]) {
+          strip.setPixelColor(i, compColors[j%3]);  
+        }   
+      }
+    }
+
+    growthVals[0] += d1;
+    growthVals[1] += d2;
+    growthVals[2] += d3;
+    growthVals[3] += d1;
+    growthVals[4] += d2;
+    growthVals[5] += d3;
+//    growthVals[3] += d4;
+
+    if (growthVals[0] == 19) {
+      wave1ReachedMax = true;  
+    }
+    if (growthVals[1] == 19) {
+      wave2ReachedMax = true;  
+    }
+    if (growthVals[2] == 19) {
+      wave3ReachedMax = true;  
+    }
+//    if (growthVals[3] == 19) {
+//      wave4ReachedMax = true;  
+//    }
+    if (growthVals[0] == 0) {
+      wave1ReachedMin = true;  
+    }
+    if (growthVals[1] == 0) {
+      wave2ReachedMin = true;  
+    }
+    if (growthVals[2] == 0) {
+      wave3ReachedMin = true;  
+    }
+    strip.show();
+    delay(200);
+  }
+  
+  
 }
