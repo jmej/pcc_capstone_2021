@@ -31,6 +31,7 @@ String path = "";
 String audioFilePath = "";
 String audioOut = "";
 String settingsPath;
+boolean firstFrameRead = false;
 
 // Settings from settings.json and related
 boolean AUDIO_INIT = false;
@@ -254,6 +255,11 @@ void setup() {
 
 void draw() {  
   if (main == null) return;
+  if (!firstFrameRead) {
+    println("No frames read");
+    return;
+  }
+  
   try {
     main.beginDraw();
     main.image(movie, 0, 0);
@@ -288,6 +294,7 @@ void draw() {
   }
 
   if (curFrame == START_FRAME) { 
+    videoExport.setMovieFileName("mycelium-" + VIDEO_IN_PATH);
     videoExport.startMovie();
     println("VIDEO EXPORT STARTED!");
   } 
@@ -410,6 +417,7 @@ int getLength() {
 
 void movieEvent(Movie m) {
   m.read();
+  firstFrameRead = true;
 }
 
 
