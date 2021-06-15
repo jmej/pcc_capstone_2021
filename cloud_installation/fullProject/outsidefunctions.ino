@@ -14,6 +14,32 @@ void colorWipe(uint32_t color) {
   }  
 }
 
+void breakableColorWipe(uint32_t color) {
+  int i = 0;
+  for(;;) {
+    float s1 = analogRead(sensor1Pin);
+    float s2 = analogRead(sensor2Pin);
+    float s3 = analogRead(sensor3Pin);
+    float s4 = analogRead(sensor4Pin);
+    float vals[] = {s1, s2, s3, s4};
+
+    smoothVals(vals);
+    //trackSensors(vals);
+    
+    if (i < 240) {
+      strip.setPixelColor(i, color);  
+    }
+    else {
+      strip2.setPixelColor(i - 240, color);  
+    }
+    strip.show();
+    strip2.show();
+    delay(10);
+    i++;
+    if (i >= 480 || waitingToComplete || waitingToIncomplete) return;  
+  }  
+}
+
 void reverseColorWipe(uint32_t color) {
   for(int i = strip.numPixels() * 2 - 1; i >= 0; i--) {
     if (i >= 240) {
@@ -186,7 +212,7 @@ float Fire(int Cooling, int Sparking, int SpeedDelay) {
       fWhite+=1;  
     }
 
-    Serial.print(fBrightness);
+    //Serial.print(fBrightness);
   
     strip.setBrightness(fBrightness);
     strip2.setBrightness(fBrightness);
@@ -254,7 +280,7 @@ void meteorRain(byte red, byte green, byte blue, byte meteorSize, byte meteorTra
   //add boolean logic for when meteor reaches end of strip
   // leading pixel is i-ish (like maybe i+1)
  
-  for(int i = 0; i < strip.numPixels(); i++) {
+  for(int i = 0; i < strip.numPixels() + 70; i++) {
    
    
     // fade brightness all LEDs one step
@@ -266,12 +292,14 @@ void meteorRain(byte red, byte green, byte blue, byte meteorSize, byte meteorTra
    
     // draw meteor
     for(int j = 0; j < meteorSize; j++) {
-      if( ( i-j <strip.numPixels()) && (i-j>=0) ) {
+      if(( i-j <strip.numPixels()) && (i-j>=0) ) {
         strip.setPixelColor(i-j, red, green, blue);
+        strip2.setPixelColor(i-j, red, green, blue);
       }
     }
     
     strip.show();
+    strip2.show();
     
     if(i == strip.numPixels() - 1) {
       reachedEnd = true;  
@@ -298,6 +326,7 @@ void fadeToBlack(int ledNo, byte fadeValue) {
     b=(b<=10)? 0 : (int) b-(b*fadeValue/256);
    
     strip.setPixelColor(ledNo, r,g,b);
+    strip2.setPixelColor(ledNo, r,g,b);
 
 }
 
@@ -335,6 +364,30 @@ void doubleFade(int ledNo, byte fadeValue) {
 
 }
 
+void fadeToWhite(int ledNo, byte fadeValue) {
+  uint32_t oldColor1;
+  uint8_t r, g, b, w;
+  int value;
+
+  oldColor1 = strip.getPixelColor(ledNo);
+  r = (oldColor1 & 0x00ff0000UL) >> 16;
+  g = (oldColor1 & 0x0000ff00UL) >> 8;
+  b = (oldColor1 & 0x000000ffUL);
+  w = (oldColor1 & 0xff000000UL);
+
+  r=(r<=10)? 0 : (int) r-(r*fadeValue/256);
+  g=(g<=10)? 0 : (int) g-(g*fadeValue/256);
+  b=(b<=10)? 0 : (int) b-(b*fadeValue/256);
+  w=(w<=10)? 0 : (int) w+(w*fadeValue/256);
+  
+  
+   
+  strip.setPixelColor(ledNo, r,g,b,w);
+  strip2.setPixelColor(ledNo, r,g,b,w);
+
+  
+}
+
 bool arrayContains(int arr[], int arrayLength, int val) {
   bool isIn = false;
   for (int i = 0; i < arrayLength; i++) {
@@ -343,4 +396,18 @@ bool arrayContains(int arr[], int arrayLength, int val) {
     }
   }
   return isIn;
+}
+
+int getIndex(int arr[], int arrayLength, int val) {
+
+  int index = 0;
+
+  for (int i = 0; i < arrayLength; i++) {
+    if (arr[i] == val) {
+      index = i;  
+    }
+  }
+
+  return index;
+    
 }

@@ -23,14 +23,19 @@ void complete() {
 void completeInterrupt() {
 
   interrupt = false;
+//
+//  for(;;) {
+//    Fire(20, 50, 15);
+//    if (fWhite >= 255) return;
+//    //Serial.println(halfRecordedFrameCount);
+//  }
+//  for (int i = 0; i < strip.numPixels()*2; i++) {
+//    doubleFade(i, 22);
+//  }
 
-  for(;;) {
-    Fire(20, 50, 15);
-    if (fWhite >= 255) return;
-  }
-  for (int i = 0; i < strip.numPixels()*2; i++) {
-    doubleFade(i, 22);
-  }
+    
+
+  //Serial.println(halfRecordedFrameCount);
   // play around with values
   
   
@@ -94,21 +99,22 @@ void completeBase() {
     
     for(;;) {
 
-      int s1 = analogRead(sensor1Pin);
-      int s2 = analogRead(sensor2Pin);
-      int s3 = analogRead(sensor3Pin);
-      int s4 = analogRead(sensor4Pin);
+      float s1 = analogRead(sensor1Pin);
+      float s2 = analogRead(sensor2Pin);
+      float s3 = analogRead(sensor3Pin);
+      float s4 = analogRead(sensor4Pin);
 
-      int vals[] = {s1, s2, s3, s4};
+      float vals[] = {s1, s2, s3, s4};
+
 //
       smoothVals(vals);
-      scaleMax(vals);
+      //scaleMax(vals);
 
       //trackSensors(vals);
       if (completeToIncomplete || completeToWaiting || interrupt) return;
 
 //      
-      int mappedAvgBrightness = map(avgSensorVal(vals), sensorMin, sensorMax, 200, 0);
+      //int mappedAvgBrightness = map(avgSensorVal(vals), sensorMin, sensorMax, 200, 0);
       //int mappedAvgIndices = int(map(avgSensorVal(vals), sensorMin, sensorMax, 120, 10));
       int mappedAvgIndices = 20;
       int numDone = 0;
@@ -213,117 +219,173 @@ void completeBase() {
 
 void completeBasev2() {
 
-  int d1 = 1;
-  int d2 = 1;
-  int d3 = 1;
-  int d4 = 1;
+  int numOfWaves = 12;
 
-  bool wave1ReachedMax = false;
-  bool wave2ReachedMax = false;
-  bool wave3ReachedMax = false;
-  bool wave4ReachedMax = false;
+  bool reachedMax[numOfWaves] = {false};
+  bool reachedMin[numOfWaves] = {false};
 
-  bool wave1ReachedMin = false;
-  bool wave2ReachedMin = false;
-  bool wave3ReachedMin = false;
-  bool wave4ReachedMin = false;
+  int centers[numOfWaves];
+  
+  int dirs[numOfWaves];
+  int growthVals[numOfWaves];
+  int maxGrowthVals[numOfWaves];
+  int minGrowthVals[numOfWaves];
 
-  int centers[] = {20, 60, 100, 140, 180, 220};
-  int growthVals[] = {0, 0, 0, 0, 0, 0};
-  int maxGrowthVals[] = {19, 19, 19, 19, 19, 19};
-  int minGrowthVals[] = {0, 0, 0, 0, 0, 0};
+  for (int i = 0; i < numOfWaves; i++) {
+    dirs[i] = 1;
+    growthVals[i] = 0;
+    maxGrowthVals[i] = 10;
+    minGrowthVals[i] = 0;
+    centers[i] = int(random(7,15)) + 20*i;
+  }
+
+  int numOfTwinkles = 24;
+
+  int twinklingIndices[numOfTwinkles];
+
+  halfRecordedTime = millis();
   
 
   for(;;) {
 
-    int s1 = analogRead(sensor1Pin);
-    int s2 = analogRead(sensor2Pin);
-    int s3 = analogRead(sensor3Pin);
-    int s4 = analogRead(sensor4Pin);
+    float s1 = analogRead(sensor1Pin);
+    float s2 = analogRead(sensor2Pin);
+    float s3 = analogRead(sensor3Pin);
+    float s4 = analogRead(sensor4Pin);
 
-    int vals[] = {s1, s2, s3, s4};
+    float vals[] = {s1, s2, s3, s4};
+
+    int waveIndices[240] = {-1};
 
     smoothVals(vals);
     scaleMax(vals);
+    int mod = int(map(avgSensorVal(vals), 0, 1, 8, 1));
+    int mappedBrightness = int(map(avgSensorVal(vals), 0, 1, 0, 255));
+
+    if (fc % 2 == 0) {
+      for (int i = 0; i < numOfTwinkles; i++) {
+        twinklingIndices[i] = int(random(0, 240));  
+      }
+    }
+
+
+    //Serial.println(avgSensorVal(vals));
     //trackSensors(vals);
 
-    if (wave1ReachedMax || wave1ReachedMin) {
-      d1 = -d1;
-      if (wave1ReachedMax) {
-        wave1ReachedMax = false;
-      }
-      else if (wave1ReachedMin) {
-        wave1ReachedMin = false;  
-      }
-    }
-    if (wave2ReachedMax || wave2ReachedMin) {
-      d2 = -d2;
-      if(wave2ReachedMax) {
-        wave2ReachedMax = false;
-      }
-      else if (wave2ReachedMin) {
-        wave2ReachedMin = false;
-      }
-    }
-    if (wave3ReachedMax || wave3ReachedMin) {
-      d3 = -d3;
-      if (wave3ReachedMax) {
-        wave3ReachedMax = false;
-      }
-      else if (wave3ReachedMin) {
-        wave3ReachedMin = false;  
-      }  
-    }
-//    if (wave4ReachedMax || wave4ReachedMin) {
-//      d4 = -d4;
-//      if (wave4ReachedMax) {
-//        wave4ReachedMax = false;
-//      }
-//      else if (wave4ReachedMin) {
-//        wave4ReachedMin = false;  
-//      }  
-//    }
+    //mapping the data
+    //map average sensor data to brightness and speed
+    //speed is x in fc % x
+    
 
+    for (int i = 0; i < numOfWaves; i++) {
+      if (reachedMax[i]) {
+        dirs[i] = -dirs[i];
+        switch(i%4) {
+          case 0:
+          minGrowthVals[i] = int(map(vals[0], sensorMin, sensor1Max, 6, 0));
+          break;
+          case 1:
+          minGrowthVals[i] = int(map(vals[1], sensorMin, sensor2Max, 6, 0));
+          break;
+          case 2:
+          minGrowthVals[i] = int(map(vals[2], sensorMin, sensor3Max, 6, 0));
+          break;
+          case 3:
+          minGrowthVals[i] = int(map(vals[3], sensorMin, sensor4Max, 6, 0));
+          break;  
+        }
+        reachedMax[i] = false;  
+      }
+      if (reachedMin[i]) {
+        dirs[i] = -dirs[i];
+        switch(i % 4) {
+          case 0:
+          maxGrowthVals[i] = int(map(vals[0], sensorMin, sensor1Max, 15, 7));
+          break;
+          case 1:
+          maxGrowthVals[i] = int(map(vals[1], sensorMin, sensor2Max, 15, 7));
+          break;
+          case 2:
+          maxGrowthVals[i] = int(map(vals[2], sensorMin, sensor3Max, 15, 7));
+          break;
+          case 3:
+          maxGrowthVals[i] = int(map(vals[3], sensorMin, sensor4Max, 15, 7));
+          break;  
+        }
+        reachedMin[i] = false;  
+      }   
+    }
+
+    //strip.fill(compColors[4]);
+    strip.fill(strip.Color(0,0,0, 255));
+    strip2.fill(strip2.Color(0,0,0,255));
     for (int i = 0; i < strip.numPixels(); i++) {
-      for(int j = 0; j < 6; j++) {
+      for(int j = 0; j < numOfWaves; j++) {
         if (i <= centers[j] + growthVals[j] && i >= centers[j] - growthVals[j]) {
-          strip.setPixelColor(i, compColors[j%3]);  
-        }   
+          strip.setPixelColor(i, compColors[j%4]);
+          strip2.setPixelColor(i, compColors[j%4]);  
+        }
       }
     }
 
-    growthVals[0] += d1;
-    growthVals[1] += d2;
-    growthVals[2] += d3;
-    growthVals[3] += d1;
-    growthVals[4] += d2;
-    growthVals[5] += d3;
-//    growthVals[3] += d4;
+    if (twinkle) {
+        for (int i = 0; i < strip.numPixels() * 2; i++) {
+          if (arrayContains(twinklingIndices, numOfTwinkles, i)) {
+            if (i < 240) {
+              strip.setPixelColor(i, strip.Color(0,0,0,255));
+            }
+            else {
+              strip2.setPixelColor(i - 240, strip.Color(0, 0, 0, 255));  
+            }  
+          }  
+        }
+        twinkleFrames++;
+      }
+      if(twinkleFrames > 60) {
+        twinkle = false;  
+      }
 
-    if (growthVals[0] == 19) {
-      wave1ReachedMax = true;  
+    fc++;
+
+    for (int i = 0; i < numOfWaves; i++) {
+      growthVals[i] += dirs[i];
+      if (growthVals[i] == maxGrowthVals[i]) {
+        reachedMax[i] = true;  
+      }
+      if (growthVals[i] == minGrowthVals[i]) {
+        reachedMin[i] = true;  
+      }
+      if (fc % mod == 0) {
+        if (centers[i] < strip.numPixels() - 1) {
+          centers[i]++;  
+        }
+        else {
+          centers[i] = 0;  
+        }  
+      }
     }
-    if (growthVals[1] == 19) {
-      wave2ReachedMax = true;  
+
+    if (!atHalf(vals) && millis() > halfRecordedTime + 20000) {
+      canInterrupt = true;  
     }
-    if (growthVals[2] == 19) {
-      wave3ReachedMax = true;  
+
+    if (atHalf(vals) && canInterrupt) {
+      halfRecordedTime = millis();
+      canInterrupt = false;
+      interrupt = true;  
     }
-//    if (growthVals[3] == 19) {
-//      wave4ReachedMax = true;  
-//    }
-    if (growthVals[0] == 0) {
-      wave1ReachedMin = true;  
-    }
-    if (growthVals[1] == 0) {
-      wave2ReachedMin = true;  
-    }
-    if (growthVals[2] == 0) {
-      wave3ReachedMin = true;  
-    }
+
+    
+
+    if (completeToIncomplete || completeToWaiting || interrupt) return;
+    //strip.setBrightness(mappedBrightness);
     strip.show();
+    strip2.show();
     delay(200);
   }
+
+
+
   
   
 }

@@ -10,38 +10,38 @@
 Adafruit_NeoPixel strip(LED_COUNT1, LED_PIN1, NEO_GRBW + NEO_KHZ800);
 Adafruit_NeoPixel strip2(LED_COUNT2, LED_PIN2, NEO_GRBW + NEO_KHZ800);
 
-bool didIt = false;
-
 int valCheck = 1000;
 
-int frameCount = 0;
 
 float fBrightness = 100;
 float fWhite = 0;
 
 int randBehaviorTime = random(10000, 20000);
 
-int pot1Pin = 18;
-int pot2Pin = 19;
-int pot3Pin = 20;
-int pot4Pin = 21;
+int pot1Pin = 19;
+int pot2Pin = 20;
+int pot3Pin = 21;
+int pot4Pin = 22;
 
 int pot1Val, pot2Val, pot3Val, pot4Val;
 
 int sensor1Pin = 15;
-int sensor2Pin = 14;
+int sensor2Pin = 18;
 int sensor3Pin = 16;
 int sensor4Pin = 17;
-int sensor1Max = 45000;
-int sensor2Max = 45000;
-int sensor3Max = 45000;
-int sensor4Max = 45000;
-int sensorMax = 45000;
+int sensor1Max = 1023;
+int sensor2Max = 1023;
+int sensor3Max = 1023;
+int sensor4Max = 1023;
+int sensorMaxes[] = {sensor1Max, sensor2Max, sensor3Max, sensor4Max};
 int sensorMin = 1500;
 int sensor1Val, sensor2Val, sensor3Val, sensor4Val;
 int s1scaled, s2scaled, s3scaled, s4scaled; 
 long mm1, mm2, mm3, mm4;
 int usedSensors = 0;
+int whichSensors[] {-1, -1, -1, -1};
+
+int fc = 0;
 
 int currentBrightness;
 
@@ -60,22 +60,40 @@ bool waitingToIncomplete = false;
 bool incompleteToWaiting = false;
 bool completeToWaiting = false;
 bool waitingToComplete = false;
+bool fade = false;
+
+int counter = 0;
+
+bool twinkle = false;
+int twinkleFrames = 0;
 
 int checkTime = 20000;
 
-uint32_t incompColor1 = strip.Color(201, 87, 194);
-uint32_t incompColor2 = strip.Color(85, 206, 191);
-uint32_t incompColor3 = strip.Color(245, 180, 50);
-uint32_t incompColor4 = strip.Color(120, 255, 30);
-uint32_t incompColor5 = strip.Color(227, 79, 30);
+//uint32_t incompColor1 = strip.Color(201, 87, 194);
+//uint32_t incompColor2 = strip.Color(85, 206, 191);
+//uint32_t incompColor3 = strip.Color(245, 180, 50);
+//uint32_t incompColor4 = strip.Color(120, 255, 30);
+//uint32_t incompColor5 = strip.Color(227, 79, 30);
+
+//uint32_t incompColor1 = strip.Color(234, 80, 66);
+//uint32_t incompColor2 = strip.Color(232, 118, 47);
+//uint32_t incompColor3 = strip.Color(255, 219, 50);
+//uint32_t incompColor4 = strip.Color(255, 113, 215);
+//uint32_t incompColor5 = strip.Color(255, 249, 211);
+
+uint32_t incompColor1 = strip.Color(0, 55, 255);
+uint32_t incompColor2 = strip.Color(37, 250, 80);
+uint32_t incompColor3 = strip.Color(144, 52, 140);
 
 uint32_t compColor1 = strip.Color(8, 157, 101);
 uint32_t compColor2 = strip.Color(27, 173, 191);
 uint32_t compColor3 = strip.Color(37, 88, 152);
-uint32_t compColor4 = strip.Color(149, 216, 216);
+uint32_t compColor4 = strip.Color(0, 69, 124);
+uint32_t compColor5 = strip.Color(149, 216, 216);
 
-uint32_t incompColors[] = {incompColor1, incompColor4, incompColor5};
-uint32_t compColors[] = {compColor1, compColor2, compColor3, compColor4};
+//uint32_t incompColors[] = {incompColor1, incompColor4, incompColor5};
+uint32_t incompColors[] = {incompColor1, incompColor2, incompColor3};
+uint32_t compColors[] = {compColor1, compColor2, compColor3, compColor4, compColor5};
 
 
 const int numReadings = 20;
@@ -86,14 +104,21 @@ int averages[4];
 
 bool reachedEnd = false;
 
-
+bool didFire = false;
+int halfRecordedTime = 15000;
 // generate time to read sensors, maybe every second? start smaller?
+
+bool canInterrupt = true;
+
+int dVal = 1250;
 
 
 
 //char command;
 
 void setup() {
+
+  Serial.begin(9600);
 
   pinMode(pot1Pin, INPUT);
   pinMode(pot2Pin, INPUT);
@@ -122,49 +147,24 @@ void setup() {
 
 void loop() {
 
+  float s1 = analogRead(sensor1Pin);
+  float s2 = analogRead(sensor2Pin);
+  float s3 = analogRead(sensor3Pin);
+  float s4 = analogRead(sensor4Pin);
 
-  //incomplete(1);
+  float vals[] = {s1, s2, s3, s4};
+
+
+  incomplete(3);
+  //waiting();
   //Fire(20, 50, 15);
-//  meteorRain(201, 87, 194, 4, 22, true, 25);
+  //meteorRain(201, 87, 194, 4, 22, true, 8);
 //  if (reachedEnd) {
 //    reverseMeteorRain(201, 87, 194, 4, 22, true, 25);  
 //  }
-  
-  //strip.fill(0, strip.Color(255, 0, 0, 0));
-
-  complete();
-
-  //colorWipe(incompColor1, 5);
-  //Fire(20, 50, 15);
  
 }
 
-
-  
-void waiting() {
-  
-  for(;;) {
-
-    //trackSensors();
-
-    strip.setBrightness(BRIGHTNESS);
-    currentBrightness = BRIGHTNESS;
-    
-    whiteOverRainbow(40,5);
-    pulseWhite(5);
-    rainbowFade2White(3, 3, 1);
-    if (waitingToIncomplete) {
-      waitingToIncomplete = false;
-      //fromWtoI();
-      incomplete(usedSensors);  
-    }
-    if (waitingToComplete) {
-      waitingToComplete = false;
-      //fromCtoI();
-      complete();  
-    }
-  }
-}
 
 void readSensors() {
   mm1 = analogRead(sensor1Pin);
@@ -182,13 +182,14 @@ void printRange() {
   Serial.println(mm3);
 }
 
-void trackSensors(int vals[]) {
+void trackSensors(float vals[]) {
 
   usedSensors = 0;
 
   for (int i = 0; i < 4; i++) {
-    if (vals[i] < sensorMax) {
-      usedSensors++; 
+    if (vals[i] < sensorMaxes[i]) {
+      usedSensors++;
+      whichSensors[i] = 1; 
     }
   }
 
@@ -232,19 +233,23 @@ void trackSensors(int vals[]) {
 
 }
 
+float avgSensorVal(float vals[]) {
 
-int avgSensorVal(int vals[]) {
-
-  int sum = 0;
+  float numOfSensors = 0;
+  float sum = 0;
 
   for (int i = 0; i < 4; i++) {
-    sum += vals[i];
+    if (vals[i] < sensorMaxes[i]) {
+      sum += vals[i];
+      numOfSensors += 1.0;
+    }  
   }
 
-  return sum / 4;
+  return sum/numOfSensors;
+
 }
 
-int findMaxSensor(int vals[]) {
+int findMaxSensor(float vals[]) {
 
   int maxVal = 0;
   int maxIndex = 0;
@@ -259,7 +264,7 @@ int findMaxSensor(int vals[]) {
 
 }
 
-void smoothVals(int vals[]) {
+void smoothVals(float vals[]) {
 
   for (int i = 0; i < 4; i++) {
     totals[i] = totals[i] - readings[i][readIndex];
@@ -285,17 +290,53 @@ void smoothVals(int vals[]) {
 
 }
 
-void scaleMax(int vals[]) {
+bool atHalf(float vals[]) {
+
+  int numAtHalf = 0;
+
+  if (vals[0] < sensorMin + (sensor1Max - sensorMin)/2) {
+    numAtHalf++;  
+  }
+  if (vals[1] < sensorMin + (sensor2Max - sensorMin)/2) {
+    numAtHalf++;  
+  }
+  if (vals[2] < sensorMin + (sensor3Max - sensorMin)/2) {
+    numAtHalf++;  
+  }
+  if (vals[3] < sensorMin + (sensor4Max - sensorMin)/2) {
+    numAtHalf++;  
+  }
+  if(numAtHalf == 4) {
+    return true;  
+  }
+  else {
+    return false;  
+  }
+
+}
+
+void scaleMax(float vals[]) {
 
   pot1Val = analogRead(pot1Pin);
   pot2Val = analogRead(pot2Pin);
   pot3Val = analogRead(pot3Pin);
   pot4Val = analogRead(pot4Pin);
 
-  sensor1Max = map(vals[0], 0, 1023, 2000, 45000);
-  sensor2Max = map(vals[1], 0, 1023, 2000, 45000);
-  sensor3Max = map(vals[2], 0, 1023, 2000, 45000);
-  sensor4Max = map(vals[3], 0, 1023, 2000, 45000);
+  float potVals[] = {pot1Val, pot2Val, pot3Val, pot4Val};
+  smoothVals(potVals);
+
+  sensor1Max = potVals[0];
+  sensor2Max = potVals[1];
+  sensor3Max = potVals[2];
+  sensor4Max = potVals[3];
+  
+}
+
+void scaleVals(float vals[]) {
+
+  for (int i = 0; i < 4; i++) {
+    vals[i] = map(vals[i], 0, sensorMaxes[i], 0, 1);  
+  }
   
 }
 
@@ -318,3 +359,13 @@ void scaleMax(int vals[]) {
 //  usbMIDI.sendControlChange(4, s4Scaled, 1);
 //  
 //}
+void trackDummySensors() {
+
+  dVal--;
+  Serial.println(dVal);
+
+  if (dVal <= 500) {
+    incompleteToComplete = true;  
+  }
+  
+}
