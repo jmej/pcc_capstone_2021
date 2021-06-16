@@ -27,6 +27,7 @@ int lastMovieUpdate = 0;
 PGraphics main;
 PImage infoFrame = null;
 boolean saved = false;
+boolean thumbSaved = false;
 String path = "";
 String audioFilePath = "";
 String audioOut = "";
@@ -350,6 +351,8 @@ void endMovie() {
   String finalAudio = "";
   int waitTime = 0;
   
+  if (!thumbSaved) saveThumb();
+  
   oscCli.sendJsonPath(infoPath);
   delay(100);
   oscCli.sendAudioPath(audioOut);
@@ -405,11 +408,20 @@ void setFrame(int n) {
     } else {
       endMovie();
     }
+  } else if (where*movie.frameRate >= len/2) {
+    saveThumb();
   }
   
   movie.jump(where);
   movie.pause();  
 }  
+
+void saveThumb() {
+  String parts[] = split(VIDEO_IN_PATH, ".");
+  String thumbPath = sketchPath("data/thumbs/" + parts[parts.length-2] + ".png");
+  saveFrame(thumbPath);
+  thumbSaved = true;
+}
 
 int getLength() {
   return int(movie.duration() * movie.frameRate);
@@ -419,7 +431,6 @@ void movieEvent(Movie m) {
   m.read();
   firstFrameRead = true;
 }
-
 
 /***
 The following three functions were adapted from
