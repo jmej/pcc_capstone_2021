@@ -1,0 +1,10 @@
+html  
+  head
+    title= title
+  body
+  h1=title
+    ul
+    each image in images
+      li 
+        a(href=image.video)
+          img(src=image.location width=300)

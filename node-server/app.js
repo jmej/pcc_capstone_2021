@@ -4,15 +4,44 @@ var path = require('path');
 var formidable = require('formidable');
 var fs = require('fs');
 
-app.use(express.static(path.join(__dirname, 'public')));
+app.set('view engine', 'pug');
+app.set('views', './views');
+app.use(express.static('public'));
+
 app.get('/', function(req, res){
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-app.get('/gallery', function(req, res){
-  res.sendFile(path.join(__dirname, 'gallery.html'));
+app.get('/gallery', (req, res) => {
+    let images = getImagesFromDir(path.join(__dirname, 'public/finished'));
+     res.render('gallery', { title: 'spores', images: images })
 });
 
+// dirPath: target image directory
+function getImagesFromDir(dirPath) {
+ 
+    // All iamges holder, defalut value is empty
+    let allImages = [];
+ 
+    // Iterator over the directory
+    let files = fs.readdirSync(dirPath);
+ 
+    // Iterator over the files and push jpg and png images to allImages array.
+    for (file of files) {
+        let fileLocation = path.join(dirPath, file);
+        var stat = fs.statSync(fileLocation);
+        if (stat && stat.isDirectory()) {
+            getImagesFromDir(fileLocation); // process sub directories
+        } else if (stat && stat.isFile() && ['.jpg'].indexOf(path.extname(fileLocation)) != -1) {
+            let videoLink = file.slice(0, file.length-4)+".mp4";
+            allImages.push({video: 'finished/'+videoLink, location: 'finished/'+file}); // push all .jpf and .png files to all images 
+            console.log(videoLink);
+        }
+    }
+ 
+    // return all images in array formate
+    return allImages;
+}
 
 app.post('/upload', function(req, res){
   // create an incoming form object
