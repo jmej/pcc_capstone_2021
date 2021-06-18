@@ -9,6 +9,9 @@ app.set('views', './views');
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/', function(req, res){
+  //var options = url.parse(req.url, true);
+  //var mime = Helper.getMime(options);
+  //serveFile(res, options.pathname, mime);
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
