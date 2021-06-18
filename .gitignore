@@ -1,14 +1,17 @@
 .DS_Store
-Mycelium/.DS_Store
-Mycelium/ffmpeg.txt
-Mycelium/ffmpeg-audio.txt
-Mycelium/data/toMarkov
-Mycelium/data/fromMarkov
-Mycelium/data/frameData
-Mycelium/data/settings.json
-Granulator/settings.json
-MyceliumMarkov/settings.json
+ffmpeg.txt
+ffmpeg-audio.txt
+toMarkov
+fromMarkov
+frameData
+settings.json
+settings.json
 *wav
+*mp4
+*png
+*jpg
+*mp3
+uploads/
 
 #node stuff
 
