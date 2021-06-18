@@ -35,7 +35,7 @@ function getImagesFromDir(dirPath) {
         var stat = fs.statSync(fileLocation);
         if (stat && stat.isDirectory()) {
             getImagesFromDir(fileLocation); // process sub directories
-        } else if (stat && stat.isFile() && ['.jpg'].indexOf(path.extname(fileLocation)) != -1) {
+        } else if (stat && stat.isFile() && ['.png'].indexOf(path.extname(fileLocation)) != -1) {
             let videoLink = file.slice(0, file.length-4)+".mp4";
             allImages.push({video: 'finished/'+videoLink, location: 'finished/'+file}); // push all .jpf and .png files to all images 
             console.log(videoLink);
