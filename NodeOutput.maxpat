@@ -4,7 +4,7 @@
 		"appversion" : 		{
 			"major" : 8,
 			"minor" : 1,
-			"revision" : 9,
+			"revision" : 11,
 			"architecture" : "x64",
 			"modernui" : 1
 		}
@@ -40,13 +40,25 @@
 		"assistshowspatchername" : 0,
 		"boxes" : [ 			{
 				"box" : 				{
+					"id" : "obj-6",
+					"maxclass" : "newobj",
+					"numinlets" : 1,
+					"numoutlets" : 2,
+					"outlettype" : [ "", "int" ],
+					"patching_rect" : [ 270.0, 491.0, 75.0, 22.0 ],
+					"text" : "conformpath"
+				}
+
+			}
+, 			{
+				"box" : 				{
 					"id" : "obj-14",
 					"maxclass" : "message",
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 87.0, 597.0, 384.166625380516052, 22.0 ],
-					"text" : "macos:/Users/shawnmcclure/pcc_capstone_2021/39749215.wav"
+					"patching_rect" : [ 87.0, 597.0, 539.0, 22.0 ],
+					"text" : "\"Macintosh HD:/Users/tobygn/Documents/Processing/Capstone/pcc_Capstone_2021/8070644.wav\""
 				}
 
 			}
@@ -263,7 +275,7 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 85.0, 214.369426250457764, 107.333335041999817, 22.0 ],
-					"text" : "39749215.wav"
+					"text" : "8070644.wav"
 				}
 
 			}
@@ -382,7 +394,7 @@
 			}
 , 			{
 				"patchline" : 				{
-					"destination" : [ "obj-145", 0 ],
+					"destination" : [ "obj-6", 0 ],
 					"order" : 1,
 					"source" : [ "obj-12", 0 ]
 				}
@@ -457,6 +469,13 @@
 				"patchline" : 				{
 					"destination" : [ "obj-28", 0 ],
 					"source" : [ "obj-52", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-145", 0 ],
+					"source" : [ "obj-6", 0 ]
 				}
 
 			}
