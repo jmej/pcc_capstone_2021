@@ -35,6 +35,8 @@ String settingsPath;
 boolean firstFrameRead = false;
 
 // Settings from settings.json and related
+String OUTPUT_DIR;
+String OUTPUT_PREFIX;
 boolean AUDIO_INIT = false;
 boolean LOOP;
 boolean EXTRACT_AUDIO;
@@ -48,14 +50,15 @@ float RMS_SCALED;
 boolean DBL_FRAME;
 float[] fftData;
 
-
 void setup() {
   size(1280, 720, P2D); // 1024, 576,
   noStroke();
   rectMode(CENTER);
   colorMode(RGB, 255);
   
-  settings = new Settings(this);    
+  settings = new Settings(this);
+  OUTPUT_PREFIX = (String)settings.get("outputPrefix");
+  OUTPUT_DIR = (String)settings.get("outputDir");
   LOOP = (boolean)settings.get("videoLoop");
   EXTRACT_AUDIO = (boolean)settings.get("extractAudio");
   PIX_DIM = (int)settings.get("defaultDim"); 
@@ -295,7 +298,7 @@ void draw() {
   }
 
   if (curFrame == START_FRAME) { 
-    videoExport.setMovieFileName("mycelium-" + VIDEO_IN_PATH);
+    videoExport.setMovieFileName(OUTPUT_DIR + "/" + OUTPUT_PREFIX + VIDEO_IN_PATH);
     videoExport.startMovie();
     println("VIDEO EXPORT STARTED!");
   } 
@@ -418,7 +421,7 @@ void setFrame(int n) {
 
 void saveThumb() {
   String parts[] = split(VIDEO_IN_PATH, ".");
-  String thumbPath = sketchPath("data/thumbs/" + parts[parts.length-2] + ".png");
+  String thumbPath = OUTPUT_DIR + "/" + OUTPUT_PREFIX + parts[parts.length-2] + ".png";
   saveFrame(thumbPath);
   thumbSaved = true;
 }
