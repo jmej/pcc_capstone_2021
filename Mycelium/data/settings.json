@@ -33,4 +33,6 @@
   "videoInputPath": "test.mp4",
   "videoLoop": false,
   "videoQuality": 50,
+  "outputDir": "/Users/tobygn/renders",
+  "outputPrefix": "mycelium-"
 }

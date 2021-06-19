@@ -191,7 +191,7 @@ void setup() {
   
   println("Audio file path: " + audioFilePath);
   if (audio == null || !audio.exists()) {
-    audioOut = saveAudio(audioFilePath);
+    audioOut = saveAudio(sketchPath("data/" + VIDEO_IN_PATH));
     println("AUDIO SEPARATED FROM VIDEO" + audioOut);
     delay(1000);
   } else {
