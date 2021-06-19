@@ -1,4 +1,4 @@
-import processing.video.*;
+import processing.video.*; //<>// //<>// //<>// //<>//
 import processing.sound.*;
 import com.hamoid.*;
 import oscP5.*;
@@ -180,26 +180,32 @@ void setup() {
       println("WAITING");
     } 
   } else {
-    audioFilePath = VIDEO_IN_PATH;
-  } //<>//
+    audioFilePath = sketchPath("data/" + VIDEO_IN_PATH + "_audio.mp3");
+  }
   
   // Save audio from Video separately
-  File audio = new File(audioFilePath);
-  if (!audio.exists()) {
+  File audio = null;
+  if (!audioFilePath.equals("")) {
+    audio = new File(audioFilePath);
+  }
+  
+  println("Audio file path: " + audioFilePath);
+  if (audio == null || !audio.exists()) {
     audioOut = saveAudio(audioFilePath);
     println("AUDIO SEPARATED FROM VIDEO" + audioOut);
     delay(1000);
   } else {
     println("AUDIO FILE ALREADY EXISTS. WILL NOT SEPARATE FROM VIDEO.");
+    audioOut = audioFilePath;
   }
   
   // Video export settings
-  videoExport = new VideoExport(this); //<>//
+  videoExport = new VideoExport(this);
   videoExport.setFrameRate(movie.frameRate);
   videoExport.setLoadPixels(false);
   videoExport.setQuality((int)settings.get("videoQuality"), (int)settings.get("audioQuality"));
   videoExport.setDebugging((boolean)settings.get("videoExportDebug"));
-   //<>//
+  
   // For nodes that have a specfic color to track...
   color TRACK_COLOR = color(random(100), random(100), random(100));
    
@@ -208,7 +214,7 @@ void setup() {
     for (int i = 0; i < mods.length; i++) {
       mods[i].init(settings);
       mods[i].setDim(PIX_DIM);
-      mods[i].setColor(TRACK_COLOR); //<>//
+      mods[i].setColor(TRACK_COLOR);
     }
   } catch (NullPointerException e) { 
     println("Node init error. Check node names in settings.json: " + e.getMessage());
@@ -220,7 +226,7 @@ void setup() {
   while(tries < maxtries) {
     File audioFile = new File(audioOut);
     if (!audioFile.exists()) {
-      println("No audio file found");
+      println("No audio file found: " + audioOut);
       delay(1000);
       tries++;
     } else {
@@ -314,7 +320,6 @@ void draw() {
       lastMovieUpdate = curMovieTime;
       println("Movie frame data updated: " + lastMovieUpdate);
     }
-    
   }
   
   videoExport.saveFrame();
@@ -339,6 +344,8 @@ void oscEvent(OscMessage m) {
 void keyPressed() {
   if (key == 'q') {
     endMovie();
+  } else if (key =='e') {
+    earlyExit();
   }
 }
 
@@ -346,6 +353,16 @@ void mouseClicked() {
   for (int i = 0; i < mods.length; i++) {
     mods[i].clicked();
   }
+}
+
+// Abort execution quickly and cleanly
+void earlyExit() {
+  try {
+    if (videoExport != null) videoExport.endMovie();
+  } catch (NullPointerException e) {
+    println("CAUGHT NULL POINTER: " + e.getMessage());
+  }
+  exit();
 }
 
 // Called after all frames are processed
