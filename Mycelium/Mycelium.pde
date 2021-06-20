@@ -428,8 +428,8 @@ void setFrame(int n) {
     } else {
       endMovie();
     }
-  } else if (where*movie.frameRate >= len/2) {
-    saveThumb();
+  } else if (!thumbSaved && where*movie.frameRate >= len/2) {
+      saveThumb();
   }
   
   movie.jump(where);
