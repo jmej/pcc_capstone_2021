@@ -4,13 +4,13 @@
 		"appversion" : 		{
 			"major" : 8,
 			"minor" : 1,
-			"revision" : 9,
+			"revision" : 10,
 			"architecture" : "x64",
 			"modernui" : 1
 		}
 ,
 		"classnamespace" : "box",
-		"rect" : [ 49.0, -987.0, 1386.0, 785.0 ],
+		"rect" : [ 788.0, 257.0, 1386.0, 785.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -109,7 +109,7 @@
 						"appversion" : 						{
 							"major" : 8,
 							"minor" : 1,
-							"revision" : 9,
+							"revision" : 10,
 							"architecture" : "x64",
 							"modernui" : 1
 						}
@@ -658,7 +658,7 @@
 						"appversion" : 						{
 							"major" : 8,
 							"minor" : 1,
-							"revision" : 9,
+							"revision" : 10,
 							"architecture" : "x64",
 							"modernui" : 1
 						}
@@ -839,7 +839,7 @@
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 260.0, 5.0, 145.0, 34.0 ],
+									"patching_rect" : [ 260.0, 5.0, 146.0, 34.0 ],
 									"text" : "(float/int 0-127) crossfade from input 1 to input 2"
 								}
 
@@ -1380,57 +1380,44 @@
 
 			}
  ],
-		"parameters" : 		{
-			"obj-1::obj-41" : [ "live.gain~[1]", "live.gain~[1]", 0 ],
-			"obj-1::obj-42" : [ "live.gain~[3]", "live.gain~[1]", 0 ],
-			"obj-1::obj-43" : [ "live.gain~[4]", "live.gain~[1]", 0 ],
-			"obj-1::obj-44" : [ "live.gain~[5]", "live.gain~[1]", 0 ],
-			"parameterbanks" : 			{
-
-			}
-,
-			"inherited_shortname" : 1
-		}
-,
 		"dependency_cache" : [ 			{
 				"name" : "Granulator Build_Pare Down_v9.maxpat",
-				"bootpath" : "~/pcc_capstone_2021",
+				"bootpath" : "D:/Projects/pcc_capstone_2021",
 				"patcherrelativepath" : ".",
 				"type" : "JSON",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "voice-engine.maxpat",
-				"bootpath" : "~/pcc_capstone_2021",
+				"bootpath" : "D:/Projects/pcc_capstone_2021",
 				"patcherrelativepath" : ".",
 				"type" : "JSON",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "NodeInput.maxpat",
-				"bootpath" : "~/pcc_capstone_2021",
+				"bootpath" : "D:/Projects/pcc_capstone_2021",
 				"patcherrelativepath" : ".",
 				"type" : "JSON",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "NodeOutput.maxpat",
-				"bootpath" : "~/pcc_capstone_2021",
+				"bootpath" : "D:/Projects/pcc_capstone_2021",
 				"patcherrelativepath" : ".",
 				"type" : "JSON",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "convolutionpatch.maxpat",
-				"bootpath" : "~/pcc_capstone_2021",
+				"bootpath" : "D:/Projects/pcc_capstone_2021",
 				"patcherrelativepath" : ".",
 				"type" : "JSON",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "cw_fft.maxpat",
-				"bootpath" : "~/Library/Application Support/Cycling '74/Max 8/Examples/fft-fun/lib",
-				"patcherrelativepath" : "../Library/Application Support/Cycling '74/Max 8/Examples/fft-fun/lib",
+				"bootpath" : "~/AppData/Roaming/Cycling '74/Max 8/examples/fft-fun/lib",
 				"type" : "JSON",
 				"implicit" : 1
 			}
@@ -1438,13 +1425,6 @@
 				"name" : "helpdetails.js",
 				"bootpath" : "C74:/help/resources",
 				"type" : "TEXT",
-				"implicit" : 1
-			}
-, 			{
-				"name" : "myceliumMarkov.maxpat",
-				"bootpath" : "~/pcc_capstone_2021/MyceliumMarkov",
-				"patcherrelativepath" : "./MyceliumMarkov",
-				"type" : "JSON",
 				"implicit" : 1
 			}
  ],
