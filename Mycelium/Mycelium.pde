@@ -1,4 +1,4 @@
-import processing.video.*; //<>// //<>// //<>// //<>//
+import processing.video.*; //<>//
 import processing.sound.*;
 import com.hamoid.*;
 import oscP5.*;
@@ -283,7 +283,7 @@ void draw() {
    
   // Resize the image to our dims
   f.copy(main, 0, 0, main.width, main.height, 0, 0, f.width, f.height);
-  
+
   // Calculate fft, amplitude stuff for this frame
   if (AUDIO_INIT) {
     soundSource.play(1, 0.0, 1.0, 0, movie.time());
@@ -377,15 +377,16 @@ void endMovie() {
   delay(100);
   oscCli.sendAudioPath(audioOut);
  
-  println(curFrame + " frames processed, movie length: " + movie.time() + " seconds");
+  println(curFrame + " frames processed, movie length: " + movie.time() + " seconds. original duration: " + movie.duration());
   
   if (AUDIO_INIT) {
     while(finalAudio.equals("")) {
+      int padding = 10;
       finalAudio = oscCli.getFinalAudio();
       println("no audio...delaying 2s");
       delay(2000);
       waitTime += 2;
-      if (waitTime >= movie.time() + 25) {
+      if (waitTime >= movie.duration() + padding) {
         println("Timed out waiting for audio node reponse");
         break;
       }
