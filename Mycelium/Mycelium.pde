@@ -25,6 +25,7 @@ ModNode[] mods;       // All of our processing nodes for this run
 int curFrame = 0;
 int lastMovieUpdate = 0;
 PGraphics main;
+PImage prevFrame = null;
 PImage infoFrame = null;
 boolean saved = false;
 boolean thumbSaved = false;
@@ -37,6 +38,8 @@ boolean firstFrameRead = false;
 // Settings from settings.json and related
 String OUTPUT_DIR;
 String OUTPUT_PREFIX;
+boolean BLEND_PREV = false;
+boolean DO_MAX_NODES = true;
 boolean AUDIO_INIT = false;
 boolean LOOP;
 boolean EXTRACT_AUDIO;
@@ -57,6 +60,7 @@ void setup() {
   colorMode(RGB, 255);
   
   settings = new Settings(this);
+  BLEND_PREV = (boolean)settings.get("blendPrevFrame");
   OUTPUT_PREFIX = (String)settings.get("outputPrefix");
   OUTPUT_DIR = (String)settings.get("outputDir");
   LOOP = (boolean)settings.get("videoLoop");
@@ -80,6 +84,9 @@ void setup() {
   }
   
   mods = new ModNode[classList.length];
+  
+  // Uncomment if needed to find the numbers associated with each blend method
+  //println("BLEND METHODS: " + BLEND + " " + ADD + " " + SUBTRACT + " " + LIGHTEST + " " + DARKEST + " " +  DIFFERENCE + " " + EXCLUSION + " " + MULTIPLY + " " + SCREEN);
 
   // Choose the nodes you want to load by changing setting.json
   for (int i = 0; i < classList.length; i++) {
@@ -122,6 +129,9 @@ void setup() {
         break;
       case "MolnarNode":
         mods[i] = new MolnarNode();
+        break;
+      case "OffsetNode":
+        mods[i] = new OffsetNode();
         break;
       case "PartRotateNode":
         mods[i] = new PartRotateNode();
@@ -307,7 +317,15 @@ void draw() {
     videoExport.setMovieFileName(OUTPUT_DIR + "/" + OUTPUT_PREFIX + VIDEO_IN_PATH);
     videoExport.startMovie();
     println("VIDEO EXPORT STARTED!");
-  } 
+  } else if (BLEND_PREV && curFrame % 2 == 0) {
+    if (prevFrame != null) {
+      f.blend(prevFrame, 0, 0, prevFrame.width, prevFrame.height, 0, 0, f.width, f.height, BLEND);
+    }
+    prevFrame = createImage(width, height, ALPHA);
+    prevFrame = f.copy();
+  }
+  
+
    
   image(f, 0, 0, f.width, f.height);
   loadPixels();
@@ -392,9 +410,11 @@ void endMovie() {
       }
     }
     
-    if (!finalAudio.equals("")) {
-      videoExport.setAudioFileName(finalAudio);
+    if (finalAudio.equals("")) {
+      finalAudio = audioOut;
     }
+    
+    videoExport.setAudioFileName(finalAudio);
   }
   
   videoExport.endMovie();

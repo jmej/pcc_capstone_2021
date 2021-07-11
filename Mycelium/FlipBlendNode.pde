@@ -1,7 +1,8 @@
 class FlipBlendNode implements ModNode {
   private Settings set;
   private int frameModCt = 30;
-  private int blendMethod = BLEND;
+  private int DEFAULTBLEND = BLEND;
+  private int blendMethod;
   private boolean active = true;
   private int curFrame = 0;
   
@@ -32,6 +33,7 @@ class FlipBlendNode implements ModNode {
   public void init(Settings set) {
     this.set = set;
     this.frameModCt = (int)this.set.get("frameModCount");
+    this.blendMethod = (int)this.set.get("flipBlendMethod");
   }
   
   public void setColor(color c) {

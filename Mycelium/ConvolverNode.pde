@@ -6,6 +6,8 @@ public class ConvolverNode implements ModNode {
   private boolean active = true;
   private int frameModCt = 60;
   private int fileIdx = 0;
+  private float mainFact = .75;  // How much of the current image is represented
+  private float convFact = .25;  // How much of the convolution image is represented
   private File[] files;
   
   public PImage mod(PImage frame) {
@@ -61,13 +63,12 @@ public class ConvolverNode implements ModNode {
           int loc = x + y*frame.width;
           color currentColor = frame.pixels[loc];
           color convColor = cImg.pixels[loc];
-          color c;
+          color c = color(
+            ((hue(currentColor)*mainFact) + (hue(convColor)*convFact))/2,
+            ((saturation(currentColor)*mainFact) + (saturation(convColor)*convFact))/2,
+            brightness(currentColor)
+          );
           
-          if (this.curFrame % frameModCt >= (frameModCt/2)) {
-            c = color(hue(currentColor), saturation(currentColor), brightness(currentColor));
-          } else {
-            c = color(hue(currentColor), saturation(convColor), brightness(convColor));
-          }
           canvas.fill(c);
           canvas.square(x, y, this.dim);
         } catch (ArrayIndexOutOfBoundsException e) {
