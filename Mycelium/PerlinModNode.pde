@@ -4,7 +4,7 @@ public class PerlinNode implements ModNode {
   private int curFrame = 0;
   private boolean active = true;
   private int frameModCt = 60;
-  private int auChangeCt = 4;
+  private int auChangeCt = 1;
   private boolean audioMod = false;
   
   public PImage mod(PImage frame) {
@@ -14,7 +14,8 @@ public class PerlinNode implements ModNode {
     float noiseScale = (int)map(this.curFrame % this.frameModCt, 0, this.frameModCt, .01, .1);
     
     if (this.audioMod && this.curFrame % auChangeCt == 0) {
-      noiseScale = (float)map(fftData[0], 0, 1., .001, .2);
+      noiseScale = (float)map(fftData[0], 0, 1.0, .001, .2);
+      noiseScale += map(frameModCt, 0, frameModCt, 0, .05);
     }
     
     canvas.beginDraw();           
@@ -23,16 +24,18 @@ public class PerlinNode implements ModNode {
     
     for (int x = 0; x < frame.width; x += this.dim ) {
       for (int y = 0; y < frame.height; y += this.dim ) {
-        int loc = x + y*frame.width;
-        color currentColor = frame.pixels[loc];    
-        float noiseVal1 = noise((hue(currentColor)+x)*noiseScale, (hue(currentColor)+y)*noiseScale);
-        float noiseVal2 = noise((saturation(currentColor)+x)*noiseScale, (saturation(currentColor)+y)*noiseScale);
-        float noiseVal3 = noise((brightness(currentColor)+x)*noiseScale, (brightness(currentColor)+y)*noiseScale);
+        color currentColor = frame.pixels[x + y*frame.width];    
+        float h = hue(currentColor);
+        float sat = saturation(currentColor);
+        float bri = brightness(currentColor);
+        float noiseVal1 = noise((h+x)*noiseScale, (h+y)*noiseScale);
+        float noiseVal2 = noise((sat+x)*noiseScale, (sat+y)*noiseScale);
+        float noiseVal3 = noise((bri+x)*noiseScale, (bri+y)*noiseScale*2);
             
         color c = color(
-          hue(currentColor) * noiseVal1,
-          saturation(currentColor) * noiseVal2,
-          brightness(currentColor) * noiseVal3
+          h * noiseVal1,
+          sat * noiseVal2,
+          bri * noiseVal3
         );
       
         canvas.fill(c);
